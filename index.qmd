@@ -1,9 +1,9 @@
 # Preface {.unnumbered}
 
-This is a Quarto book.
+This is a collection of notes on multiple regression models, generalized
+linear models, mixed-effects models, generalized estimating equations,
+and generalized additive models. They were originally developed for
+teaching the courses STAT 245 and DATA 545 at Calvin University.
 
-To learn more about Quarto books visit <https://quarto.org/docs/books>.
-
-```{r}
-1 + 1
-```
+They are a work in progress. If you have questions, please [reach
+out](https://calvin.edu/directory/people/stacy-l-de-ruiter).

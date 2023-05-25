@@ -2,8 +2,8 @@ project:
   type: book
 
 book:
-  title: "regression"
-  author: "Norah Jones"
+  title: "GLMs and Friends"
+  author: "Stacy DeRuiter"
   date: "5/25/2023"
   chapters:
     - index.qmd
@@ -15,7 +15,9 @@ bibliography: references.bib
 
 format:
   html:
-    theme: cosmo
+    theme:
+      light: flatly
+      dark: darkly
   pdf:
     documentclass: scrreprt
 
