@@ -2,9 +2,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "regression",
+    "title": "GLMs and Friends",
     "section": "",
-    "text": "Preface\nThis is a Quarto book.\nTo learn more about Quarto books visit https://quarto.org/docs/books.\n\n1 + 1\n\n[1] 2"
+    "text": "Preface\nThis is a collection of notes on multiple regression models, generalized linear models, mixed-effects models, generalized estimating equations, and generalized additive models. They were originally developed for teaching the courses STAT 245 and DATA 545 at Calvin University.\nThey are a work in progress. If you have questions, please reach out."
   },
   {
     "objectID": "intro.html",
@@ -19,5 +19,12 @@
     "title": "2  Summary",
     "section": "",
     "text": "In summary, this book has no content whatsoever.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
   }
 ]
