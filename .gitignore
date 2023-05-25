@@ -48,3 +48,10 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# quarto book stuff
+_book/
+/.quarto/
+/_site/
+
+/.quarto/
