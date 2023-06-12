@@ -1,0 +1,159 @@
+
+```{r, setup-gams, include=FALSE}
+require(mosaic) 
+require(ggformula)
+theme_set(theme_bw(base_size=14))
+knitr::opts_chunk$set(
+  tidy=FALSE, echo=TRUE, 
+  size="small", message=FALSE, results='markup',
+  fig.width=6, fig.height=3.5, cache=FALSE)
+```
+
+# GAMs: Generalized Additive Models
+So far, we have learned ways to model continuous, logical, and count response variables as functions of quantitative and categorical predictors.  We started with linear models - where both the response and predictor variables are quantitative and the relationship between them is *linear*.  What about nonlinear relationships?
+
+So far, we have considered...
+
+- **Categorical predictor variables**. Making use of indicator variables for (all but one of the) categories, we can model a situation where each value of the predictor variable has a different effect on the response. But...
+    - How many categories?
+    - What about periodicity?
+- **GLMs**. In logistic, Poisson, etc. regression, the action of the link function results in a relationship between the predictors and the response variable that is linear on the scale of the link function ( = scale of the RHS of the equation), but non-linear on the scale of the response variables (LHS). But...
+    - Nonlinear, but **monotonic**
+
+## Non-linear, non-monotonic relationships
+It's not true that all interesting predictor-response relationships are linear or monotonic. One example is in some data on bat migration: how does the probability of bats leaving on their migratory journey depend on air humidity?
+
+```{r}
+bats <- read.csv('https://ndownloader.figshare.com/files/9348010')
+```
+
+```{r, include = FALSE}
+    # old url: 'http://rsbl.royalsocietypublishing.org/highwire/filestream/33982/field_highwire_adjunct_files/2/rsbl20170395supp3.csv')
+```
+
+```{r,fig.width=6.5, fig.height=2, fig.show = 'hold', echo = FALSE}
+gf_boxplot(relativehumid ~ factor(migration), data = bats)
+
+bats <- bats %>%
+  mutate(humid_bins = cut(bats$relativehumid, breaks=7))
+
+bats2 <- bats %>%
+   group_by(humid_bins) %>%
+  summarize(migration_prop = prop(~migration == 1)) %>%
+  ungroup()
+
+gf_point(migration_prop ~ humid_bins, data = bats2) %>% 
+  gf_labs(x='Relative Humidity', y='Proportion Migrating')
+```
+
+Another dataset (our example for the day) -- ozone levels as a function of solar radiation (`rad`), temperature (`temp`) and wind speed (`wind`):
+
+```{r, fig.width=2.2, fig.height=2, fig.show='hold'}
+oz <- read.csv('http://geog.uoregon.edu/GeogR/data/csv/ozone.csv')
+gf_point(ozone ~ rad, data=oz, alpha=0.4)
+gf_point(ozone ~ temp, data=oz, alpha=0.4)
+gf_point(ozone ~ wind, data=oz, alpha=0.4)
+```
+
+
+## Smooth terms
+We can fit a model where the relationship between the response and the predictor is a ``smooth" -- no linearity or monotonicity requirement.
+
+### Basis functions
+
+- A smooth term is constructed as the sum of several parts, or *basis functions*. Each of these functions has a relatively simple shape, but scaled and added together, they can produce nearly any ``wiggly" shape. 
+- Increasing the dimension of the basis (more functions added together) can allow more wiggliness. 
+- Goal: allow enough wiggliness to fit the data well, without *overfitting* (smooth goes through every point in the data, or follows ``trends" that are spurious)
+
+
+We will fit smooth models to data using the function `gam()` from the package `mgcv`.  It includes many options for basis functions (types of smooths) - see `?mgcv::gam` or [https://rsconnect.calvin.edu:3939/content/28/] for details.
+
+## Fitting GAMs
+
+An excellent resource: <https://converged.yt/mgcv-workshop/>.
+
+### Choosing model formulation
+Which terms should be modelled as smooth terms? Explore the data!
+
+- Pros:
+- Cons:
+
+### Model formula
+
+Let's fit a simple GAM for the ozone data as a function of radiation, temperature and wind. Note the `s()` function for specifying a smooth, which takes as input:
+
+- a variable name (or more than one, for advanced users)
+- `k`
+- `bs`
+
+How do we choose? For some exploration, see: [https://rsconnect.calvin.edu:3939/content/28/].
+
+We can also fit the model and smooths by different methods and with options:
+
+- `method = 'GCV.Cp'`
+- `method = 'REML'`
+- `method = 'ML'`
+- `select = TRUE` (or `FALSE`)
+
+
+```{r, fig.show='hold', fig.width=2.2, fig.height=2.25, results='markup'}
+require(mgcv)
+oz.gam <- gam(ozone ~ s(rad, k=5, bs='tp') +
+                s(wind, k=5, bs='tp') +
+                s(temp, k=5, bs='tp'), data=oz,
+              method='REML', select=TRUE)
+par(mar=c(4,4,2,2))
+plot(oz.gam)
+summary(oz.gam)
+```
+
+## Model Assessment
+In addition to what you already know (...which all still holds, except linearity expectation!) `mgcv` has some nice model checking functions built in.
+
+```{r, fig.show='hold', fig.width=5.5, fig.height=3.5, results='markup'}
+par(mar=c(4,4,2,2))
+gam.check(oz.gam)
+```
+
+### Concurvity
+Like collinearity and multicollinearity, but for smooths...values of 0 indicate no problem, and 1 a huge problem (total lack of identifiability -- same information in multiple predictors).
+
+
+Overall, does the model have problems with concurvity?
+
+```{r}
+concurvity(oz.gam, full=TRUE)
+```
+
+Or alternatively, which specific pairs of terms cause problems?
+
+```{r}
+concurvity(oz.gam, full=FALSE)
+```
+
+## Model Selection
+### Shrinkage and Penalties
+With GAMs, in a sense, some model selection is (or can be) done during model fitting - what smooth is best? Or is the relationship a line? A flat line?  Using *shrinkage* basis or including `select=TRUE` allows for this.
+
+### P-value selection
+Cautions: **p-values are approximate!** Successfulness of the procedure best when fitting method is: ML (1st choice), REML (2nd choice).
+
+```{r, results = 'hide'}
+anova(oz.gam)
+```
+
+Interpretation as usual. Note that `anova()` (not `Anova()`) works here - especially for GAMs, it does *not* do sequential tests; and `Anova()` doesn't handle GAMs.
+
+### Information criteria
+
+- Conditional/Approximate - bias
+- Fitting method: 
+  - REML-based IC scores can be used to compare models with different *random effects* but **not** different predictors. (IF `select = TRUE` and using a shrinkage basis.)
+  - ML-based IC scores can be used to compare models with different fixed effects (regular predictors) and different `family`, but **not** different random effects 
+
+```{r}
+require(MuMIn)
+oz.ml <- update(oz.gam, method='ML', na.action='na.fail')
+head(dredge(oz.ml, rank='AIC'),2)
+```
+

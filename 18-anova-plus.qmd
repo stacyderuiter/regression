@@ -1,0 +1,202 @@
+# Other Model Selection Approaches
+The way we have been doing model selection thus far is *definitely* not the only way. What other options are out there? Many - let's consider a few.
+
+This section also includes some miscellaneous R notes (making summary tables, and sources of inspiration for cool figures).
+
+### Rationale
+Until now, we have focused on using information criteria for model selection, in order to get very familiar with one coherent framework for choosing variables across model types.  But:
+
+- In some fields, using hypothesis tests for variable selection is preferred
+- For datasets that are large and/or models that are complex, `dredge()` can be a challenge (taking a very long time to run and perhaps timing out on the server)
+- Using hypothesis tests for selection is quite common, so we should know how it's done!
+
+### Hypotheses
+Basically, for each (fixed effect) variable in a model, we'd like to test:
+
+$$H_0: \text{all } \beta\text{s for this variable are 0; it's not a good predictor}$$
+$$H_1: \text{ at least one } \beta\text{ is non-zero; it's a good predictor}$$
+
+We want to test these hypotheses *given that all the other predictors in the current full model are included*. Because of this condition, and because there are *multiple $\beta$s* for categorical predictors with more than 2 categories, we can **not** generally just use the p-values from the model `summary()` output.
+
+Instead, we use `Anova()` from the package `car`.  `lm()` example:
+
+```{r, message = FALSE}
+iris_mod <- lm(Petal.Length ~ Petal.Width + Species + Sepal.Length, data = iris)
+summary(iris_mod)
+require(car)
+Anova(iris_mod)
+```
+
+Notice that `Anova()` reports *one* p-value for each predictor (excellent!). If the p-value is small, that gives evidence against $H_0$, and we'd conclude we should keep the predictor in the model. Many people use $\alpha = 0.05$ as the "dividing line" between "small" and "large" p-values and thus "statistically significant" and "non-significant" test results, but remember the p-value is a probability - there's no magical difference between 0.049 and 0.051.
+
+*Warning: be careful with your capitalization! The R function `anova()` does someting kind of similar to `Anova()` but* **NOT** *the same and should be avoided -- it does sequential rather than marginal tests.*
+
+## Backward selection
+How do we use p-value-based selection to arrive at a best model? There are many options and much controversy about different approaches; here I'll suggest one. None of these methods are guaranteed to arrive at a model that is theoretically "best" in some specific way, but they do give a framework to guide decision-making and are computationally quick. The premise is that we'd like a simple algorithm to implement, and we will begin with a full model including all the predictors that we think *should* or *could* reasonably be important (not just throwing in everything possible).  
+
+### Algorithm
+
+- Obtain p-values for all predictors in full model
+- Remove the predictor with the largest p-value that you judge to be "not small" or "not significant"
+- Re-compute p-values for the new, smaller model
+- Repeat until all p-values are "significant"
+
+### Example
+Let's consider a logistic regression to predict whether a person in substance-abuse treatment is homeless.
+
+```{r}
+home_mod0 <- glm(homeless ~ sex + substance + i1 + cesd + 
+                  racegrp + age,
+                data = HELPrct, family = binomial(link = 'logit'))
+Anova(home_mod0)
+```
+
+Removing `age`:
+
+```{r}
+home_mod <- update(home_mod0, .~. - age)
+Anova(home_mod)
+```
+
+Removing `racegrp`
+
+```{r}
+home_mod <- update(home_mod, .~. - racegrp)
+Anova(home_mod)
+```
+
+Remove `cesd` (a score indicating depression level)
+
+```{r}
+home_mod <- update(home_mod, .~. - cesd)
+Anova(home_mod)
+```
+
+Remove `substance`
+
+```{r}
+home_mod <- update(home_mod, .~. - substance)
+Anova(home_mod)
+```
+
+Remove `sex`
+
+```{r}
+home_mod <- update(home_mod, .~. - sex)
+Anova(home_mod)
+```
+
+### Can't this be automated?
+Strangely...functions are not widely available.
+
+### Stepwise IC-based selection
+Another option may be to use **backward stepwise selection** (same algorithm as above), but using AIC or BIC as the criterion at each stage instead of p-values. If the IC value is better (by *any* amount) without a variable, it gets dropped. Variables are dropped one by one until no further IC improvement is possible.
+
+This evaluates many fewer models than `dredge` so should be much faster, but may not find the best of all possible models.
+
+For example, for our model using AIC (*note: this may or may not work for all model types.*):
+
+```{r, message = FALSE}
+require(MASS)
+stepAIC(home_mod0)
+```
+
+Note that we might want to still remove *one more* variable than `stepAIC()` does! Above, you see that if you were to remove `age`, the AIC would only go up by about 1 unit. So according to our $\Delta AIC \sim 3$ threshold, we would take `age` out too.
+
+Using BIC instead, we need to specify the input `k = log(nrow(data))` (the BIC penalty multiplier):
+
+```{r}
+stepAIC(home_mod0, k = log10(nrow(HELPrct)))
+```
+
+To get less verbose output, set `trace = 0` -- but then you won't know whether it would make sense to perhaps remove additional variables...
+
+```{r}
+stepAIC(home_mod0, k = log10(nrow(HELPrct)), trace = 0)
+```
+
+## Summary tables
+You may want to compute and display summary tables for your projects. Here are a few examples of how to do it.
+
+### Mean (or sd, median, IQR, etc.) by groups
+Compute the mean and sd (could use any other summary stats you want, though) for several quantitative variables, by groups.
+
+Example: find mean and sd of iris flower `Petal.Length` and `Petal.Width` by `Species` and display results in a pretty table. The dataset is called `iris`.
+
+Make a little one-row table for each variable being summarized, then stick them together.
+
+```{r, message = FALSE}
+require(knitr)
+
+length_stats <- iris %>% 
+  df_stats(Petal.Length ~ Species, mean, sd, long_names = FALSE) %>%
+  mutate(variable = 'Petal Length')
+
+width_stats <- iris %>% 
+  df_stats(Petal.Width ~ Species, mean, sd, long_names = FALSE) %>%
+  mutate(variable = 'Petal Width')
+
+my_table <- bind_rows(length_stats, width_stats)
+
+kable(my_table)
+```
+
+What if we want to round all table entries to 2 digits after the decimal?
+
+```{r}
+kable(my_table, digits = 2)
+```
+
+What if we want the column order to be Variable, Species, mean, sd, and sort by Species and then Variable?
+
+```{r}
+my_table <- my_table %>%
+  dplyr::select(variable, Species, mean, sd) %>%
+  arrange(Species, variable)
+kable(my_table, digits = 2)
+```
+
+What if we actually want a column for mean length, sd length, etc. and one row per species?
+
+```{r}
+require(tidyverse)
+my_table2 <- my_table %>%
+  pivot_wider(names_from = variable, 
+              values_from = c("mean", "sd"),
+              names_sep = ' ')
+kable(my_table2, digits = 2, align = 'c')
+```
+
+### Proportions in categories by groups
+You may also want to make a table of proportion observations in each category by groups, potentially for many variables.
+
+For just one variable, we can use tally:
+
+```{r}
+tally(~substance | sex, data = HELPrct, format = 'prop') %>%
+  kable(caption = 'Proportion using each substance', digits = 2)
+```
+
+For many variables we can use a loop. For example, we might want to know the proportion homeless and housed **and** proportion using each substance, both by sex, from the `HELPrct` dataset. Above we were using the function `knitr::kable()` to make tables, but we can use `pander::pander()` too:
+
+```{r}
+# select only variables needed for the table
+# make the first variable the groups one
+cat_data <- HELPrct %>% dplyr::select(sex, substance, homeless) 
+
+for (i in c(2:ncol(cat_data))){
+tally(~cat_data[,i] | cat_data[,1], format = 'prop') %>% 
+    pander::pander(caption = paste('Proportion in each ',
+                                   names(cat_data)[i]))
+  # can rename variables in cat_data if you want better captions
+  }
+```
+
+## Figures
+We've made a lot of figures in this class, and almost all have been kind of mediocre.  To aim for awesome, here are a couple of great references for inspiration, ideas, and best practices:
+
+- *Fundamentals of Data Visualization* by Claus Wilke. <https://serialmentor.com/dataviz/>
+- <https://infogram.com/blog/20-best-data-visualizations-of-2018/>
+- visualizingdata.com blog
+  - <https://www.visualisingdata.com/2019/08/10-significant-visualisation-developments-january-to-june-2019/>
+  - <https://www.visualisingdata.com/2016/03/little-visualisation-design/>

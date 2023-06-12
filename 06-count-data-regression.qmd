@@ -1,0 +1,348 @@
+
+```{r, setup-count-reg, include=FALSE}
+require(mosaic)   # Load additional packages here 
+require(tidyverse)
+require(ggformula)
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+theme_set(theme_bw(base_size=18))
+knitr::opts_chunk$set(
+  echo = TRUE,
+  tidy=FALSE,     # display code as typed
+  size="footnotesize",   # slightly smaller font for code
+  fig.width=6.5, fig.height=4, fig.show='hold')
+```
+# Regression for Count Data
+So far, we have fitted regression models for continuous-valued quantitative response variables.  What if our response variable is really **count data** -- discrete quantitative values limited to zero and positive integers?
+
+## Data Source
+The dataset used here is `beevisits`, from:
+
+Felicity Muth, Jacob S. Francis, and Anne S. Leonard. 2017. Bees use the taste of pollen to determine which flowers to visit. Biology Letters 12(7): DOI: 10.1098/rsbl.2016.0356. [http://rsbl.royalsocietypublishing.org/content/roybiolett/12/7/20160356.full.pdf](http://rsbl.royalsocietypublishing.org/content/roybiolett/12/7/20160356.full.pdf). 
+
+
+```{r, out.width='6.5in'}
+knitr::include_graphics('images/BeeExperiment.png')
+```
+
+## A bad idea: multiple linear regression model
+
+```{r, beedata-2, echo=FALSE, fig.width=6.5, fig.height=2.5}
+beevisits <- read.csv('http://sldr.netlify.com/data/beevisits.csv')
+beevisits$treatment <- relevel(beevisits$treatment, ref='quinine')
+levels(beevisits$treatment) <- c('Quinine', 'Cellulose', 'Sucrose')
+gf_histogram(~novisits | treatment, data=beevisits, bins=7) %>% gf_labs(x='Number of Visits', y='Number of Bees')
+```
+
+```{r }
+summary(beevisits)
+```
+
+```{r, bee-lms, echo=TRUE}
+bee.lm <- lm(novisits ~ flower + treatment +
+               colony, data=beevisits)
+summary(bee.lm)
+```
+
+```{r, assess1-b, fig.height=3.2, echo=FALSE}
+acf(resid(bee.lm), main='bee.lm Residuals')
+```
+
+```{r, assess2-b, echo=FALSE, fig.height=2.6}
+beevisits <- beevisits %>%
+  mutate(lm.resids = resid(bee.lm),
+         lm.fitted = predict(bee.lm))
+
+gf_point(lm.resids ~ lm.fitted, data=beevisits) %>%
+  gf_labs(title='bee.lm')
+gf_histogram(~lm.resids, data=beevisits, bins=15) %>%
+  gf_labs(title='bee.lm')
+```
+
+## Problems with the linear model
+What problems do we have with this model (its appropriateness, or goodness of fit to the data)?
+
+- Non-constant error variance
+- Non-normality of residuals
+- Some predicted values are less than 0 -- it's impossible that a bee could visit a flower a negative number of times!
+
+
+## Poisson Regression
+*Detailed notes on the model equation were filled in here in class*
+
+### Fitting the Model
+
+```{r, echo=TRUE}
+prm <- glm(novisits ~ flower + treatment +
+               colony, data=beevisits,
+           family=poisson(link='log')) 
+summary(prm)
+```
+
+### Conditions
+What conditions must hold for *this* model to be appropriate?
+
+- Response variable (y) contains count data
+- Linearity: $log(\lambda_{i})$ is a linear function of the covariates $x_1$, $x_2$, ... $x_n$. (*Later we will consider how to check this when some covariates are quantitative...in brief: plot log(rate) as a function of each covariate and look for (no non-)linear trend.*)
+- **Mean = Variance**
+- Independence (of residuals)
+- There is *not* a condition specifying a PDF that the residuals should follow.
+
+
+### Model Assessment
+Which conditions can we check already?
+
+```{r, echo=TRUE, fig.height=3.5}
+acf(resid(prm, type='response'), main='bee.lm Residuals')
+```
+
+What does `type='response'` mean?
+
+This means that the residuals are reported on the same scale as the response variable (that is, in units of counts, rather than log(counts)).
+
+```{r }
+beevisits <- beevisits %>%
+  mutate(pm.resids = resid(prm, type='response'),
+         pm.fitted = fitted(prm))
+
+gf_point(pm.resids ~ pm.fitted, data=beevisits) %>%
+  gf_labs(x='Fitted Values', y='Residuals')
+```
+
+This trumpet pattern is *what we expect!* Why?
+
+
+If the variance equals the mean, then as the mean (fitted value) goes up, then the variance (spread of residuals) will also be larger.
+
+But how can we decide if it's the *right amount* of increase in variance with increase in fitted value?  We can compute **Pearson** residuals, which are scaled by the *expected variance*.  **The Pearson residuals should have approximately constant variance as a function of fitted values, and a standard deviation of about 1.**
+
+```{r}
+beevisits <- beevisits %>%
+  mutate(pm.pearson.resids = resid(prm, type='pearson'))
+
+gf_point( pm.pearson.resids ~ pm.fitted, data=beevisits) %>%
+  gf_labs(x='Fitted Values', y='Pearson Residuals')
+```
+
+A more complex solution: we could divide the fitted values into bins (choice of bin size is somewhat arbitrary; generally, you want them as small as possible, but still containing enough observations per bin to get good mean and variance estimates). In each bin, compute the mean and the variance of the residuals.  Plot these means vs these variances and see if the slope is 1 (and intercept 0).
+
+First, split the fitted values into 5 bins:
+```{r}
+beevisits <- beevisits %>%
+  mutate(fitted.bins = cut(fitted(prm), breaks=5))
+
+head(beevisits)
+```
+
+Next, compute the means and variances in each bin, view the result, and plot:
+```{r}
+binned.bees <- beevisits %>%
+  group_by(fitted.bins) %>%
+  summarise(mean = mean(pm.fitted, na.rm=TRUE),
+            var = var(pm.resids))
+
+binned.bees
+
+gf_point(var ~ mean, data=binned.bees) %>%
+  gf_labs(x='Mean Fitted Value', 
+          y='Variance of Residuals') %>%
+   gf_abline(slope=1, intercept=0)
+```
+
+**That's a bit of a pain, and still a judgment call at the end.**
+
+How *else* can we check the Mean = Variance condition?
+
+### Checking for overdispersion using overdispersion factor
+We can estimate the **overdispersion factor**. This satisfies
+
+$$ \text{residual variance} = \text{overdispersion factor} * \text{mean}$$
+
+So if it's a lot larger than 1, we have a problem. The function `overdisp_fun()` in package `s245` computes an estimate:
+
+```{r}
+require(s245)
+overdisp_fun(prm)
+```
+
+Here, it's about 2: not too terrible, but still, residual variance is double what it should be according to our model. (Usually if the overdispersion is larger than 2 we will prefer a different model that better accounts for the fact that $\text{mean} \neq \text{variance}$.)
+
+## Accounting for overdispersion: Negative Binomial Models
+Finally, we could simply fit a model that allows for a more permissive mean-variance relationship (where the variance can be larger or smaller than the mean, by different amounts), and see if it is a better fit to the data according it our IC. The negative binomial distributions (type I and II) do this:
+
+```{r, echo = TRUE}
+require(glmmTMB)
+nbm1 <- glmmTMB(novisits ~ flower + treatment +
+               colony, data=beevisits,
+           family=nbinom1(link='log'))
+
+nbm2 <- glmmTMB(novisits ~ flower + treatment +
+               colony, data=beevisits,
+           family=nbinom2(link='log'))
+
+summary(nbm1)
+summary(nbm2)
+```
+
+We **can** use AIC or BIC-based model selection to decide which model fits best, between Poisson, NB1, and NB2 models.
+
+
+```{r}
+AIC(prm, nbm1, nbm2)
+```
+
+We have a clear winner: NB1!
+
+## Accounting for overdispersion: quasi-Poisson Model
+Or yet another option...in our class, we will not use quasi-Poisson models as much, as they are fitted via quasi-likelihood and this complicates model selection.
+
+```{r}
+qprm <- glm(novisits ~ flower + treatment +
+               colony, data=beevisits,
+           family=quasipoisson(link='log'))
+summary(qprm)
+```
+
+We **should not** compare AIC with QAIC to compare two models, so to decide between Poisson and quasi-Poisson (if you ever use it) you must rely on the model assessment plots and the overdispersion factor to decide which is better.
+
+## Model selection with dredge() and (Q)AIC, BIC
+Poisson and negative binomial models are fitted via maximum likelihood, so AIC or BIC may be used for model selection.
+
+How can we use model selection criteria in a case where the likelihood can't be computed exactly?
+
+The quasi (log) likelihood is an approximation to the likelihood. It has some properties in common with a (log) likelihood, but is not a likelihood; we resort to using it in cases where the (log) likelihood can not even be evaluated.
+
+With some code/mathematical gymnastics, we can use principles of quasi-likelihood to estimate QAIC (quasi-AIC, or AIC based on quasi-likelihood) in R for model selection. 
+
+### Review: all subsets selection with dredge()
+
+What if, instead of comparing two (or a few) specific models, we want to compare all possible models that contain some combination of a set of candidate covariates?  The package `MuMIn` contains a function, `dredge()`, that takes as input a "full" model (one containing all the candidate covariates). It then computes AIC (or other model selection criteria) for all possible models containing subsets of the covariate and reports the results in a ranked table.  For example, for our Poisson regression model, we could do:
+
+```{r, echo=TRUE}
+require(MuMIn)
+#have to make sure na.action is 'na.fail' for input model
+prm <- update(prm, na.action='na.fail')
+dredge(prm, rank='AIC')
+dredge(prm, rank='BIC')
+```
+
+### Review: IC "weights"
+Note the last two columns of the `dredge` output: the "delta" (or $\delta$) AIC or BIC values and the "weights". The $\delta$s are obtained by simply subtracting the best model's IC value from that of each other model.
+
+We already mentioned a rule of thumb: that the $\delta IC$ should be at least 3 or to provide reasonable evidence that one model is really better than the other.
+Another way of measuring the differences between models is to use model *weights*. Theoretically, these measure the relative likelihoods of different models; you can think of them as giving the probability that a given model is the best-fitting one in the set of models examined, according to the IC being used.
+
+Model weights are computed simply according to: 
+$$ e^\frac{-\delta IC}{2}$$
+
+And they sum to one for all models in a `dredge()`.
+
+### Extending dredge() to quasi-Likelihood
+
+With (rather a lot of) effort to define some custom functions, we can do the same thing for a quasi-Poisson model using quasi-AIC. *Note: This idea is based on notes by Ben Bolker provided with the R package `bbmle`.*
+
+```{r }
+require(MuMIn)
+
+# modify a glm() output object so that
+# it contains a quasipoisson fit but the 
+# AIC (likelihood) from the equivalent regular Poisson model
+x.quasipoisson <- function(...) {
+res <- quasipoisson(...)
+res$aic <- poisson(...)$aic
+res
+}
+
+# function to extract the overdispersion parameter
+# from a quasi model
+dfun <- function(object) {
+with(object,sum((weights * residuals^2)[weights > 0])/df.residual)
+}
+
+# function that modifies MuMIn::dredge() 
+# for use with quasi GLM
+qdredge <- function(model, family='x.quasipoisson', na.action=na.fail, chat = dfun(model), rank='QAIC', ...){
+  model2 <- update(model, family=family, na.action=na.action)
+  (dt <- dredge(model2, rank=rank, chat=chat, ...))
+}
+
+#do "dredge" for model selection
+qdredge(qprm)
+
+```
+
+Note: the `qdredge()` function is also provided for you in the package `s245`. So if you do want to use this, all you need to do is use `s245::qdredge()` instead of `dredge()`.
+
+## Offsets
+
+In our model, the response variable was the number of flowers visited by a bee, and each bee was in the same experimental setting for the same amount of time, so there was no need to account for effort or time spent in each case.
+
+This is not always true: consider, for example:
+
+- Dolphin surveys
+- Bird counts
+- Consider the schools and crime example from homework as well
+
+In this case, it would be natural to adjust for effort. The intuitive way to do it would be to use counts per unit effort as the response variable:
+
+$$ log(\frac{\lambda_i}{effort}) = \beta_0 + \dots $$
+
+But notice that this is equivalent to including $log(effort)$ as an ``offset" on the right hand side of the regression equation:
+
+$$ log(\lambda_i) = \beta_0 + \dots + log(effort)$$
+
+This is how we specify models with *offsets* in R:
+
+```{r, echo=TRUE, eval=FALSE}
+offset.mod <- glm(counts ~ predictor1 + predictor2 +
+                    offset(log(effort)), family=poisson)
+```
+
+**Note: if you use dredge() with a model with an offset, be sure to specify the offset as a "fixed" term, i.e. a term that must be included in *all* models:**
+
+```{r, echo=TRUE, eval=FALSE}
+dredge(offset.mod, fixed = 'offset(log(effort))')
+```
+
+## Prediction Plots
+Once you have a "best" model, how do you interpret it? 
+
+When we went to great lengths to make prediction plots for a linear regression model so we could "see" the slope of the predicted relationship, you may have wondered: *why bother?* I can just look at the slope estimate and get the same insight!
+
+Now, with a more complicated model equation with a link function, it's not so easy. Now, we will really appreciate those prediction plots!
+
+With the link function and the Poisson distribution, it is more challenging to interpret the coefficients of the model directly. The easiest way to understand the effects of different predictors is to look at plots of model predictions. However, as always we don't want to plot `fitted(model)` as a function of each predictor in a model with more than one predictor; predictors other than the one we are interested in will influence the predictions, introducing extra variation. Instead, we will construct a new (fake) dataset to make predictions for, in which all predictors but the one we are interested in are held constant. For example, using our quasi-Poisson model and looking at the effect of colony (predicted values with 95% CIs):
+
+```{r}
+newdata <- data.frame(colony=c('W', 'X', 'Y'),
+                      flower='familiar',
+                      target.colour='blue',
+                      treatment='Cellulose')
+
+pred = predict(qprm, newdata=newdata,
+                 type='response',
+                 se.fit=TRUE)
+
+newdata <- newdata %>%
+  mutate(preds = pred$fit,
+         CIlow = pred$fit - 1.96*pred$se.fit,
+         CIup = pred$fit + 1.96*pred$se.fit)
+
+gf_point(preds ~ colony, data=newdata) %>%
+  gf_labs(x='Colony', y='Predicted\nN. Visits') %>%
+  gf_errorbar(CIlow + CIup ~ colony, data=newdata)
+```
+
+If we had a quantitative predictor instead, the process would be similar, except when we define `newdata`, we would have to choose a range and granularity for which to make predictions. For example, imagine if bee length in mm was one of our predictors, and we wanted predictions for lengths between 0.5 and 3 mm (with a value every 0.05mm). We might begin:
+
+```{r, }
+newdata <- expand.grid(bee.length = seq(from=0.05, by=0.05, to=3),
+                       colony=c('W'),
+                       flower='familiar',
+                      target.colour='blue',
+                      treatment='Cellulose')
+head(newdata)
+```
+
+Then, when we make the plot, we would need to use `gf\_ribbon()` instead of `gf\_errorbar()` to show the CI.
+
+We can also use `pred_plot(fitted_model, 'variable_name')` to make these plots with a lot less code (and if you need to know the values at which other predictors are fixed, use `get_fixed(dataset)`).

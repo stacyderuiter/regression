@@ -1,0 +1,201 @@
+
+```{r, frog-binary-setup, include=FALSE}
+require(mosaic)   # Load additional packages here 
+require(ggformula)
+require(tidyverse)
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+theme_set(theme_bw(base_size=18))
+knitr::opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="footnotesize",   # slightly smaller font for code
+  fig.width=3.5, fig.height=2, fig.show='hold')
+```
+# Binary Regression
+Our next goal: establish a framework for doing regression modelling when the response variable is a categorical one, with two categories.
+
+## Data Source
+The dataset used here is on Alaskan wood frogs, detailing some physical characteristics, habitat characteristics, and the number of developmental and other abnormalities found in the frogs. It was originally obtained from:[http://datadryad.org/resource/doi:10.5061/dryad.sq72d].
+
+The data file can be accessed online at: [http://sldr.netlify.com/data/FrogAbnormalities.csv]
+
+```{r, frogdat, echo=FALSE, fig.width=6.5, fig.height=2.5}
+frogs <- read.csv('http://sldr.netlify.com/data/FrogAbnormalities.csv')
+head(frogs,3)
+```
+
+## Logistic Regression
+Recall, for linear regression we fitted a model for continuous (numeric) response variable $y$ according to:
+
+$$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + ...\beta_k x_k + \epsilon $$
+
+where $x$s are the $k$ predictor variables, $\beta$s are the parameters to be estimated by the model, and $\epsilon \sim N(0,\sigma)$ are the model residuals.
+
+When our response variable was a *count* variable, we modified our equation to:
+
+$$log(\lambda_i) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + ...\beta_k x_k + \epsilon_{link} $$
+
+positing that $y_i \sim Pois(\lambda_i)$ for Poisson regression; similarly for quasiPoisson or negative binomial regression, we just replaced that Poisson distribution with a quasiPoisson or a negative binomial distribution.
+
+What if our response variable is *logical* -- a categorical variable with just two possible values?  We will designate one of the two values a "success," and then we want to predict the probability of success as a function of some set of predictors.  What will our model equation look like in this case?
+
+$$ logit(p_i) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + ...\beta_k x_k + \epsilon_{link}$$
+
+where the `logit` function is $logit(x) = log(\frac{x}{1-x})$. This function maps probabilities to positive and negative real numbers, effectively "spreading them out" from the range 0-1 to the full range of real numbers. How does this equation relate back to our desired response variable? Well, $i$th observation of the response variable is assumed to follow a binomial distribution with probability $p_i$ ($y_i \sim Binom(n_i, p_i)$). ($n_i$ depends on the setup of the data -- often n=1 for each row of the dataset, as here where each row is one frog. We can think of each frog as one binomial trial, with success/failure meaning abnormality/normality of the frog.)
+
+## Checking the data setup
+We would like to model the proportion frogs with abnormalities as a function of a set of covariates. The variable `Abnormal` has values "Yes" and "No".  In R, if we use this (factor) variable as our response, how will R determine which level (value of the variable) is a "success"?
+
+R uses the FIRST variable value as "failure" and the second as "success" -- this makes sense if you imagine coding 0 for failure and 1 for success (and then sorting in numeric/alphabetical order).  If you have a categorical variable with informative values, you will need to make sure that the "base" (first) level is the one you want to equate with "failure".
+
+```{r}
+levels(frogs$Abnormal)
+```
+
+If you do need to rearrange the levels, one way to do it is to use the `forcats::fct_relevel()` function. Example:
+
+```{r}
+#ref will be the FIRST level after releveling
+frogs <- frogs %>% 
+  mutate(Abnormal = forcats::fct_relevel(Abnormal, ref='No'))
+frogs %>% pull(Abnormal) %>% levels()
+```
+
+## Fitting a saturated model
+Let's try fitting a model for Abnormalities as a function of Stage, Year, RoadType, and RoadDistance. Why do you think these variables and not others were chosen?
+
+Perhaps it makes sense that type and distance to road are proxies for urbanization, and frogs may do better in more pristine habitats. It also seems likely that there would be differences over time.  There may also be differences by Stage, if frogs with severe abnormalities have trouble even surviving to the later/older stages.
+
+```{r, lrm-frogs, echo=TRUE}
+frog.logr <- glm(Abnormal ~ Stage + factor(Year) + RoadType + RoadDistance,
+                 data=frogs, family=binomial(link='logit'))
+summary(frog.logr)
+```
+
+## Link Functions
+Here, we have used the logit link function, which is the most common. However, there are other functions that translate proportions to real numbers, and are sometimes used in regression for binary data. Two common options are:
+
+- Probit regression: link='probit'
+- Complementary log-log regression: link='cloglog'
+
+There are not closed-form expressions for the the probit and complementary log-log functions that are easy to write down, so that is why the exact functions are not given here. As shown below, the shapes of these three functions are very similar. So it may come as no big surprise that frequently they provide similar goodness of fit to data (according to IC). If that is the case, choose logit (which makes some of the interpretation of results easier).
+
+```{r, out.width='3in', echo = FALSE}
+knitr::include_graphics('binary-regression-links.png')
+```
+
+Note: figure is from [http://data.princeton.edu/wws509/notes].
+
+## Conditions
+Under what conditions is a logistic regression model appropriate?
+
+- Response variable is logical -- you can characterize it as the outcome of a binomial trial (or a set of independent binomial trials). Some response variables can be expressed as proportions, but can *not* be well modelled with binomial regression. For example, you might take one-minute recordings in the woods and measure the proportion of each minute during which bird song was audible.  The data will look like proportions, but you can't think of them as binomial trials and should not model them with binomial regression (what is a "trial" here, and what is a "success"?  Make sure you can answer those questions before using binomial regression.)
+- Linearity: logit(p) should have a linear relationship with each predictor variable. (A bit hard to check - see solutions to HW8 for an example of how it can be done.)
+- Independence: Same as usual.
+- Mean-variance relationship: The Pearson or Deviance residuals will decrease as a function of fitted value, and should have approximately constant variance as a function of fitted value. But a residuals vs fitted plot is of almost no use to us -- the examples later on show how you can expect it to look, and if it deviates from the expected appearance, try to figure out why and what is going on; but if it looks as expected, you can say "there is no evidence in this figure of a violation of the conditions of binary regression."
+- NO distributional assumptions about residuals.
+
+## Model Assessment Plots
+```{r, frog-assess1, fig.height=2.8, echo=FALSE}
+acf(resid(frog.logr), main='frog.logr Residuals')
+```
+
+```{r, frog-assess2, echo=TRUE, fig.height=2}
+gf_point(resid(frog.logr, type='pearson') ~ fitted(frog.logr)) %>%
+  gf_labs(title='frog.logr', 
+          y=' Pearson\nResiduals',x='Fitted Values')
+
+gf_point(resid(frog.logr, type='deviance') ~ fitted(frog.logr)) %>%
+  gf_labs(title='frog.logr', 
+          y=' Deviance\nResiduals',x='Fitted Values')
+
+gf_point(resid(frog.logr, type='response') ~ fitted(frog.logr)) %>%
+  gf_labs(title='frog.logr', 
+          y=' Raw Response\nResiduals',x='Fitted Values')
+
+gf_histogram(~resid(frog.logr, type='pearson'), bins=15) %>%
+  gf_labs(title='frog.logr', 
+          x='Residuals', y='Count')
+```
+
+The two "lines" in the residuals vs fitted plots correspond with the two possible values of the response variable in the data.  
+
+And remember - there is not a strict distributional assumption about the residuals (in other words, they don't have to follow, say, a normal distribution), so we don't really have to make a histogram of them. The one here is shown just to help you remember that you don't *have* to check it, and if you do, it will look "strange" (bimodal like this) yet it is nothing to worry about.
+
+## Odds Ratios
+
+The **odds** (or *odds ratio*) is $\frac{p}{1-p}$ -- the ratio of success to failure. So if P(success) = 0.75, then the odds will be $\frac{0.75}{0.25}$ = 3 or "three to one" -- you will usually succeed three times for every failure.
+
+Remember, the logit function was $logit(x) = log(\frac{p}{1-p})$? In other words, the logit is the log of the odds ratio. This means that the coefficients of a binary regression model with logit link function have special interpretations in terms of odds ratios.
+
+Let's consider a simplified version of our model (just to make it easier to write out the model equation):
+
+```{r, simple-frog-lr}
+simple <- glm(Abnormal ~ Stage, data = frogs, family=binomial(link='logit'))
+coef(simple)
+```
+
+So our model equation is:
+
+$$ logit(p_i) = -1.46 + 0.10I_{s43} - 0.11I_{s44} - 0.45I_{s45} - 0.51I_{s46}$$
+
+According to this model, the log-odds (logit(p)) for a Stage 42 frog is -1.46, so the odds of being Abnormal for a Stage 42 frog are $e^{-1.46} = 0.23$.
+
+The log-odds for a Stage 46 frog are -1.46 - 0.51 = -1.97, so the odds of it being Abnormal are $e^{-1.97} =  0.14$.
+
+The *change* in odds going from Stage 42 to 46 is then $\frac{0.14}{0.23} = 0.61$ -- the odds of a Stage 42 frog being abnormal are nearly double those of a Stage 46 frog.
+
+Notice -- we didn't actually have to compute all that to find the 0.6 value!
+
+We know that for Stage 46
+
+$$ log(\frac{p}{1-p}) = -1.46 -0.51$$
+so
+
+$$ \frac{p}{1-p} = e^{-1.46 - 0.51} = e^{-1.46}e^{-0.51}$$
+
+And $e^{-1.46}$ is the odds for Stage 42...aha! So, $e^{-0.51} = 0.60$ is the *multiplier* on the odds ratio to go from stage 42 to 46.  And in general, $e^{\beta}$ is the multiplier on the odds ratio for a one-unit change in the predictor variable for which $\beta$ is the model coefficient.
+
+## Model Selection
+
+As usual:
+
+```{r}
+require(MuMIn)
+frog.logr <- update(frog.logr, na.action='na.fail')
+mod.sel <- dredge(frog.logr, rank='AIC')
+head(mod.sel,5)
+afm <- model.avg(mod.sel, fit=TRUE)
+coef(afm)
+```
+
+## Prediction Plots
+Shown here are example prediction plots for Stage and RoadDistance. First, check out a summary table for the variables in the model to help determine fixed values.
+
+```{r}
+frogs$Year <- factor(frogs$Year)
+summary(frogs[,c('RoadDistance', 'RoadType', 'Stage',
+                 'Year')])
+```
+
+```{r, include=FALSE}
+theme_set(theme_bw(base_size=12))
+```
+
+```{r, fig.width=6.5}
+require(s245)
+pred_plot(afm, 'Stage', data = frogs)
+```
+
+```{r, fig.width=6.5}
+pred_plot(afm, 'RoadDistance', data = frogs)
+```
+
+How does this compare to the raw data?
+
+```{r}
+tally(~Abnormal|Stage, data=frogs, format='prop')
+bins <- cut(frogs$RoadDistance,breaks=c(0, 25, 50, 100, 250,800))
+prop(~Abnormal=='Yes'|bins, data=frogs)
+```
+
+But...remember, in the raw data, other predictors may also be influencing the patterns that you see in the data. In addition, we can look at the width of the confidence bands on the model estimates, and look at the model selection results to get an idea of whether this predictor is really important in the model or not. This is just an example to get you thinking about what prediction plots are showing you and what you can do with them! 

@@ -1,0 +1,70 @@
+# Model Selection Using Information Criteria
+So far, we have learned to fit models with multiple predictors, both quantitative and categorical, and to assess whether required conditions are met for linear regression to be an appropriate model for a dataset.
+
+One missing piece is: If I have an appropriate model with a set of multiple predictors, how can I choose which predictors are worth retaining in a "best" model for the data (and which ones have no relationship, or a weak relationship, with the response, so should be discarded)?
+
+## Data and Model
+Today we will recreate part of the analysis from [*Vertebrate community composition and diversity declines along a defaunation gradient radiating from rural villages in Gabon*](https://doi.org/10.1111/1365-2664.12798), by Sally Koerner and colleagues. They investigated the relationship between rural villages, hunting, and wildlife in Gabon. They asked how monkey abundance depends on distance from villages, village size, and vegetation characteristics. They shared their data at [Dryad.org](https://datadryad.org/stash/dataset/doi:10.5061/dryad.vs97g) and we can read it in and fit a regression model like this:
+
+
+```{r, gabon-data}
+defaun <- read.csv('http://sldr.netlify.com/data/koerner_gabon_defaunation.csv')
+```
+
+```{r, bee-models, echo=TRUE}
+ape_mod <- lm(RA_Apes ~ Veg_DBH + Veg_Canopy + Veg_Understory +
+                   Veg_Rich + Veg_Stems + Veg_liana +
+                   LandUse + Distance + NumHouseholds, data = defaun)
+summary(ape_mod)
+as.numeric(logLik(ape_mod))
+```
+
+```{r, include=FALSE}
+monkeyBIC <- BIC(ape_mod)
+```
+
+## Calculations
+
+- Information criteria allow us to **balance the conflicting goals** of having a model that *fits the data as well as possible* (which pushes us toward models with more predictors) and *parsimony* (choosing the simplest model, with the fewest predictors, that works for the data and research question).  The basic idea is that we **minimize** the quantity $-(2LogLikelihood - penalty) = -2LogLikelihood + penalty$
+
+- AIC is computed according to $-2LogLikelihood +2k$, where $k$ is the number of coefficients being estimated (don't forget $\sigma$!) **Smaller AIC is better.**
+- BIC is computed according to $-2LogLikelihood + ln(n)k$, where $n$ is the number of observations (rows) in the dataset and $k$ is the number of coefficients being estimated. **Smaller BIC is better.**
+
+- Verify that the BIC for this model is `r round(monkeyBIC, digits=2)`.
+
+## Decisions with ICs
+The following rules of thumb (**not** laws, just common rules of thumb) may help you make decisions with ICs:
+
+- A model with lower IC *by at least 3 units* is notably better.
+- If two or more models have ICs *within* 3 IC units of each other, there is not a lot of difference between them. Here, we usually choose the model with fewest predictors.
+- In some cases, if the research question is to measure the influence of some particular predictor on the response, but *the IC does not strongly support including that predictor* in the best model (IC difference less than 3), you might want to keep it in anyway and then discuss the situation honestly, for example, "AIC does not provide strong support for including predictor x in the best model, but the model including predictor x indicates that as x increases the response decreases slightly. More research would be needed..."
+
+## All-possible-subsets Selection
+The model we just fitted is our *full model*, with all predictors of potential interest included. How can we use information criteria to choose the best model from possible models with subsets of the predictors?
+
+We can use the `dredge()` function from the `MuMIn` package to get and display ICs for all these models.
+
+Before using dredge, we need to make sure our dataset has no missing values, and also set the "na.action" input for our model (can be done in call to `lm(..., na.action = 'na.fail')` also).
+
+```{r, getaicbic}
+require(MuMIn)
+ape_mod <- ape_mod %>% update(na.action = 'na.fail')
+ape_dredge <- dredge(ape_mod, rank='BIC')
+pander::pander(head(ape_dredge, 7))
+```
+
+- What is the best model according to BIC, for this dataset?
+
+## Which IC should I use?
+
+AIC and BIC may give different best models, especially if the dataset is large. You may want to just choose one to use *a priori* (before making calculations). You might prefer BIC if you want to err on the "conservative" side, as it is more likely to select a "smaller" model with fewer predictors. This is because of its larger penalty.
+
+## Quantities derived from AIC
+
+- $\Delta AIC$ is the AIC for a given model, minus the AIC of the best one in the dataset. (Same for $\Delta BIC$)
+- *Akaike weights* are values (ranging from 0-1) that measure the weight of evidence suggesting that a model is the best one (given that there is one best one in the set)
+
+## Important Caution
+
+**Very important**: IC can **ONLY** be compared for models with the same response variable, and the exact same rows of data.
+  

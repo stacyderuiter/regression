@@ -1,0 +1,255 @@
+
+
+```{r setup-re1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+pdf.options(useDingbats = TRUE)
+require(mosaic)
+require(ggformula)
+require(lme4)
+theme_set(theme_bw(base_size=12))
+```
+
+# Random Effects
+We have seen a number of cases where model residuals were not independent, violation regression model conditions. What kind of model can address this kind of *dependent* data? Hierarchical models - here, models including *random effects* - are one way to approach this problem. These kinds of models go by many names, including hierarchical models, multi-level models, random effects models,or mixed effects models.
+
+## Dataset
+From: Falcone et al. 2017, <http://rsos.royalsocietypublishing.org/content/royopensci/4/8/170629.full.pdf>
+
+Satellite tags were used to record dive data and movements of 16 Cuvier's beaked whales for up to 88 days each. The whales were incidentally exposed to different types of naval sonar exercises during the study period. How did characteristics of their dives change during sonar exposure? We will look specifically at shallow dive duration as a response variable. 
+
+```{r}
+d <- read.csv('http://sldr.netlify.com/data/zshal.csv')
+d$SonarA <- factor(d$SonarA)
+d$SonarB <- factor(d$SonarB)
+```
+
+## Data Exploration
+For these data, we are especially interested in how dive duration depends on sonar exposure. We also need to control for effects of other variables like depth and time of day.
+
+```{r, fig.width=3.5, fig.height=2, fig.show='hold'}
+gf_boxplot(DurAvg ~ factor(SonarA), data=d) %>%
+  gf_labs(x='Sonar A Presence', y='Dive Duration (min.)')
+gf_boxplot(DurAvg ~ factor(SonarB), data=d) %>%
+  gf_labs(x='Sonar B Presence', y='Dive Duration (min.)')
+gf_boxplot(DurAvg ~ TransClass, data=d) %>%
+  gf_labs(x='Time of Day', y='Dive Duration (min.)')
+gf_point(DurAvg ~ DepthAvg, data=d, alpha=0.5) %>%
+  gf_labs(x='Max. Depth (m)', y='Dive Duration (min.)')
+gf_point(DurAvg ~ SonarAPercOL.fill, data=d, alpha=0.5) %>%
+  gf_labs(x='Percent Sonar A Overlap', y='Dive Duration (min.)')
+gf_point(DurAvg ~ SonarBPercOL.fill, data=d, alpha=0.5) %>%
+  gf_labs(x='Percent Sonar B Overlap', y='Dive Duration (min.)')
+```
+
+## A Base Linear Model
+A starting point for these data would be a basic linear regression, because the response variable is continuous, and we don't have strong indication of nonlinear predictor-response relationships.
+
+```{r}
+base.model <- lm(DurAvg ~ DepthAvg + TransClass +   SonarA +
+                   SonarB +SonarAPercOL.fill +
+                   SonarBPercOL.fill, data=d)
+summary(base.model)
+```
+
+### Model assessment
+Let's take a look right away at the model assessment plot that we suspect will be problematic for time-series data like ours. As we fear...
+
+```{r, fig.width=6.5, fig.height=3.3}
+acf(resid(base.model), main='Residual ACF for base lm')
+```
+
+
+## A Random Effects model
+This time we will try to account for the correlation over time within individuals using something called a *random effect* model (also known as a *mixed effects model*, *multilevel level*, among others). How does this model change our regression equation?
+
+Recall that the form of a base linear model (with just 2 predictors) would be:
+
+$$ y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \epsilon$$
+
+Where $\epsilon \sim N(0,\sigma)$ are the normally distributed residuals with mean 0.
+
+Now...
+\vspace{2in}
+
+### The Formula
+The function to fit a linear random effect model is `lmer()`. For a Poisson or Logistic regression with random effects, it's `glmer()`. Both are from the package `lme4`. We add random effects to the model formula with:
+
+$$ + (1|variable)$$
+
+or nested:
+
+$$ + (1|variable1/variable2)$$
+
+Let's try a random effect of individual whale first. We have:
+
+```{r}
+rem1 <- lmer(DurAvg ~ DepthAvg + TransClass +
+  SonarA + SonarB +SonarAPercOL.fill+ 
+    SonarBPercOL.fill + (1|TagID), 
+  data=d)
+```
+
+Why yes - we *should* consider rescaling...what/why/how?
+\vspace{0.5in}
+
+```{r}
+d$SonarAPercScale <- scale(d$SonarAPercOL.fill)
+d$SonarBPercScale <- scale(d$SonarBPercOL.fill)
+rem2 <- lmer(DurAvg ~ DepthAvg + TransClass +
+  SonarA + SonarB + SonarAPercScale + 
+    SonarBPercScale + (1|TagID), 
+  data=d)
+```
+
+### The Results
+
+```{r}
+summary(rem2)
+```
+
+How does this model compare to the original linear regression model? (Coefficient estimates? SEs? Additional stuff in the summary output?)
+
+\vspace{1.5in}
+
+### Model Assessment
+How have the model assessment plots changed? Here we'll focus mainly on the problem ACF.
+
+```{r, fig.width=6.5, fig.height=2}
+gf_point(resid(rem2)~fitted(rem2), alpha=0.5)
+```
+```{r, fig.width=6.5, fig.height=3}
+acf(resid(rem2))
+```
+
+
+### Refinement
+What can we try next?
+\vspace{1in}
+
+```{r}
+head(d, 3)
+rem3 <- lmer(DurAvg ~ DepthAvg + TransClass + SonarA +
+               SonarB +SonarAPercScale + SonarBPercScale +
+               (1|TagID/TagDayPeriod), data=d)
+```
+
+```{r, fig.width=6.5, fig.height=3}
+acf(resid(rem3))
+```
+
+## Model Selection for Mixed Models
+Can we use our standard likelihood-based model selection criteria with random effects models?
+
+Well...yes, and no.  
+
+### REML or ML?
+There are two different ways to fit these models to data:
+
+- by maximizing the likelihood (ML, as we learned about earlier in the course). Unfortunately, it turns out that in this case, the ML estimates of the variance components (the random effects) is biased, toward underestimating variance, when sample size is small.
+- by maximizing the restricted maximum likelihood (REML), which separates the likelhood into two parts (one with the fixed effects and one with the variance components). Maximizing parameters with respect to the second part only yields the REML estimators, which are unbiased and so preferred for smaller sample sizes. BUT there's a catch...REML values can be used to compare models with different error and random effects structures, but *not* to determine which predictor variables should remain in a best model. 
+
+Here, we do have a large sample size, so if we ensure our model is fitted by ML we can try using AIC or BIC for model selection.  The default of `lmer()` and `glmer()` is to use REML, so if we want ML we have to add the input REML=FALSE to our call.
+
+```{r}
+rem4 <- lmer(DurAvg ~ DepthAvg + TransClass + SonarA + SonarB +
+               SonarAPercScale +  SonarBPercScale +
+               (1|TagID/TagDayPeriod), data=d,
+             na.action='na.fail', REML=FALSE)
+```
+
+In doing model selection for random effects models, `dredge()` knows to keep the random effects terms present in all models, so we don't have to specify them as *fixed* terms.
+
+```{r}
+require(MuMIn)
+rem4_sel <- dredge(rem4, rank='BIC')
+head(rem4_sel)
+```
+
+### Best model so far:
+```{r}
+rem5 <- lmer(DurAvg ~ DepthAvg + TransClass + SonarA + SonarB +
+               (1|TagID/TagDayPeriod), data=d,
+             na.action='na.fail', REML=FALSE)
+```
+
+## Random Slopes?
+What we just practiced and called a "random effect" is sometimes also called a "random intercept" model because, although we allowed for an offset between the overall average predicted response value and that of an individual, we did not allow the *slope* of the relationship with any of the predictor variables to vary randomly with individual. It is possible to do this, although in my experience it often makes interpretation difficult.
+
+Before you do it, think to yourself: do you really think that there is random variation in the relationship of the predictor with the response? One case where random slopes will work well is where there is a strong, clear overall effect and small variations in its magnitude between individuals. Another might be where the relationship with a certain predictor has very strong and very different slopes for different individuals, and you want to account for the added variability this adds to the model.   
+
+In the `(g)lmer()` formula, a model with a random slope *and* intercept in relation to a particular predictor is specified with the form:
+
+$$ ... + (PredictorVariable | GroupingVariable)$$
+or equivalently
+$$ ... + (1 + PredictorVariable | GroupingVariable)$$
+
+If you want to have a random slope for a certain predictor *without* the corresponding random intercept ( I can't think of an example where this would be a good idea but you can do it), then use:
+
+$$ ... + (0 + PredictorVariable | GroupingVariable)$$
+
+## Prediction Plots
+There is a bit of added work involved in making prediction plots for some random effects models. 
+
+Unlike GEEs, which provide *marginal* predictions (predictions of the population average value for any combination of predictor variable values), random effects models provide predictions for an *average individual*. **For a linear regression model (or any model with the identity link function, that is, no link function), the predicted values for the population average and average individual are the same**.  But with a link function in the mix, **it's different**. Consider a (hypothetical) example of a logistic regression modelling probability of passing a test as a function of hours of instruction spent before the test.
+```{r, fig.width=3.5, fig.height=3.5, echo=FALSE, message = FALSE}
+require(RColorBrewer)
+colrs <- brewer.pal(5, 'Set2')
+gf_abline(intercept=~c(-2, -1, 0, 1, 2),
+          slope=~c(1,1,1,1,1),
+          color=colrs, lwd=2) %>% gf_lims(x=c(0,10),
+                                   y=c(-4,14))
+
+knitr::include_graphics('LogRegIndAve.png')
+```
+
+### Parametric bootstrap to the rescue!
+How can we get around this problem?  We can make predictions from our model for many, many (simulated) individuals to get a ``population" of predictions. Then, we can take a point-wise average over all those individuals (and also use them to find a CI), to get population average predictions and confidence intervals.
+
+We can do this with help from the function `bootMer()` from the `lme4` package.
+
+To make this work, we first need a **function** that makes **predictions from our model**.
+
+```{r}
+# function to make predictions from a fitted model
+require(s245)
+predict_rem4 <- function(model){
+  orig_dat <- model@frame
+  fixed_vals <- get_fixed(orig_dat[,c(2:ncol(orig_dat))])
+  new_dat <- get_new_data(orig_dat, predictor='SonarA', fixed_vals)
+  return(predict(model, newdata = new_dat, 
+                 type = "response", allow.new.levels=TRUE))
+}
+```
+
+`bootMer()` does parametric bootstrap simulations and each time, computes some function of the fitted model (here, predictions.) We can then examine the quantiles of these bootstrap predictions (the median or mean is our *estimate* or best-guess predicted value, and the *2.5 and 97.5 percentiles* are the *bounds of a 95 percent CI*).
+
+```{r, fig.width=6.5, fig.height=2.5}
+boot_rem4 <- bootMer(rem4, FUN = predict_rem4, nsim = 1000, 
+                     type = "parametric", use.u = FALSE)
+```
+
+```{r}
+glimpse(boot_rem4$t )
+```
+
+```{r, fig.width=6.5, fig.height=2.5}
+orig_dat <- rem4@frame
+fixed_vals <- get_fixed(orig_dat[,c(2:ncol(orig_dat))])
+new_dat <- get_new_data(orig_dat, predictor='SonarA',
+                          fixed_vals)
+new_dat <- new_dat %>%
+  mutate(pred = apply(boot_rem4$t, 2, mean),
+         CIlow = apply(boot_rem4$t, 2, quantile, probs=0.025),
+         CIhigh = apply(boot_rem4$t, 2, quantile, probs=0.975)
+         )
+
+gf_point(pred ~ SonarA, data=new_dat) %>%
+  gf_labs(x='Sonar A Presence', y='Dive Duration (min.)') %>%
+  gf_errorbar(CIlow + CIhigh ~ SonarA, data=new_dat, width=0.3)
+```
+
+ (Because...)
+ 
+```{r, error = TRUE}
+pred_plot(rem4, 'SonarA')
+```
