@@ -26,6 +26,8 @@ book:
     - anova-plus.qmd
     - gams.qmd
     - references.qmd
+  downloads: [pdf, epub]
+
 
 bibliography: references.bib
 

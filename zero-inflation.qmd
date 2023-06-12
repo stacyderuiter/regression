@@ -29,7 +29,7 @@ Zero-inflated data are count data that:
 On the topic of zero-inflated data (as on many other topics), your book
 is ...terse! I have several copies of [Mixed models and extensions for
 ecology in
-R](https://highstat.com/index.php/mixed-effects-models-and-extensions-in-ecology-with-r)
+R](https://www.highstat.com/index.php/our-books?view=article&id=17&catid=18 "link the the Zuur et al "Penguin book"")
 if you want to borrow -- You may want to check out Chapter 11 in that
 book.
 
