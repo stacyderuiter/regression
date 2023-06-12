@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GLMs and Friends - References</title>
+<title>GLMs and Friends - 14&nbsp; Random effects with glmmTMB and standardized residuals</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,7 +64,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./gams.html" rel="prev">
+<link href="./gee-motivation.html" rel="next">
+<link href="./random-effects.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -74,7 +109,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./references.html">References</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./random-effects2.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -188,7 +223,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./random-effects2.html" class="sidebar-item-text sidebar-link">
+  <a href="./random-effects2.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
   </div>
 </li>
@@ -218,7 +253,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link active">
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
 </li>
@@ -228,14 +263,26 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#model-for-whale-dive-duration" id="toc-model-for-whale-dive-duration" class="nav-link active" data-scroll-target="#model-for-whale-dive-duration"><span class="header-section-number">14.1</span> Model for whale dive duration</a></li>
+  <li><a href="#glmmtmb" id="toc-glmmtmb" class="nav-link" data-scroll-target="#glmmtmb"><span class="header-section-number">14.2</span> glmmTMB</a></li>
+  <li><a href="#model-assessment-with-scaled-residuals" id="toc-model-assessment-with-scaled-residuals" class="nav-link" data-scroll-target="#model-assessment-with-scaled-residuals"><span class="header-section-number">14.3</span> Model assessment with scaled residuals</a>
+  <ul class="collapse">
+  <li><a href="#glmmtmb-version" id="toc-glmmtmb-version" class="nav-link" data-scroll-target="#glmmtmb-version"><span class="header-section-number">14.3.1</span> glmmTMB version</a></li>
+  <li><a href="#you-now-have-the-power" id="toc-you-now-have-the-power" class="nav-link" data-scroll-target="#you-now-have-the-power"><span class="header-section-number">14.3.2</span> You now have the power!</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">References</h1>
+<h1 class="title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></h1>
 </div>
 
 
@@ -250,9 +297,83 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p><code>r if (knitr:::is_html_output()) ' '</code></p>
+<p>In the previous chapter we considered fitting mixed-effects models with <code>lme4</code>. What about fitting the same models with package <code>glmmTMB</code>? And how can we assess expectations about residual variance for models like these?</p>
+<section id="model-for-whale-dive-duration" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="model-for-whale-dive-duration"><span class="header-section-number">14.1</span> Model for whale dive duration</h2>
+<p>We start with our previous model for whale dive duration.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>rem5 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(DurAvg <span class="sc">~</span> DepthAvg <span class="sc">+</span> TransClass <span class="sc">+</span> SonarA <span class="sc">+</span> SonarB <span class="sc">+</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               (<span class="dv">1</span><span class="sc">|</span>TagID<span class="sc">/</span>TagDayPeriod), <span class="at">data=</span>d,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">na.action=</span><span class="st">'na.fail'</span>, <span class="at">REML=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="glmmtmb" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="glmmtmb"><span class="header-section-number">14.2</span> glmmTMB</h2>
+<p>We fitted these models using <code>lmer()</code> and <code>glmer()</code> from package <code>lme4</code>, which is probably the most commonly used R package to fit these models. But we’ve also used <code>glmmTMB</code> in this course, and <em>it</em> can also fit random effects models. The syntax to add random effects to a <code>glmmTMB()</code> model is <em>exactly the same</em> as for the <code>lme4</code> functions.</p>
+<p>One difference is that for <code>glmmTMB()</code> <strong>REML = FALSE is the default</strong>.</p>
+<p><code>glmmTMB</code> may be faster in some cases.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>rem6 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(DurAvg <span class="sc">~</span> DepthAvg <span class="sc">+</span> TransClass <span class="sc">+</span> SonarA <span class="sc">+</span> SonarB <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>               (<span class="dv">1</span><span class="sc">|</span>TagID<span class="sc">/</span>TagDayPeriod), <span class="at">data=</span>d,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">na.action=</span><span class="st">'na.fail'</span>, <span class="at">REML=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If you view the summaries, you will see that <code>rem5</code> and <code>rem6</code> are basically identical (in terms of model coefficients and variance estimates).</p>
+</section>
+<section id="model-assessment-with-scaled-residuals" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="model-assessment-with-scaled-residuals"><span class="header-section-number">14.3</span> Model assessment with scaled residuals</h2>
+<p>For models where Pearson residuals are not helpful/can not be computed, one option is <strong>scaled residuals</strong> via simulation.</p>
+<ul>
+<li>Simulate many replicates from the fitted model corresponding to each data observation</li>
+<li>Examine the distribution of the simulated data, and use it to scale the observed value to get a “scaled residual” such that a residual of 0 means that <em>all simulated values are larger than the observed value</em>, and a <em>residual of 0.5 means half of the simulated values are larger than the observed value</em>, and a <em>residual of 1 means that the observed value is larger than all the simulated values.</em></li>
+</ul>
+<p><strong>These scaled residuals should be uniformly distributed between 0 and 1, if the model is correct.</strong></p>
+<p>There is a much more detailed explanation in the <a href="https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html#calculating-scaled-residuals">DHARMa package documentation</a> online.</p>
+<p>Example: computing scaled residuals, creating 1000 simulated datasets (don’t lower it much below this to get good estimates). Note: use R chunk setting “message = FALSE” to print messages during simulation to your screen, rather than your knitted file.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> rem5, <span class="at">n =</span> <span class="dv">1000</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> d <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">scaled_resids =</span> sims<span class="sc">$</span>scaledResiduals,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">fitted =</span> <span class="fu">fitted</span>(rem5))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If our model is perfectly correct, we would expect:</p>
+<ul>
+<li>Histogram of scaled residuals looks uniform between 0 and 1</li>
+<li>Plot of scaled residual vs.&nbsp;fitted, or vs.&nbsp;any predictor, look uniform (evenly spread, no trends, constant in variance).</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>(<span class="sc">~</span>scaled_resids, <span class="at">data =</span>d)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(scaled_resids <span class="sc">~</span> fitted, <span class="at">data =</span> d, <span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="random-effects2_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="288"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="random-effects2_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid" width="288"></p>
+</div>
+</div>
+<section id="glmmtmb-version" class="level3" data-number="14.3.1">
+<h3 data-number="14.3.1" class="anchored" data-anchor-id="glmmtmb-version"><span class="header-section-number">14.3.1</span> glmmTMB version</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sims2 <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> rem6, <span class="at">n =</span> <span class="dv">1000</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> d <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">scaled_resids_TMB =</span> sims2<span class="sc">$</span>scaledResiduals,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">fitted_TMB =</span> <span class="fu">fitted</span>(rem6))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(scaled_resids_TMB <span class="sc">~</span> fitted_TMB, <span class="at">data =</span> d, <span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="random-effects2_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="288"></p>
+</div>
+</div>
+</section>
+<section id="you-now-have-the-power" class="level3" data-number="14.3.2">
+<h3 data-number="14.3.2" class="anchored" data-anchor-id="you-now-have-the-power"><span class="header-section-number">14.3.2</span> You now have the power!</h3>
+<p>You may use these scaled residuals for any of the models considered so far this semester. It is basically an alternative method of scaling residuals so that we know “how they should look” in residual plots.</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -605,11 +726,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./gams.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span>
+      <a href="./random-effects.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Random Effects</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./gee-motivation.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">GEEs</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GLMs and Friends - References</title>
+<title>GLMs and Friends - 9&nbsp; Binary regression: Data with more than one trial per row</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,7 +64,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./gams.html" rel="prev">
+<link href="./collinearity.html" rel="next">
+<link href="./binary-regression.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -62,6 +97,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -74,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./references.html">References</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./binary-regression2.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -158,7 +195,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./binary-regression2.html" class="sidebar-item-text sidebar-link">
+  <a href="./binary-regression2.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
   </div>
 </li>
@@ -218,7 +255,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link active">
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
 </li>
@@ -228,14 +265,25 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data"><span class="header-section-number">9.1</span> Data</a></li>
+  <li><a href="#checking-the-data-setup" id="toc-checking-the-data-setup" class="nav-link" data-scroll-target="#checking-the-data-setup"><span class="header-section-number">9.2</span> Checking the data setup</a></li>
+  <li><a href="#fitting-a-saturated-model" id="toc-fitting-a-saturated-model" class="nav-link" data-scroll-target="#fitting-a-saturated-model"><span class="header-section-number">9.3</span> Fitting a saturated model</a></li>
+  <li><a href="#checking-linearity" id="toc-checking-linearity" class="nav-link" data-scroll-target="#checking-linearity"><span class="header-section-number">9.4</span> Checking linearity</a></li>
+  <li><a href="#model-assessment" id="toc-model-assessment" class="nav-link" data-scroll-target="#model-assessment"><span class="header-section-number">9.5</span> Model Assessment</a></li>
+  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">9.6</span> Model Selection</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">References</h1>
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></h1>
 </div>
 
 
@@ -250,9 +298,248 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p><code>r if (knitr:::is_html_output()) ' '</code></p>
+<p>So far, the dataset we used for binary regression had one “trial” per row: there was a categorical variable in the dataset with two categories, “success” and “failure” (for the frogs: Abnormal and Normal). We wanted to estimate the probability of “success” as a function of several predictors.</p>
+<p>If there are multiple trials that all have the same predictor-variable values, we can group them together into one row of data, and just record the number of “trials” and the number of “successes”. (From this, we can also get the number of “failures” = “trials” - “successes”, if needed.) If we have a dataset that is stored in this format, we can still use <code>glm()</code> to fit a binary regression model. The R code to fit the model changes just a bit, and we are able to do better model assessment a bit more easily.</p>
+<p>An example follows.</p>
+<section id="data" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="data"><span class="header-section-number">9.1</span> Data</h2>
+<p>The dataset used here is a reality-based simulated EIA dataset on duck sightings before and after windfarm installation (<code>impact</code>). Hourly, observers did up to 200 scans of the study area, and for each scan recorded whether duck(s) were seen (a success) or not (a failure).</p>
+<p>The data file can be accessed online at:\ </p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>  successes trials day month impact
+1       172    200   7     1      0
+2       190    200  13     1      0
+3       191    200  27     1      0</code></pre>
+</div>
+</div>
+</section>
+<section id="checking-the-data-setup" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="checking-the-data-setup"><span class="header-section-number">9.2</span> Checking the data setup</h2>
+<p>We would like to model the proportion scans with ducks sighted as a function of a set of covariates. Each row of our dataset gives us the number of successes in some number of trials (and also gives the corresponding values of the covariates for ALL those trials). We can also use this kind of summary data with a logistic regression; we will just need to add a column for the number of failures:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> pd <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">failures =</span> trials<span class="sc">-</span>successes)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#or same thing in base R</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>pd<span class="sc">$</span>failures <span class="ot">=</span> pd<span class="sc">$</span>trials <span class="sc">-</span> pd<span class="sc">$</span>successes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="fitting-a-saturated-model" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="fitting-a-saturated-model"><span class="header-section-number">9.3</span> Fitting a saturated model</h2>
+<p>Let’s try fitting a model for proportion sightings as a function of day, month, and impact.</p>
+<p>We need a response “variable” that is really 2 variables bound together: a column with the “successes” and a column with the “failures”. These don’t have to be literally called successes and failures – you can use whatever variable names you like – but the first one of the two should be successes (the thing you want to compute the proportion for) and the second failures.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>duck.logr <span class="ot">&lt;-</span> <span class="fu">glm</span>( <span class="fu">cbind</span>(successes, failures) <span class="sc">~</span> day <span class="sc">+</span> month <span class="sc">+</span> impact, </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">family=</span><span class="fu">binomial</span>(<span class="at">link=</span><span class="st">'logit'</span>),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data=</span>pd)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(duck.logr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = cbind(successes, failures) ~ day + month + impact, 
+    family = binomial(link = "logit"), data = pd)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  2.770286   0.077096  35.933  &lt; 2e-16 ***
+day         -0.011727   0.003564  -3.290    0.001 ** 
+month       -0.091546   0.007819 -11.708  &lt; 2e-16 ***
+impact      -0.222642   0.048407  -4.599 4.24e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 488.19  on 71  degrees of freedom
+Residual deviance: 244.96  on 68  degrees of freedom
+AIC: 607.85
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#or maybe...</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>duck.logr2 <span class="ot">&lt;-</span> <span class="fu">glm</span>( <span class="fu">cbind</span>(successes, failures) <span class="sc">~</span> day <span class="sc">+</span> <span class="fu">factor</span>(month) <span class="sc">+</span> impact, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">family=</span><span class="fu">binomial</span>(<span class="at">link=</span><span class="st">'logit'</span>), </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data=</span>pd)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(duck.logr2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = cbind(successes, failures) ~ day + factor(month) + 
+    impact, family = binomial(link = "logit"), data = pd)
+
+Coefficients:
+                 Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)      2.618402   0.123703  21.167  &lt; 2e-16 ***
+day             -0.011735   0.004058  -2.892 0.003829 ** 
+factor(month)2  -0.297341   0.135091  -2.201 0.027734 *  
+factor(month)3  -0.014290   0.141766  -0.101 0.919712    
+factor(month)4  -0.287869   0.135761  -2.120 0.033971 *  
+factor(month)5  -0.258362   0.141490  -1.826 0.067850 .  
+factor(month)6  -0.404561   0.132914  -3.044 0.002336 ** 
+factor(month)7  -0.141972   0.139208  -1.020 0.307799    
+factor(month)8  -0.452317   0.132294  -3.419 0.000628 ***
+factor(month)9  -0.632855   0.128257  -4.934 8.05e-07 ***
+factor(month)10 -0.665992   0.129788  -5.131 2.88e-07 ***
+factor(month)11 -1.136006   0.123841  -9.173  &lt; 2e-16 ***
+factor(month)12 -0.949485   0.127997  -7.418 1.19e-13 ***
+impact          -0.223631   0.048515  -4.609 4.04e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 488.19  on 71  degrees of freedom
+Residual deviance: 197.84  on 58  degrees of freedom
+AIC: 580.73
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+</section>
+<section id="checking-linearity" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="checking-linearity"><span class="header-section-number">9.4</span> Checking linearity</h2>
+<p>What should be linear here? Well, <code>logit(p)</code> (where <code>p</code> is the probability of success, for a given set of predictor-variable values) should be a linear function of the predictors. <em>We can actually check this graphically now that we have multiple trials per row of data!</em> (But remember that the effects of other, unplotted predictors may also be influencing the plot that you see…)</p>
+<p>Here, we need to decide: Do we see a linear pattern (or no pattern)? For the month and day data here, we might also consider whetehr it would make more sense to fit either of them as a categorical covariate rather than numeric.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(<span class="fu">logit</span>(successes<span class="sc">/</span>trials) <span class="sc">~</span> day, <span class="at">data=</span>pd) <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">y=</span><span class="st">'logit(p)'</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(<span class="fu">logit</span>(successes<span class="sc">/</span>trials) <span class="sc">~</span> month, <span class="at">data=</span>pd)<span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">y=</span><span class="st">'logit(p)'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="binary-regression2_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="336"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="binary-regression2_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="336"></p>
+</div>
+</div>
+</section>
+<section id="model-assessment" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="model-assessment"><span class="header-section-number">9.5</span> Model Assessment</h2>
+<p>With data set up as proportions (many trials with the number of successes and failures in each row, rather than one row per trial), model assessment plots are a bit more useful. Specifically, we can check the Pearson residuals vs.&nbsp;fitted plot for constant variance as a function of fitted value, to confirm that the mean-variance relationship matches what we expect.</p>
+<p>Since the Pearson residuals are already adjusted for the expected variance, we should see approximately constant spread, with values ranging from about -2 to 2 (and not more than a few larger than <span class="math inline">\(\pm\)</span> 3).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(<span class="fu">resid</span>(duck.logr2, <span class="at">type=</span><span class="st">'pearson'</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(<span class="fu">resid</span>(duck.logr2, <span class="at">type=</span><span class="st">'pearson'</span>) <span class="sc">~</span> <span class="fu">fitted</span>(duck.logr2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="binary-regression2_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="336"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="binary-regression2_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="336"></p>
+</div>
+</div>
+</section>
+<section id="model-selection" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="model-selection"><span class="header-section-number">9.6</span> Model Selection</h2>
+<p>We can do model selection as usual. Here, it looks like the best model is the saturated (full) model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>duck.logr2 <span class="ot">&lt;-</span> <span class="fu">update</span>(duck.logr2, <span class="at">na.action=</span><span class="st">'na.fail'</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dredge</span>(duck.logr2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fixed term is "(Intercept)"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Global model call: glm(formula = cbind(successes, failures) ~ day + factor(month) + 
+    impact, family = binomial(link = "logit"), data = pd, na.action = "na.fail")
+---
+Model selection table 
+  (Int)      day fct(mnt)     imp df   logLik  AICc  delta weight
+8 2.618 -0.01173        + -0.2236 14 -276.365 588.1   0.00  0.934
+7 2.430                 + -0.2235 13 -280.560 593.4   5.30  0.066
+4 2.501 -0.01172        +         13 -287.029 606.3  18.24  0.000
+3 2.314                 +         12 -291.218 611.7  23.63  0.000
+6 2.444 -0.02848          -0.2204  3 -371.770 749.9 161.80  0.000
+2 2.328 -0.02844                   2 -382.278 768.7 180.63  0.000
+5 1.918                   -0.2192  2 -411.086 826.3 238.25  0.000
+1 1.804                            1 -421.538 845.1 257.04  0.000
+Models ranked by AICc(x) </code></pre>
+</div>
+</div>
+<p>We might also try using model selection to help us decide whether to use quantitative or categorical month and/or day…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>duck.logr2 <span class="ot">&lt;-</span> <span class="fu">update</span>(duck.logr2, <span class="at">formula=</span> . <span class="sc">~</span> . <span class="sc">+</span> month <span class="sc">+</span> <span class="fu">factor</span>(day), <span class="at">na.action=</span><span class="st">'na.fail'</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dredge</span>(duck.logr2, <span class="at">rank=</span><span class="st">'BIC'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fixed term is "(Intercept)"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Global model call: glm(formula = cbind(successes, failures) ~ day + factor(month) + 
+    impact + month + factor(day), family = binomial(link = "logit"), 
+    data = pd, na.action = "na.fail")
+---
+Model selection table 
+   (Int)      day fct(day) fct(mnt)     imp      mnt df   logLik   BIC  delta
+14 2.618 -0.01173                 + -0.2236          14 -276.365 612.6   0.00
+30 2.618 -0.01173                 + -0.2236          14 -276.365 612.6   0.00
+13 2.430                          + -0.2235          13 -280.560 616.7   4.11
+29 2.430                          + -0.2235          13 -280.560 616.7   4.11
+26 2.770 -0.01173                   -0.2226 -0.09155  4 -299.926 617.0   4.36
+15 2.313                 +        + -0.2250          33 -238.023 617.2   4.57
+16 2.342 -0.01464        +        + -0.2250          33 -238.023 617.2   4.57
+31 2.313                 +        + -0.2250          33 -238.023 617.2   4.57
+32 2.342 -0.01464        +        + -0.2250          33 -238.023 617.2   4.57
+25 2.631                            -0.2224 -0.10250  3 -305.371 623.6  10.97
+6  2.501 -0.01172                 +                  13 -287.029 629.7  17.05
+22 2.501 -0.01172                 +                  13 -287.029 629.7  17.05
+5  2.314                          +                  12 -291.218 633.8  21.15
+21 2.314                          +                  12 -291.218 633.8  21.15
+18 2.653 -0.01171                           -0.09141  3 -310.543 633.9  21.31
+7  2.195                 +        +                  32 -248.752 634.4  21.75
+23 2.195                 +        +                  32 -248.752 634.4  21.75
+8  2.224 -0.01459        +        +                  32 -248.752 634.4  21.75
+24 2.224 -0.01459        +        +                  32 -248.752 634.4  21.75
+27 2.884                 +          -0.2237 -0.11950 24 -267.701 638.0  25.44
+28 2.911 -0.01337        +          -0.2237 -0.11950 24 -267.701 638.0  25.44
+17 2.514                                    -0.10230  2 -315.978 640.5  27.91
+20 2.793 -0.01335        +                  -0.11930 23 -278.371 655.1  42.50
+19 2.766                 +                  -0.11930 23 -278.371 655.1  42.50
+10 2.444 -0.02848                   -0.2204           3 -371.770 756.4 143.77
+11 2.285                 +          -0.2216          23 -335.678 769.7 157.12
+12 2.347 -0.03102        +          -0.2216          23 -335.678 769.7 157.12
+2  2.328 -0.02844                                     2 -382.278 773.1 160.51
+3  2.170                 +                           22 -346.244 786.6 173.97
+4  2.232 -0.03097        +                           22 -346.244 786.6 173.97
+9  1.918                            -0.2192           2 -411.086 830.7 218.12
+1  1.804                                              1 -421.538 847.4 234.75
+   weight
+14  0.360
+30  0.360
+13  0.046
+29  0.046
+26  0.041
+15  0.037
+16  0.037
+31  0.037
+32  0.037
+25  0.001
+6   0.000
+22  0.000
+5   0.000
+21  0.000
+18  0.000
+7   0.000
+23  0.000
+8   0.000
+24  0.000
+27  0.000
+28  0.000
+17  0.000
+20  0.000
+19  0.000
+10  0.000
+11  0.000
+12  0.000
+2   0.000
+3   0.000
+4   0.000
+9   0.000
+1   0.000
+Models ranked by BIC(x) </code></pre>
+</div>
+</div>
+<p>Here it looks like day as quantitative and month as categorical works best.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -605,11 +892,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./gams.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span>
+      <a href="./binary-regression.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binary Regression</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./collinearity.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

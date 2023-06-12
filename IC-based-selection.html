@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GLMs and Friends - References</title>
+<title>GLMs and Friends - 2&nbsp; Model Selection Using Information Criteria</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,7 +64,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./gams.html" rel="prev">
+<link href="./likelihood.html" rel="next">
+<link href="./lm1.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -62,6 +97,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -74,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./references.html">References</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./IC-based-selection.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -116,7 +153,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./IC-based-selection.html" class="sidebar-item-text sidebar-link">
+  <a href="./IC-based-selection.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
   </div>
 </li>
@@ -218,7 +255,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link active">
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
 </li>
@@ -228,14 +265,26 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#data-and-model" id="toc-data-and-model" class="nav-link active" data-scroll-target="#data-and-model"><span class="header-section-number">2.1</span> Data and Model</a></li>
+  <li><a href="#calculations" id="toc-calculations" class="nav-link" data-scroll-target="#calculations"><span class="header-section-number">2.2</span> Calculations</a></li>
+  <li><a href="#decisions-with-ics" id="toc-decisions-with-ics" class="nav-link" data-scroll-target="#decisions-with-ics"><span class="header-section-number">2.3</span> Decisions with ICs</a></li>
+  <li><a href="#all-possible-subsets-selection" id="toc-all-possible-subsets-selection" class="nav-link" data-scroll-target="#all-possible-subsets-selection"><span class="header-section-number">2.4</span> All-possible-subsets Selection</a></li>
+  <li><a href="#which-ic-should-i-use" id="toc-which-ic-should-i-use" class="nav-link" data-scroll-target="#which-ic-should-i-use"><span class="header-section-number">2.5</span> Which IC should I use?</a></li>
+  <li><a href="#quantities-derived-from-aic" id="toc-quantities-derived-from-aic" class="nav-link" data-scroll-target="#quantities-derived-from-aic"><span class="header-section-number">2.6</span> Quantities derived from AIC</a></li>
+  <li><a href="#important-caution" id="toc-important-caution" class="nav-link" data-scroll-target="#important-caution"><span class="header-section-number">2.7</span> Important Caution</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">References</h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></h1>
 </div>
 
 
@@ -250,9 +299,347 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p><code>r if (knitr:::is_html_output()) ' '</code></p>
+<p>So far, we have learned to fit models with multiple predictors, both quantitative and categorical, and to assess whether required conditions are met for linear regression to be an appropriate model for a dataset.</p>
+<p>One missing piece is: If I have an appropriate model with a set of multiple predictors, how can I choose which predictors are worth retaining in a “best” model for the data (and which ones have no relationship, or a weak relationship, with the response, so should be discarded)?</p>
+<section id="data-and-model" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="data-and-model"><span class="header-section-number">2.1</span> Data and Model</h2>
+<p>Today we will recreate part of the analysis from <a href="https://doi.org/10.1111/1365-2664.12798"><em>Vertebrate community composition and diversity declines along a defaunation gradient radiating from rural villages in Gabon</em></a>, by Sally Koerner and colleagues. They investigated the relationship between rural villages, hunting, and wildlife in Gabon. They asked how monkey abundance depends on distance from villages, village size, and vegetation characteristics. They shared their data at <a href="https://datadryad.org/stash/dataset/doi:10.5061/dryad.vs97g">Dryad.org</a> and we can read it in and fit a regression model like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>defaun <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'http://sldr.netlify.com/data/koerner_gabon_defaunation.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ape_mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(RA_Apes <span class="sc">~</span> Veg_DBH <span class="sc">+</span> Veg_Canopy <span class="sc">+</span> Veg_Understory <span class="sc">+</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                   Veg_Rich <span class="sc">+</span> Veg_Stems <span class="sc">+</span> Veg_liana <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                   LandUse <span class="sc">+</span> Distance <span class="sc">+</span> NumHouseholds, <span class="at">data =</span> defaun)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ape_mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = RA_Apes ~ Veg_DBH + Veg_Canopy + Veg_Understory + 
+    Veg_Rich + Veg_Stems + Veg_liana + LandUse + Distance + NumHouseholds, 
+    data = defaun)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.9857 -0.9419 -0.0360  0.8239  6.3832 
+
+Coefficients:
+                Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)     5.752517  13.372210   0.430   0.6741  
+Veg_DBH        -0.093171   0.073114  -1.274   0.2249  
+Veg_Canopy      0.670094   2.062545   0.325   0.7504  
+Veg_Understory -1.691235   2.071299  -0.817   0.4289  
+Veg_Rich        0.361960   0.480362   0.754   0.4646  
+Veg_Stems      -0.097211   0.169073  -0.575   0.5751  
+Veg_liana      -0.158505   0.253031  -0.626   0.5419  
+LandUseNeither  1.696755   2.058937   0.824   0.4247  
+LandUsePark    -2.947189   2.222710  -1.326   0.2077  
+Distance        0.302626   0.119865   2.525   0.0254 *
+NumHouseholds  -0.002107   0.043458  -0.048   0.9621  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.725 on 13 degrees of freedom
+Multiple R-squared:  0.5439,    Adjusted R-squared:  0.1931 
+F-statistic: 1.551 on 10 and 13 DF,  p-value: 0.2262</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(<span class="fu">logLik</span>(ape_mod))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -50.75799</code></pre>
+</div>
+</div>
+</section>
+<section id="calculations" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="calculations"><span class="header-section-number">2.2</span> Calculations</h2>
+<ul>
+<li><p>Information criteria allow us to <strong>balance the conflicting goals</strong> of having a model that <em>fits the data as well as possible</em> (which pushes us toward models with more predictors) and <em>parsimony</em> (choosing the simplest model, with the fewest predictors, that works for the data and research question). The basic idea is that we <strong>minimize</strong> the quantity <span class="math inline">\(-(2LogLikelihood - penalty) = -2LogLikelihood + penalty\)</span></p></li>
+<li><p>AIC is computed according to <span class="math inline">\(-2LogLikelihood +2k\)</span>, where <span class="math inline">\(k\)</span> is the number of coefficients being estimated (don’t forget <span class="math inline">\(\sigma\)</span>!) <strong>Smaller AIC is better.</strong></p></li>
+<li><p>BIC is computed according to <span class="math inline">\(-2LogLikelihood + ln(n)k\)</span>, where <span class="math inline">\(n\)</span> is the number of observations (rows) in the dataset and <span class="math inline">\(k\)</span> is the number of coefficients being estimated. <strong>Smaller BIC is better.</strong></p></li>
+<li><p>Verify that the BIC for this model is 139.65.</p></li>
+</ul>
+</section>
+<section id="decisions-with-ics" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="decisions-with-ics"><span class="header-section-number">2.3</span> Decisions with ICs</h2>
+<p>The following rules of thumb (<strong>not</strong> laws, just common rules of thumb) may help you make decisions with ICs:</p>
+<ul>
+<li>A model with lower IC <em>by at least 3 units</em> is notably better.</li>
+<li>If two or more models have ICs <em>within</em> 3 IC units of each other, there is not a lot of difference between them. Here, we usually choose the model with fewest predictors.</li>
+<li>In some cases, if the research question is to measure the influence of some particular predictor on the response, but <em>the IC does not strongly support including that predictor</em> in the best model (IC difference less than 3), you might want to keep it in anyway and then discuss the situation honestly, for example, “AIC does not provide strong support for including predictor x in the best model, but the model including predictor x indicates that as x increases the response decreases slightly. More research would be needed…”</li>
+</ul>
+</section>
+<section id="all-possible-subsets-selection" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="all-possible-subsets-selection"><span class="header-section-number">2.4</span> All-possible-subsets Selection</h2>
+<p>The model we just fitted is our <em>full model</em>, with all predictors of potential interest included. How can we use information criteria to choose the best model from possible models with subsets of the predictors?</p>
+<p>We can use the <code>dredge()</code> function from the <code>MuMIn</code> package to get and display ICs for all these models.</p>
+<p>Before using dredge, we need to make sure our dataset has no missing values, and also set the “na.action” input for our model (can be done in call to <code>lm(..., na.action = 'na.fail')</code> also).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ape_mod <span class="ot">&lt;-</span> ape_mod <span class="sc">|&gt;</span> <span class="fu">update</span>(<span class="at">na.action =</span> <span class="st">'na.fail'</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ape_dredge <span class="ot">&lt;-</span> <span class="fu">dredge</span>(ape_mod, <span class="at">rank=</span><span class="st">'BIC'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fixed term is "(Intercept)"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(<span class="fu">head</span>(ape_dredge, <span class="dv">7</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Table continues below</caption>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 18%">
+<col style="width: 14%">
+<col style="width: 13%">
+<col style="width: 21%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">&nbsp;</th>
+<th style="text-align: center;">(Intercept)</th>
+<th style="text-align: center;">Distance</th>
+<th style="text-align: center;">LandUse</th>
+<th style="text-align: center;">NumHouseholds</th>
+<th style="text-align: center;">Veg_Canopy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>258</strong></td>
+<td style="text-align: center;">8.753</td>
+<td style="text-align: center;">0.195</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>2</strong></td>
+<td style="text-align: center;">-0.6912</td>
+<td style="text-align: center;">0.2303</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>274</strong></td>
+<td style="text-align: center;">11.44</td>
+<td style="text-align: center;">0.1848</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>322</strong></td>
+<td style="text-align: center;">11.9</td>
+<td style="text-align: center;">0.2033</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>290</strong></td>
+<td style="text-align: center;">9.805</td>
+<td style="text-align: center;">0.1884</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>386</strong></td>
+<td style="text-align: center;">9.49</td>
+<td style="text-align: center;">0.1976</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>266</strong></td>
+<td style="text-align: center;">7.783</td>
+<td style="text-align: center;">0.1896</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">0.2771</td>
+</tr>
+</tbody>
+</table>
+<table class="table table-sm table-striped small">
+<caption>Table continues below</caption>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 14%">
+<col style="width: 15%">
+<col style="width: 14%">
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">&nbsp;</th>
+<th style="text-align: center;">Veg_DBH</th>
+<th style="text-align: center;">Veg_liana</th>
+<th style="text-align: center;">Veg_Rich</th>
+<th style="text-align: center;">Veg_Stems</th>
+<th style="text-align: center;">Veg_Understory</th>
+<th style="text-align: center;">df</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>258</strong></td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">-2.988</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>2</strong></td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>274</strong></td>
+<td style="text-align: center;">-0.04551</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">-3.144</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>322</strong></td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">-0.1939</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">-3.11</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>290</strong></td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">-0.09802</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">-2.952</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>386</strong></td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">-0.03113</td>
+<td style="text-align: center;">-2.904</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>266</strong></td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">-2.964</td>
+<td style="text-align: center;">5</td>
+</tr>
+</tbody>
+</table>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">&nbsp;</th>
+<th style="text-align: center;">logLik</th>
+<th style="text-align: center;">BIC</th>
+<th style="text-align: center;">delta</th>
+<th style="text-align: center;">weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>258</strong></td>
+<td style="text-align: center;">-53.9</td>
+<td style="text-align: center;">120.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.3284</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>2</strong></td>
+<td style="text-align: center;">-55.8</td>
+<td style="text-align: center;">121.1</td>
+<td style="text-align: center;">0.6241</td>
+<td style="text-align: center;">0.2404</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>274</strong></td>
+<td style="text-align: center;">-53.38</td>
+<td style="text-align: center;">122.7</td>
+<td style="text-align: center;">2.146</td>
+<td style="text-align: center;">0.1123</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>322</strong></td>
+<td style="text-align: center;">-53.55</td>
+<td style="text-align: center;">123</td>
+<td style="text-align: center;">2.491</td>
+<td style="text-align: center;">0.09449</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>290</strong></td>
+<td style="text-align: center;">-53.67</td>
+<td style="text-align: center;">123.2</td>
+<td style="text-align: center;">2.727</td>
+<td style="text-align: center;">0.08399</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>386</strong></td>
+<td style="text-align: center;">-53.82</td>
+<td style="text-align: center;">123.5</td>
+<td style="text-align: center;">3.03</td>
+<td style="text-align: center;">0.0722</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>266</strong></td>
+<td style="text-align: center;">-53.88</td>
+<td style="text-align: center;">123.7</td>
+<td style="text-align: center;">3.144</td>
+<td style="text-align: center;">0.0682</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li>What is the best model according to BIC, for this dataset?</li>
+</ul>
+</section>
+<section id="which-ic-should-i-use" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="which-ic-should-i-use"><span class="header-section-number">2.5</span> Which IC should I use?</h2>
+<p>AIC and BIC may give different best models, especially if the dataset is large. You may want to just choose one to use <em>a priori</em> (before making calculations). You might prefer BIC if you want to err on the “conservative” side, as it is more likely to select a “smaller” model with fewer predictors. This is because of its larger penalty.</p>
+</section>
+<section id="quantities-derived-from-aic" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="quantities-derived-from-aic"><span class="header-section-number">2.6</span> Quantities derived from AIC</h2>
+<ul>
+<li><span class="math inline">\(\Delta AIC\)</span> is the AIC for a given model, minus the AIC of the best one in the dataset. (Same for <span class="math inline">\(\Delta BIC\)</span>)</li>
+<li><em>Akaike weights</em> are values (ranging from 0-1) that measure the weight of evidence suggesting that a model is the best one (given that there is one best one in the set)</li>
+</ul>
+</section>
+<section id="important-caution" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="important-caution"><span class="header-section-number">2.7</span> Important Caution</h2>
+<p><strong>Very important</strong>: IC can <strong>ONLY</strong> be compared for models with the same response variable, and the exact same rows of data.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -605,11 +992,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./gams.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span>
+      <a href="./lm1.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Linear Regression</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./likelihood.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

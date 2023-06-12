@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GLMs and Friends - 1&nbsp; Introduction</title>
+<title>GLMs and Friends - 12&nbsp; Non-constant variance (and other unresolved problems)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -54,26 +54,7 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -83,8 +64,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./summary.html" rel="next">
-<link href="./index.html" rel="prev">
+<link href="./random-effects.html" rel="next">
+<link href="./zero-inflation.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -116,6 +97,8 @@ div.csl-indent {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -128,7 +111,7 @@ div.csl-indent {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./intro.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ncv.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -164,14 +147,110 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  <a href="./lm1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Linear Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  <a href="./IC-based-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pdf-pmf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count-data-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./model-averaging.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interactions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./binary-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./binary-regression2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./collinearity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./zero-inflation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ncv.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./random-effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./random-effects2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gee-motivation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./corr-struct.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anova-plus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -186,14 +265,25 @@ div.csl-indent {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#already-in-our-tool-box-make-sure-the-model-is-right" id="toc-already-in-our-tool-box-make-sure-the-model-is-right" class="nav-link active" data-scroll-target="#already-in-our-tool-box-make-sure-the-model-is-right"><span class="header-section-number">12.0.1</span> Already in Our Tool Box: Make sure the model is “right”</a></li>
+  <li><a href="#already-in-our-tool-box-models-that-estimate-dispersion-parameters" id="toc-already-in-our-tool-box-models-that-estimate-dispersion-parameters" class="nav-link" data-scroll-target="#already-in-our-tool-box-models-that-estimate-dispersion-parameters"><span class="header-section-number">12.0.2</span> Already in Our Tool Box: Models that estimate dispersion parameters</a></li>
+  <li><a href="#gamma-glms" id="toc-gamma-glms" class="nav-link" data-scroll-target="#gamma-glms"><span class="header-section-number">12.0.3</span> Gamma GLMs</a></li>
+  <li><a href="#beta-glms" id="toc-beta-glms" class="nav-link" data-scroll-target="#beta-glms"><span class="header-section-number">12.0.4</span> Beta GLMs</a></li>
+  <li><a href="#transformations" id="toc-transformations" class="nav-link" data-scroll-target="#transformations"><span class="header-section-number">12.0.5</span> Transformations</a></li>
+  <li><a href="#modelling-non-constant-variance" id="toc-modelling-non-constant-variance" class="nav-link" data-scroll-target="#modelling-non-constant-variance"><span class="header-section-number">12.0.6</span> Modelling non-constant variance</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></h1>
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></h1>
 </div>
 
 
@@ -208,21 +298,87 @@ div.csl-indent {
 
 </header>
 
-<p>This is a book created from markdown and executable code.</p>
-<p>See <span class="citation" data-cites="knuth84">Knuth (<a href="references.html#ref-knuth84" role="doc-biblioref">1984</a>)</span> for additional discussion of literate programming.</p>
+<p>So far, we have worked to assemble a tool-kit that allows us to fit appropriate regression models for a variety of types of response and predictor variables. If we fit an appropriate model (conditions are met) to an appropriate dataset (representative sample of the population of interest), we should be able to draw valid conclusions – but as we have seen, if conditions are <em>not</em> met, then our conclusions (model predictions, judgements about which predictors are important, etc.) may all be unreliable.</p>
+<p>So what can we do if we’ve fit the best model we know how to fit, and it’s still not quite right? We have seen a number of examples so far where, even after we fit a model with what seem to be the right family and sensible predictors, conditions are not met. The most common problems are non-constant variance of residuals (often seen with non-normal residuals), and non-independent residuals. Solutions for non-independent residuals are coming soon, in future sections. Here we’ll review options (some already in our tool-kit, and some new) to try to improve the situation when non-constant variance (NCV) is present.</p>
+<p>What can we try if a model seems to fit data well, except for the fact that the constant variance condition doesn’t hold (for linear regression) or the mean-variance relationship is not as expected (GLMs etc.)? (Note: this problem is also often accompanied by right skew in the distribution of the residuals.) Possible solutions are presented approximately in order of desirability…</p>
+<section id="already-in-our-tool-box-make-sure-the-model-is-right" class="level3" data-number="12.0.1">
+<h3 data-number="12.0.1" class="anchored" data-anchor-id="already-in-our-tool-box-make-sure-the-model-is-right"><span class="header-section-number">12.0.1</span> Already in Our Tool Box: Make sure the model is “right”</h3>
+<p>Improving the model specification sometimes corrects a problem with non-constant variance. Make sure you have considered:</p>
+<ul>
+<li>Is the right “family” being used for the data type being modelled?</li>
+<li>Are <strong>all</strong> the variables that you think are important predictors (and are available to you in the data) included in the model? <!-- If there is a need for random effects (or GEE clusters), are they included in the model? --></li>
+</ul>
+</section>
+<section id="already-in-our-tool-box-models-that-estimate-dispersion-parameters" class="level3" data-number="12.0.2">
+<h3 data-number="12.0.2" class="anchored" data-anchor-id="already-in-our-tool-box-models-that-estimate-dispersion-parameters"><span class="header-section-number">12.0.2</span> Already in Our Tool Box: Models that estimate dispersion parameters</h3>
+<p>Negative binomial (and quasi-Poisson) models include estimation of a dispersion parameter that helps to account for over- or under-disperion (that is - the variance is larger, or smaller, than the mean value). If one of these models is being used (or is appropriate for the data) - NCV should be accounted for! (We can also verify this: If all is working well, the Pearson residuals will have constant variance.)</p>
+</section>
+<section id="gamma-glms" class="level3" data-number="12.0.3">
+<h3 data-number="12.0.3" class="anchored" data-anchor-id="gamma-glms"><span class="header-section-number">12.0.3</span> Gamma GLMs</h3>
+<p><strong>If</strong> you are fitting a linear regression and:</p>
+<ul>
+<li>The response variable of interest is non-negative, <strong>and</strong></li>
+<li>There is right skew in residuals <strong>and/or</strong></li>
+<li>There is non-constant variance of residuals…</li>
+</ul>
+<p>You may want to try fitting a model using the <strong>Gamma</strong> family (<code>link = 'log'</code> or <code>link = 'inverse'</code> link functions are the most common). If needed you can use model assessment plots and/or model selection criteria (AIC, BIC…) to decide between link functions. For example:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>gamma.mod <span class="ot">&lt;-</span> <span class="fu">glm</span>(resp <span class="sc">~</span> pred1 <span class="sc">+</span> pred2, <span class="at">data=</span>dataset,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">family=</span><span class="fu">Gamma</span>(<span class="at">link=</span><span class="st">'log'</span>)) <span class="co"># or can use link='inverse'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="beta-glms" class="level3" data-number="12.0.4">
+<h3 data-number="12.0.4" class="anchored" data-anchor-id="beta-glms"><span class="header-section-number">12.0.4</span> Beta GLMs</h3>
+<p>If your response variable happens to be bounded between 0-1 (but NOT a probability, so that a binary data regression would not be appropriate), you can also try a Beta regression (using the beta distribution). Since the shape of the distribution is extremely flexible, it will help with residuals whose distribution is not as expected. The variance of the beta distribution also <em>does</em> depend on its mean, so it is likely to be better than a linear model at addressing NCV. A code example is below. You must use <code>glmmTMB()</code> to fit this model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>beta_model <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(response <span class="sc">~</span> predictor1 <span class="sc">+</span> predictor2,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data=</span>my_data,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">family=</span><span class="fu">beta_family</span>(<span class="at">link=</span><span class="st">'logit'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="transformations" class="level3" data-number="12.0.5">
+<h3 data-number="12.0.5" class="anchored" data-anchor-id="transformations"><span class="header-section-number">12.0.5</span> Transformations</h3>
+<p>In some cases, a logarithmic or square-root transformation of the <strong>response variable</strong> can correct a problem with the variance of the residuals. This is most sensible as a solution if the <code>log(variable)</code> or <code>sqrt(variable)</code> makes some “sense” to a human…for example, if the response variable is <code>wages</code> in dollars, then <code>log10(wages)</code> is kind of the order of magnitude of the salary, which makes some sense as a measure of income. Another example: sound pressure is measured in <span class="math inline">\(\mu Pa\)</span>, but we perceive sound logarithmically, so that a sound that has 10 times greater pressure “sounds” about twice as loud. So <code>log10(sound_pressure)</code> could be a sensible metric.</p>
+<p>Why does this work? These transformations don’t affect the magnitude of <em>small</em> residual values very much, but they make <em>large</em> residuals get <em>a lot</em> smaller. The result is that the histogram of residuals has less right skew and the large-magnitude residuals (the ones causing the “flare” of the “trumpet” in the residuals vs.&nbsp;fitted plot) get much smaller.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="ncv_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="211"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="ncv_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="211"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="ncv_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid" width="211"></p>
+</div>
+</div>
+</section>
+<section id="modelling-non-constant-variance" class="level3" data-number="12.0.6">
+<h3 data-number="12.0.6" class="anchored" data-anchor-id="modelling-non-constant-variance"><span class="header-section-number">12.0.6</span> Modelling non-constant variance</h3>
+<p>If your model is a linear regression, then there are a few specialized fitting functions that can allow you to fit models with non-constant variance of the residuals.</p>
+<p>For multiple linear regression (original fit with <strong>lm()</strong>), you can use <strong>gls()</strong> from package <strong>nlme</strong> and add input <em>weights=varPower()</em> – inputs are otherwise the same as for <strong>lm()</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nls</span>(response <span class="sc">~</span> pred1 <span class="sc">+</span> pred2, <span class="at">data=</span>dataset,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights=</span><span class="fu">varPower</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<!-- For random effects models fitted via **lmer()**, similar options are available, setting input *weights=varPower()* or (to allow different variance in each random effect group, or each group of another categorical variable) *weights = varIdent(form= ~1|categorical.variable)*. -->
+<!-- ```{r, eval=FALSE, echo=TRUE} -->
+<!-- library(lme4) -->
+<!-- # variance increases with some power of fitted value -->
+<!-- lmer(response ~ pred1 + pred2 + (~1|ID), data=dataset, -->
+<!--     weights=varPower()) -->
+<!-- # variance is different for each level of random effect: -->
+<!-- lmer(response ~ pred1 + pred2 + (~1|ID), data=dataset, -->
+<!--     weights=varIdent(form=~1|ID)) -->
+<!-- ``` -->
+<p><em>If you’re interested in learning more about this method (and other options for specification of the form of the non-constant variance), see the references below in R (you will not be held responsible for the information contained in these help files for STAT 245 - just provided for further reference.)</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>?nlme<span class="sc">::</span>nls</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>?nlme<span class="sc">::</span>varClasses</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
-<div id="ref-knuth84" class="csl-entry" role="listitem">
-Knuth, Donald E. 1984. <span>“Literate Programming.”</span> <em>Comput. J.</em> 27 (2): 97–111. <a href="https://doi.org/10.1093/comjnl/27.2.97">https://doi.org/10.1093/comjnl/27.2.97</a>.
-</div>
-</div>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -575,13 +731,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
+      <a href="./zero-inflation.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./summary.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./random-effects.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Random Effects</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

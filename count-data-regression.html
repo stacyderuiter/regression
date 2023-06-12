@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>GLMs and Friends - 5&nbsp; Regression for Count Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./model-averaging.html" rel="next">
+<link href="./pdf-pmf.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./count-data-regression.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">GLMs and Friends</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lm1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Linear Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./IC-based-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pdf-pmf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count-data-regression.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./model-averaging.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interactions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./binary-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./binary-regression2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./collinearity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./zero-inflation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ncv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./random-effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./random-effects2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gee-motivation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./corr-struct.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./anova-plus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#data-source" id="toc-data-source" class="nav-link active" data-scroll-target="#data-source"><span class="header-section-number">5.1</span> Data Source</a></li>
+  <li><a href="#a-bad-idea-multiple-linear-regression-model" id="toc-a-bad-idea-multiple-linear-regression-model" class="nav-link" data-scroll-target="#a-bad-idea-multiple-linear-regression-model"><span class="header-section-number">5.2</span> A bad idea: multiple linear regression model</a></li>
+  <li><a href="#problems-with-the-linear-model" id="toc-problems-with-the-linear-model" class="nav-link" data-scroll-target="#problems-with-the-linear-model"><span class="header-section-number">5.3</span> Problems with the linear model</a></li>
+  <li><a href="#poisson-regression" id="toc-poisson-regression" class="nav-link" data-scroll-target="#poisson-regression"><span class="header-section-number">5.4</span> Poisson Regression</a>
+  <ul class="collapse">
+  <li><a href="#fitting-the-model" id="toc-fitting-the-model" class="nav-link" data-scroll-target="#fitting-the-model"><span class="header-section-number">5.4.1</span> Fitting the Model</a></li>
+  <li><a href="#conditions" id="toc-conditions" class="nav-link" data-scroll-target="#conditions"><span class="header-section-number">5.4.2</span> Conditions</a></li>
+  <li><a href="#model-assessment" id="toc-model-assessment" class="nav-link" data-scroll-target="#model-assessment"><span class="header-section-number">5.4.3</span> Model Assessment</a></li>
+  <li><a href="#checking-for-overdispersion-using-overdispersion-factor" id="toc-checking-for-overdispersion-using-overdispersion-factor" class="nav-link" data-scroll-target="#checking-for-overdispersion-using-overdispersion-factor"><span class="header-section-number">5.4.4</span> Checking for overdispersion using overdispersion factor</a></li>
+  </ul></li>
+  <li><a href="#accounting-for-overdispersion-negative-binomial-models" id="toc-accounting-for-overdispersion-negative-binomial-models" class="nav-link" data-scroll-target="#accounting-for-overdispersion-negative-binomial-models"><span class="header-section-number">5.5</span> Accounting for overdispersion: Negative Binomial Models</a></li>
+  <li><a href="#accounting-for-overdispersion-quasi-poisson-model" id="toc-accounting-for-overdispersion-quasi-poisson-model" class="nav-link" data-scroll-target="#accounting-for-overdispersion-quasi-poisson-model"><span class="header-section-number">5.6</span> Accounting for overdispersion: quasi-Poisson Model</a></li>
+  <li><a href="#model-selection-with-dredge-and-qaic-bic" id="toc-model-selection-with-dredge-and-qaic-bic" class="nav-link" data-scroll-target="#model-selection-with-dredge-and-qaic-bic"><span class="header-section-number">5.7</span> Model selection with dredge() and (Q)AIC, BIC</a>
+  <ul class="collapse">
+  <li><a href="#review-all-subsets-selection-with-dredge" id="toc-review-all-subsets-selection-with-dredge" class="nav-link" data-scroll-target="#review-all-subsets-selection-with-dredge"><span class="header-section-number">5.7.1</span> Review: all subsets selection with dredge()</a></li>
+  <li><a href="#review-ic-weights" id="toc-review-ic-weights" class="nav-link" data-scroll-target="#review-ic-weights"><span class="header-section-number">5.7.2</span> Review: IC “weights”</a></li>
+  <li><a href="#extending-dredge-to-quasi-likelihood" id="toc-extending-dredge-to-quasi-likelihood" class="nav-link" data-scroll-target="#extending-dredge-to-quasi-likelihood"><span class="header-section-number">5.7.3</span> Extending dredge() to quasi-Likelihood</a></li>
+  </ul></li>
+  <li><a href="#offsets" id="toc-offsets" class="nav-link" data-scroll-target="#offsets"><span class="header-section-number">5.8</span> Offsets</a></li>
+  <li><a href="#prediction-plots" id="toc-prediction-plots" class="nav-link" data-scroll-target="#prediction-plots"><span class="header-section-number">5.9</span> Prediction Plots</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>So far, we have fitted regression models for continuous-valued quantitative response variables. What if our response variable is really <strong>count data</strong> – discrete quantitative values limited to zero and positive integers?</p>
+<section id="data-source" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="data-source"><span class="header-section-number">5.1</span> Data Source</h2>
+<p>The dataset used here is <code>beevisits</code>, from:</p>
+<p>Felicity Muth, Jacob S. Francis, and Anne S. Leonard. 2017. Bees use the taste of pollen to determine which flowers to visit. Biology Letters 12(7): DOI: 10.1098/rsbl.2016.0356. <a href="http://rsbl.royalsocietypublishing.org/content/roybiolett/12/7/20160356.full.pdf" class="uri">http://rsbl.royalsocietypublishing.org/content/roybiolett/12/7/20160356.full.pdf</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">'images/BeeExperiment.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="images/BeeExperiment.png" class="img-fluid" style="width:6.5in"></p>
+</div>
+</div>
+</section>
+<section id="a-bad-idea-multiple-linear-regression-model" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="a-bad-idea-multiple-linear-regression-model"><span class="header-section-number">5.2</span> A bad idea: multiple linear regression model</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 270 Columns: 6
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (5): colony, beename, treatment, target colour, flower
+dbl (1): novisits
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="count-data-regression_files/figure-html/beedata-2-1.png" class="img-fluid" width="624"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(beevisits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    colony            beename              treatment  target colour     
+ Length:270         Length:270         quinine  :90   Length:270        
+ Class :character   Class :character   cellulose:90   Class :character  
+ Mode  :character   Mode  :character   sucrose  :90   Mode  :character  
+                                                                        
+                                                                        
+                                                                        
+    novisits         flower         
+ Min.   : 0.000   Length:270        
+ 1st Qu.: 1.000   Class :character  
+ Median : 3.000   Mode  :character  
+ Mean   : 4.437                     
+ 3rd Qu.: 7.000                     
+ Max.   :21.000                     </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>bee.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(novisits <span class="sc">~</span> flower <span class="sc">+</span> treatment <span class="sc">+</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>               colony, <span class="at">data=</span>beevisits)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bee.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = novisits ~ flower + treatment + colony, data = beevisits)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.5668 -2.1113 -0.2847  1.5665 11.5767 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          2.1113     0.4440   4.755 3.27e-06 ***
+flowernovel         -1.6778     0.4386  -3.825 0.000163 ***
+flowertarget         5.4556     0.4386  12.438  &lt; 2e-16 ***
+treatmentcellulose   2.6883     0.4389   6.124 3.30e-09 ***
+treatmentsucrose     2.7240     0.4415   6.170 2.56e-09 ***
+colonyX             -0.8318     0.4491  -1.852 0.065110 .  
+colonyY             -1.8493     0.4254  -4.347 1.97e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.942 on 263 degrees of freedom
+Multiple R-squared:  0.5763,    Adjusted R-squared:  0.5667 
+F-statistic: 59.63 on 6 and 263 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="count-data-regression_files/figure-html/assess1-b-1.png" class="img-fluid" width="624"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="count-data-regression_files/figure-html/assess2-b-1.png" class="img-fluid" width="624"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="count-data-regression_files/figure-html/assess2-b-2.png" class="img-fluid" width="624"></p>
+</div>
+</div>
+</section>
+<section id="problems-with-the-linear-model" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="problems-with-the-linear-model"><span class="header-section-number">5.3</span> Problems with the linear model</h2>
+<p>What problems do we have with this model (its appropriateness, or goodness of fit to the data)?</p>
+<ul>
+<li>Non-constant error variance</li>
+<li>Non-normality of residuals</li>
+<li>Some predicted values are less than 0 – it’s impossible that a bee could visit a flower a negative number of times!</li>
+</ul>
+</section>
+<section id="poisson-regression" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="poisson-regression"><span class="header-section-number">5.4</span> Poisson Regression</h2>
+<p><em>Detailed notes on the model equation were filled in here in class</em></p>
+<section id="fitting-the-model" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="fitting-the-model"><span class="header-section-number">5.4.1</span> Fitting the Model</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>prm <span class="ot">&lt;-</span> <span class="fu">glm</span>(novisits <span class="sc">~</span> flower <span class="sc">+</span> treatment <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>               colony, <span class="at">data=</span>beevisits,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">family=</span><span class="fu">poisson</span>(<span class="at">link=</span><span class="st">'log'</span>)) </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(prm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = novisits ~ flower + treatment + colony, family = poisson(link = "log"), 
+    data = beevisits)
+
+Coefficients:
+                   Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)         0.79055    0.08695   9.092  &lt; 2e-16 ***
+flowernovel        -0.75072    0.10442  -7.189 6.51e-13 ***
+flowertarget        0.99945    0.06916  14.451  &lt; 2e-16 ***
+treatmentcellulose  0.69817    0.07910   8.827  &lt; 2e-16 ***
+treatmentsucrose    0.70953    0.07967   8.906  &lt; 2e-16 ***
+colonyX            -0.17521    0.07175  -2.442   0.0146 *  
+colonyY            -0.43724    0.07311  -5.981 2.22e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 1236.33  on 269  degrees of freedom
+Residual deviance:  542.05  on 263  degrees of freedom
+AIC: 1260.6
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+</section>
+<section id="conditions" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="conditions"><span class="header-section-number">5.4.2</span> Conditions</h3>
+<p>What conditions must hold for <em>this</em> model to be appropriate?</p>
+<ul>
+<li>Response variable (y) contains count data</li>
+<li>Linearity: <span class="math inline">\(log(\lambda_{i})\)</span> is a linear function of the covariates <span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, … <span class="math inline">\(x_n\)</span>. (<em>Later we will consider how to check this when some covariates are quantitative…in brief: plot log(rate) as a function of each covariate and look for (no non-)linear trend.</em>)</li>
+<li><strong>Mean = Variance</strong></li>
+<li>Independence (of residuals)</li>
+<li>There is <em>not</em> a condition specifying a PDF that the residuals should follow.</li>
+</ul>
+</section>
+<section id="model-assessment" class="level3" data-number="5.4.3">
+<h3 data-number="5.4.3" class="anchored" data-anchor-id="model-assessment"><span class="header-section-number">5.4.3</span> Model Assessment</h3>
+<p>Which conditions can we check already?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(<span class="fu">resid</span>(prm, <span class="at">type=</span><span class="st">'response'</span>), <span class="at">main=</span><span class="st">'bee.lm Residuals'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count-data-regression_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="624"></p>
+</div>
+</div>
+<p>What does <code>type='response'</code> mean?</p>
+<p>This means that the residuals are reported on the same scale as the response variable (that is, in units of counts, rather than log(counts)).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>beevisits <span class="ot">&lt;-</span> beevisits <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pm.resids =</span> <span class="fu">resid</span>(prm, <span class="at">type=</span><span class="st">'response'</span>),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">pm.fitted =</span> <span class="fu">fitted</span>(prm))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(pm.resids <span class="sc">~</span> pm.fitted, <span class="at">data=</span>beevisits) <span class="sc">|&gt;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x=</span><span class="st">'Fitted Values'</span>, <span class="at">y=</span><span class="st">'Residuals'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count-data-regression_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="624"></p>
+</div>
+</div>
+<p>This trumpet pattern is <em>what we expect!</em> Why?</p>
+<p>If the variance equals the mean, then as the mean (fitted value) goes up, then the variance (spread of residuals) will also be larger.</p>
+<p>But how can we decide if it’s the <em>right amount</em> of increase in variance with increase in fitted value? We can compute <strong>Pearson</strong> residuals, which are scaled by the <em>expected variance</em>. <strong>The Pearson residuals should have approximately constant variance as a function of fitted values, and a standard deviation of about 1.</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>beevisits <span class="ot">&lt;-</span> beevisits <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pm.pearson.resids =</span> <span class="fu">resid</span>(prm, <span class="at">type=</span><span class="st">'pearson'</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>( pm.pearson.resids <span class="sc">~</span> pm.fitted, <span class="at">data=</span>beevisits) <span class="sc">|&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x=</span><span class="st">'Fitted Values'</span>, <span class="at">y=</span><span class="st">'Pearson Residuals'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count-data-regression_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="624"></p>
+</div>
+</div>
+<p>A more complex solution: we could divide the fitted values into bins (choice of bin size is somewhat arbitrary; generally, you want them as small as possible, but still containing enough observations per bin to get good mean and variance estimates). In each bin, compute the mean and the variance of the residuals. Plot these means vs these variances and see if the slope is 1 (and intercept 0).</p>
+<p>First, split the fitted values into 5 bins:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>beevisits <span class="ot">&lt;-</span> beevisits <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fitted.bins =</span> <span class="fu">cut</span>(<span class="fu">fitted</span>(prm), <span class="at">breaks=</span><span class="dv">5</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(beevisits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 12
+  colony beename   treatment `target colour` novisits flower lm.resids lm.fitted
+  &lt;chr&gt;  &lt;chr&gt;     &lt;fct&gt;     &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+1 Y      giantbee… sucrose   yellow                12 target     3.56       8.44
+2 W      o51Wsucr… sucrose   blue                   8 target    -2.29      10.3 
+3 W      o54Wquin… quinine   blue                  13 target     5.43       7.57
+4 W      o58Wcell… cellulose yellow                 9 target    -1.26      10.3 
+5 W      o60Wcell… cellulose blue                  11 target     0.745     10.3 
+6 W      o63Wquin… quinine   blue                   5 target    -2.57       7.57
+# ℹ 4 more variables: pm.resids &lt;dbl&gt;, pm.fitted &lt;dbl&gt;,
+#   pm.pearson.resids &lt;dbl&gt;, fitted.bins &lt;fct&gt;</code></pre>
+</div>
+</div>
+<p>Next, compute the means and variances in each bin, view the result, and plot:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>binned.bees <span class="ot">&lt;-</span> beevisits <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(fitted.bins) <span class="sc">|&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(pm.fitted, <span class="at">na.rm=</span><span class="cn">TRUE</span>),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">var =</span> <span class="fu">var</span>(pm.resids))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>binned.bees</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  fitted.bins   mean   var
+  &lt;fct&gt;        &lt;dbl&gt; &lt;dbl&gt;
+1 (0.661,2.97]  1.77  3.34
+2 (2.97,5.27]   4.28 10.6 
+3 (5.27,7.57]   5.99 21.3 
+4 (7.57,9.88]   7.83 12.8 
+5 (9.88,12.2]  11.5  13.5 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(var <span class="sc">~</span> mean, <span class="at">data=</span>binned.bees) <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x=</span><span class="st">'Mean Fitted Value'</span>, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">y=</span><span class="st">'Variance of Residuals'</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">gf_abline</span>(<span class="at">slope=</span><span class="dv">1</span>, <span class="at">intercept=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count-data-regression_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="624"></p>
+</div>
+</div>
+<p><strong>That’s a bit of a pain, and still a judgment call at the end.</strong></p>
+<p>How <em>else</em> can we check the Mean = Variance condition?</p>
+</section>
+<section id="checking-for-overdispersion-using-overdispersion-factor" class="level3" data-number="5.4.4">
+<h3 data-number="5.4.4" class="anchored" data-anchor-id="checking-for-overdispersion-using-overdispersion-factor"><span class="header-section-number">5.4.4</span> Checking for overdispersion using overdispersion factor</h3>
+<p>We can estimate the <strong>overdispersion factor</strong>. This satisfies</p>
+<p><span class="math display">\[ \text{residual variance} = \text{overdispersion factor} * \text{mean}\]</span></p>
+<p>So if it’s a lot larger than 1, we have a problem. The function <code>overdisp_fun()</code> in package <code>s245</code> computes an estimate:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(s245)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">overdisp_fun</span>(prm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.047036</code></pre>
+</div>
+</div>
+<p>Here, it’s about 2: not too terrible, but still, residual variance is double what it should be according to our model. (Usually if the overdispersion is larger than 2 we will prefer a different model that better accounts for the fact that <span class="math inline">\(\text{mean} \neq \text{variance}\)</span>.)</p>
+</section>
+</section>
+<section id="accounting-for-overdispersion-negative-binomial-models" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="accounting-for-overdispersion-negative-binomial-models"><span class="header-section-number">5.5</span> Accounting for overdispersion: Negative Binomial Models</h2>
+<p>Finally, we could simply fit a model that allows for a more permissive mean-variance relationship (where the variance can be larger or smaller than the mean, by different amounts), and see if it is a better fit to the data according it our IC. The negative binomial distributions (type I and II) do this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>nbm1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(novisits <span class="sc">~</span> flower <span class="sc">+</span> treatment <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>               colony, <span class="at">data=</span>beevisits,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">family=</span><span class="fu">nbinom1</span>(<span class="at">link=</span><span class="st">'log'</span>))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>nbm2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(novisits <span class="sc">~</span> flower <span class="sc">+</span> treatment <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>               colony, <span class="at">data=</span>beevisits,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">family=</span><span class="fu">nbinom2</span>(<span class="at">link=</span><span class="st">'log'</span>))</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nbm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Family: nbinom1  ( log )
+Formula:          novisits ~ flower + treatment + colony
+Data: beevisits
+
+     AIC      BIC   logLik deviance df.resid 
+  1182.6   1211.4   -583.3   1166.6      262 
+
+
+Dispersion parameter for nbinom1 family (): 1.07 
+
+Conditional model:
+                   Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)         0.71730    0.12287   5.838 5.28e-09 ***
+flowernovel        -0.74144    0.14503  -5.112 3.18e-07 ***
+flowertarget        1.03838    0.09810  10.585  &lt; 2e-16 ***
+treatmentcellulose  0.71563    0.11167   6.408 1.47e-10 ***
+treatmentsucrose    0.74317    0.11149   6.666 2.63e-11 ***
+colonyX            -0.11496    0.09974  -1.153 0.249038    
+colonyY            -0.38387    0.10155  -3.780 0.000157 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nbm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Family: nbinom2  ( log )
+Formula:          novisits ~ flower + treatment + colony
+Data: beevisits
+
+     AIC      BIC   logLik deviance df.resid 
+  1207.3   1236.1   -595.6   1191.3      262 
+
+
+Dispersion parameter for nbinom2 family (): 4.69 
+
+Conditional model:
+                   Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)         0.73536    0.11775   6.245 4.24e-10 ***
+flowernovel        -0.72548    0.12693  -5.716 1.09e-08 ***
+flowertarget        1.04379    0.09983  10.456  &lt; 2e-16 ***
+treatmentcellulose  0.76192    0.11229   6.785 1.16e-11 ***
+treatmentsucrose    0.76936    0.11424   6.734 1.65e-11 ***
+colonyX            -0.16805    0.10838  -1.551    0.121    
+colonyY            -0.51527    0.10761  -4.788 1.68e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>We <strong>can</strong> use AIC or BIC-based model selection to decide which model fits best, between Poisson, NB1, and NB2 models.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(prm, nbm1, nbm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     df      AIC
+prm   7 1260.621
+nbm1  8 1182.575
+nbm2  8 1207.286</code></pre>
+</div>
+</div>
+<p>We have a clear winner: NB1!</p>
+</section>
+<section id="accounting-for-overdispersion-quasi-poisson-model" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="accounting-for-overdispersion-quasi-poisson-model"><span class="header-section-number">5.6</span> Accounting for overdispersion: quasi-Poisson Model</h2>
+<p>Or yet another option…in our class, we will not use quasi-Poisson models as much, as they are fitted via quasi-likelihood and this complicates model selection.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>qprm <span class="ot">&lt;-</span> <span class="fu">glm</span>(novisits <span class="sc">~</span> flower <span class="sc">+</span> treatment <span class="sc">+</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>               colony, <span class="at">data=</span>beevisits,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">family=</span><span class="fu">quasipoisson</span>(<span class="at">link=</span><span class="st">'log'</span>))</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(qprm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = novisits ~ flower + treatment + colony, family = quasipoisson(link = "log"), 
+    data = beevisits)
+
+Coefficients:
+                   Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)         0.79055    0.12440   6.355 9.14e-10 ***
+flowernovel        -0.75072    0.14940  -5.025 9.32e-07 ***
+flowertarget        0.99945    0.09896  10.100  &lt; 2e-16 ***
+treatmentcellulose  0.69817    0.11317   6.169 2.58e-09 ***
+treatmentsucrose    0.70953    0.11399   6.225 1.90e-09 ***
+colonyX            -0.17521    0.10266  -1.707   0.0891 .  
+colonyY            -0.43724    0.10460  -4.180 3.97e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for quasipoisson family taken to be 2.047071)
+
+    Null deviance: 1236.33  on 269  degrees of freedom
+Residual deviance:  542.05  on 263  degrees of freedom
+AIC: NA
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<p>We <strong>should not</strong> compare AIC with QAIC to compare two models, so to decide between Poisson and quasi-Poisson (if you ever use it) you must rely on the model assessment plots and the overdispersion factor to decide which is better.</p>
+</section>
+<section id="model-selection-with-dredge-and-qaic-bic" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="model-selection-with-dredge-and-qaic-bic"><span class="header-section-number">5.7</span> Model selection with dredge() and (Q)AIC, BIC</h2>
+<p>Poisson and negative binomial models are fitted via maximum likelihood, so AIC or BIC may be used for model selection.</p>
+<p>How can we use model selection criteria in a case where the likelihood can’t be computed exactly?</p>
+<p>The quasi (log) likelihood is an approximation to the likelihood. It has some properties in common with a (log) likelihood, but is not a likelihood; we resort to using it in cases where the (log) likelihood can not even be evaluated.</p>
+<p>With some code/mathematical gymnastics, we can use principles of quasi-likelihood to estimate QAIC (quasi-AIC, or AIC based on quasi-likelihood) in R for model selection.</p>
+<section id="review-all-subsets-selection-with-dredge" class="level3" data-number="5.7.1">
+<h3 data-number="5.7.1" class="anchored" data-anchor-id="review-all-subsets-selection-with-dredge"><span class="header-section-number">5.7.1</span> Review: all subsets selection with dredge()</h3>
+<p>What if, instead of comparing two (or a few) specific models, we want to compare all possible models that contain some combination of a set of candidate covariates? The package <code>MuMIn</code> contains a function, <code>dredge()</code>, that takes as input a “full” model (one containing all the candidate covariates). It then computes AIC (or other model selection criteria) for all possible models containing subsets of the covariate and reports the results in a ranked table. For example, for our Poisson regression model, we could do:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co">#have to make sure na.action is 'na.fail' for input model</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>prm <span class="ot">&lt;-</span> <span class="fu">update</span>(prm, <span class="at">na.action=</span><span class="st">'na.fail'</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dredge</span>(prm, <span class="at">rank=</span><span class="st">'AIC'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fixed term is "(Intercept)"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Global model call: glm(formula = novisits ~ flower + treatment + colony, family = poisson(link = "log"), 
+    data = beevisits, na.action = "na.fail")
+---
+Model selection table 
+  (Intrc) colny flowr trtmn df   logLik    AIC  delta weight
+8  0.7905     +     +     +  7 -623.310 1260.6   0.00      1
+7  0.6428           +     +  5 -642.317 1294.6  34.01      0
+4  1.3100     +     +        5 -677.205 1364.4 103.79      0
+3  1.1560           +        3 -695.120 1396.2 135.62      0
+6  1.1240     +           +  5 -898.637 1807.3 546.65      0
+5  0.9767                 +  3 -917.644 1841.3 580.67      0
+2  1.6440     +              3 -952.532 1911.1 650.44      0
+1  1.4900                    1 -970.446 1942.9 682.27      0
+Models ranked by AIC(x) </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dredge</span>(prm, <span class="at">rank=</span><span class="st">'BIC'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fixed term is "(Intercept)"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Global model call: glm(formula = novisits ~ flower + treatment + colony, family = poisson(link = "log"), 
+    data = beevisits, na.action = "na.fail")
+---
+Model selection table 
+  (Intrc) colny flowr trtmn df   logLik    BIC  delta weight
+8  0.7905     +     +     +  7 -623.310 1285.8   0.00      1
+7  0.6428           +     +  5 -642.317 1312.6  26.82      0
+4  1.3100     +     +        5 -677.205 1382.4  96.59      0
+3  1.1560           +        3 -695.120 1407.0 121.23      0
+6  1.1240     +           +  5 -898.637 1825.3 539.46      0
+5  0.9767                 +  3 -917.644 1852.1 566.27      0
+2  1.6440     +              3 -952.532 1921.9 636.05      0
+1  1.4900                    1 -970.446 1946.5 660.68      0
+Models ranked by BIC(x) </code></pre>
+</div>
+</div>
+</section>
+<section id="review-ic-weights" class="level3" data-number="5.7.2">
+<h3 data-number="5.7.2" class="anchored" data-anchor-id="review-ic-weights"><span class="header-section-number">5.7.2</span> Review: IC “weights”</h3>
+<p>Note the last two columns of the <code>dredge</code> output: the “delta” (or <span class="math inline">\(\delta\)</span>) AIC or BIC values and the “weights”. The <span class="math inline">\(\delta\)</span>s are obtained by simply subtracting the best model’s IC value from that of each other model.</p>
+<p>We already mentioned a rule of thumb: that the <span class="math inline">\(\delta IC\)</span> should be at least 3 or to provide reasonable evidence that one model is really better than the other. Another way of measuring the differences between models is to use model <em>weights</em>. Theoretically, these measure the relative likelihoods of different models; you can think of them as giving the probability that a given model is the best-fitting one in the set of models examined, according to the IC being used.</p>
+<p>Model weights are computed simply according to: <span class="math display">\[ e^\frac{-\delta IC}{2}\]</span></p>
+<p>And they sum to one for all models in a <code>dredge()</code>.</p>
+</section>
+<section id="extending-dredge-to-quasi-likelihood" class="level3" data-number="5.7.3">
+<h3 data-number="5.7.3" class="anchored" data-anchor-id="extending-dredge-to-quasi-likelihood"><span class="header-section-number">5.7.3</span> Extending dredge() to quasi-Likelihood</h3>
+<p>With (rather a lot of) effort to define some custom functions, we can do the same thing for a quasi-Poisson model using quasi-AIC. <em>Note: This idea is based on notes by Ben Bolker provided with the R package <code>bbmle</code>.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># modify a glm() output object so that</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># it contains a quasipoisson fit but the </span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># AIC (likelihood) from the equivalent regular Poisson model</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>x.quasipoisson <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">quasipoisson</span>(...)</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>aic <span class="ot">&lt;-</span> <span class="fu">poisson</span>(...)<span class="sc">$</span>aic</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>res</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="co"># function to extract the overdispersion parameter</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co"># from a quasi model</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>dfun <span class="ot">&lt;-</span> <span class="cf">function</span>(object) {</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(object,<span class="fu">sum</span>((weights <span class="sc">*</span> residuals<span class="sc">^</span><span class="dv">2</span>)[weights <span class="sc">&gt;</span> <span class="dv">0</span>])<span class="sc">/</span>df.residual)</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="co"># function that modifies MuMIn::dredge() </span></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="co"># for use with quasi GLM</span></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>qdredge <span class="ot">&lt;-</span> <span class="cf">function</span>(model, <span class="at">family=</span><span class="st">'x.quasipoisson'</span>, <span class="at">na.action=</span>na.fail, <span class="at">chat =</span> <span class="fu">dfun</span>(model), <span class="at">rank=</span><span class="st">'QAIC'</span>, ...){</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>  model2 <span class="ot">&lt;-</span> <span class="fu">update</span>(model, <span class="at">family=</span>family, <span class="at">na.action=</span>na.action)</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>  (dt <span class="ot">&lt;-</span> <span class="fu">dredge</span>(model2, <span class="at">rank=</span>rank, <span class="at">chat=</span>chat, ...))</span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a><span class="co">#do "dredge" for model selection</span></span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a><span class="fu">qdredge</span>(qprm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fixed term is "(Intercept)"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Global model call: glm(formula = novisits ~ flower + treatment + colony, family = family, 
+    data = beevisits, na.action = na.action)
+---
+Model selection table 
+  (Intrc) colny flowr trtmn df   logLik  rank  delta weight
+8  0.7905     +     +     +  8 -622.310 626.0   0.00  0.999
+7  0.6428           +     +  6 -641.317 640.6  14.57  0.001
+4  1.3100     +     +        6 -676.205 674.7  48.66  0.000
+3  1.1560           +        4 -694.120 688.2  62.16  0.000
+6  1.1240     +           +  6 -897.637 891.0 265.00  0.000
+5  0.9767                 +  4 -916.644 905.6 279.57  0.000
+2  1.6440     +              4 -951.532 939.7 313.65  0.000
+1  1.4900                    2 -969.446 953.2 327.15  0.000
+Models ranked by rank(x, chat = 2.04707063774377) </code></pre>
+</div>
+</div>
+<p>Note: the <code>qdredge()</code> function is also provided for you in the package <code>s245</code>. So if you do want to use this, all you need to do is use <code>s245::qdredge()</code> instead of <code>dredge()</code>.</p>
+</section>
+</section>
+<section id="offsets" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="offsets"><span class="header-section-number">5.8</span> Offsets</h2>
+<p>In our model, the response variable was the number of flowers visited by a bee, and each bee was in the same experimental setting for the same amount of time, so there was no need to account for effort or time spent in each case.</p>
+<p>This is not always true: consider, for example:</p>
+<ul>
+<li>Dolphin surveys</li>
+<li>Bird counts</li>
+<li>Consider the schools and crime example from homework as well</li>
+</ul>
+<p>In this case, it would be natural to adjust for effort. The intuitive way to do it would be to use counts per unit effort as the response variable:</p>
+<p><span class="math display">\[ log(\frac{\lambda_i}{effort}) = \beta_0 + \dots \]</span></p>
+<p>But notice that this is equivalent to including <span class="math inline">\(log(effort)\)</span> as an ``offset” on the right hand side of the regression equation:</p>
+<p><span class="math display">\[ log(\lambda_i) = \beta_0 + \dots + log(effort)\]</span></p>
+<p>This is how we specify models with <em>offsets</em> in R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>offset.mod <span class="ot">&lt;-</span> <span class="fu">glm</span>(counts <span class="sc">~</span> predictor1 <span class="sc">+</span> predictor2 <span class="sc">+</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">offset</span>(<span class="fu">log</span>(effort)), <span class="at">family=</span>poisson)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Note: if you use dredge() with a model with an offset, be sure to specify the offset as a “fixed” term, i.e.&nbsp;a term that must be included in <em>all</em> models:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dredge</span>(offset.mod, <span class="at">fixed =</span> <span class="st">'offset(log(effort))'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="prediction-plots" class="level2" data-number="5.9">
+<h2 data-number="5.9" class="anchored" data-anchor-id="prediction-plots"><span class="header-section-number">5.9</span> Prediction Plots</h2>
+<p>Once you have a “best” model, how do you interpret it?</p>
+<p>When we went to great lengths to make prediction plots for a linear regression model so we could “see” the slope of the predicted relationship, you may have wondered: <em>why bother?</em> I can just look at the slope estimate and get the same insight!</p>
+<p>Now, with a more complicated model equation with a link function, it’s not so easy. Now, we will really appreciate those prediction plots!</p>
+<p>With the link function and the Poisson distribution, it is more challenging to interpret the coefficients of the model directly. The easiest way to understand the effects of different predictors is to look at plots of model predictions. However, as always we don’t want to plot <code>fitted(model)</code> as a function of each predictor in a model with more than one predictor; predictors other than the one we are interested in will influence the predictions, introducing extra variation. Instead, we will construct a new (fake) dataset to make predictions for, in which all predictors but the one we are interested in are held constant. For example, using our quasi-Poisson model and looking at the effect of colony (predicted values with 95% CIs):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>newdata <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">colony=</span><span class="fu">c</span>(<span class="st">'W'</span>, <span class="st">'X'</span>, <span class="st">'Y'</span>),</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">flower=</span><span class="st">'familiar'</span>,</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">target.colour=</span><span class="st">'blue'</span>,</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">treatment=</span><span class="st">'cellulose'</span>)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">=</span> <span class="fu">predict</span>(qprm, <span class="at">newdata=</span>newdata,</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">type=</span><span class="st">'response'</span>,</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">se.fit=</span><span class="cn">TRUE</span>)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>newdata <span class="ot">&lt;-</span> newdata <span class="sc">|&gt;</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">preds =</span> pred<span class="sc">$</span>fit,</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">CIlow =</span> pred<span class="sc">$</span>fit <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span>pred<span class="sc">$</span>se.fit,</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">CIup =</span> pred<span class="sc">$</span>fit <span class="sc">+</span> <span class="fl">1.96</span><span class="sc">*</span>pred<span class="sc">$</span>se.fit)</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(preds <span class="sc">~</span> colony, <span class="at">data=</span>newdata) <span class="sc">|&gt;</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x=</span><span class="st">'Colony'</span>, <span class="at">y=</span><span class="st">'Predicted</span><span class="sc">\n</span><span class="st">N. Visits'</span>) <span class="sc">|&gt;</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_errorbar</span>(CIlow <span class="sc">+</span> CIup <span class="sc">~</span> colony, <span class="at">data=</span>newdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="count-data-regression_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="624"></p>
+</div>
+</div>
+<p>If we had a quantitative predictor instead, the process would be similar, except when we define <code>newdata</code>, we would have to choose a range and granularity for which to make predictions. For example, imagine if bee length in mm was one of our predictors, and we wanted predictions for lengths between 0.5 and 3 mm (with a value every 0.05mm). We might begin:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>newdata <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">bee.length =</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="fl">0.05</span>, <span class="at">by=</span><span class="fl">0.05</span>, <span class="at">to=</span><span class="dv">3</span>),</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">colony=</span><span class="fu">c</span>(<span class="st">'W'</span>),</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">flower=</span><span class="st">'familiar'</span>,</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">target.colour=</span><span class="st">'blue'</span>,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">treatment=</span><span class="st">'cellulose'</span>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(newdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  bee.length colony   flower target.colour treatment
+1       0.05      W familiar          blue cellulose
+2       0.10      W familiar          blue cellulose
+3       0.15      W familiar          blue cellulose
+4       0.20      W familiar          blue cellulose
+5       0.25      W familiar          blue cellulose
+6       0.30      W familiar          blue cellulose</code></pre>
+</div>
+</div>
+<p>Then, when we make the plot, we would need to use <code>gf\_ribbon()</code> instead of <code>gf\_errorbar()</code> to show the CI.</p>
+<p>We can also use <code>pred_plot(fitted_model, 'variable_name')</code> to make these plots with a lot less code (and if you need to know the values at which other predictors are fixed, use <code>get_fixed(dataset)</code>).</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./pdf-pmf.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./model-averaging.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Averaging</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

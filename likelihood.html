@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GLMs and Friends - References</title>
+<title>GLMs and Friends - 3&nbsp; Likelihood</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,7 +64,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./gams.html" rel="prev">
+<link href="./pdf-pmf.html" rel="next">
+<link href="./IC-based-selection.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -62,6 +97,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -74,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./references.html">References</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./likelihood.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -122,7 +159,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./likelihood.html" class="sidebar-item-text sidebar-link">
+  <a href="./likelihood.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
   </div>
 </li>
@@ -218,7 +255,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link active">
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
 </li>
@@ -228,14 +265,29 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data"><span class="header-section-number">3.1</span> Data</a></li>
+  <li><a href="#review---the-normal-probability-density-function-pdf" id="toc-review---the-normal-probability-density-function-pdf" class="nav-link" data-scroll-target="#review---the-normal-probability-density-function-pdf"><span class="header-section-number">3.2</span> Review - the Normal probability density function (PDF)</a></li>
+  <li><a href="#a-simple-model" id="toc-a-simple-model" class="nav-link" data-scroll-target="#a-simple-model"><span class="header-section-number">3.3</span> A simple model</a></li>
+  <li><a href="#using-the-model-to-make-predictions" id="toc-using-the-model-to-make-predictions" class="nav-link" data-scroll-target="#using-the-model-to-make-predictions"><span class="header-section-number">3.4</span> Using the Model to Make Predictions</a></li>
+  <li><a href="#likelihood-to-the-rescue" id="toc-likelihood-to-the-rescue" class="nav-link" data-scroll-target="#likelihood-to-the-rescue"><span class="header-section-number">3.5</span> Likelihood to the Rescue!</a></li>
+  <li><a href="#how-does-this-relate-to-linear-regression" id="toc-how-does-this-relate-to-linear-regression" class="nav-link" data-scroll-target="#how-does-this-relate-to-linear-regression"><span class="header-section-number">3.6</span> How does this relate to linear regression?</a>
+  <ul class="collapse">
+  <li><a href="#model-equation" id="toc-model-equation" class="nav-link" data-scroll-target="#model-equation"><span class="header-section-number">3.6.1</span> Model Equation:</a></li>
+  </ul></li>
+  <li><a href="#likelihood-of-a-dataset-given-a-model" id="toc-likelihood-of-a-dataset-given-a-model" class="nav-link" data-scroll-target="#likelihood-of-a-dataset-given-a-model"><span class="header-section-number">3.7</span> Likelihood of a dataset, given a model</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">References</h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></h1>
 </div>
 
 
@@ -250,9 +302,96 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p><code>r if (knitr:::is_html_output()) ' '</code></p>
+<p>In the last section, we said that “likelihood” is a measure of goodness-of-fit of a model to a dataset. But what is it <em>exactly</em> and just how do we compute it?</p>
+<section id="data" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="data"><span class="header-section-number">3.1</span> Data</h2>
+<p>Today’s dataset was collected in Senegal in 2015-2016 in a survey carried out by UNICEF, of 5440 households in the urban area of Dakar, Senegal. Among these households, information was collected about 4453 children under 5 years old, including their </p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_dhistogram</span>(<span class="sc">~</span>AN3, <span class="at">data=</span>wt, <span class="at">binwidth=</span><span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x=</span><span class="st">'Weight (kg)'</span>, <span class="at">y=</span><span class="st">'Probability</span><span class="sc">\n</span><span class="st">Density'</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_fitdistr</span>(<span class="at">dist=</span><span class="st">'dnorm'</span>, <span class="at">size=</span><span class="fl">1.3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">30</span>, <span class="at">by=</span><span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="likelihood_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="624"></p>
+</div>
+</div>
+</section>
+<section id="review---the-normal-probability-density-function-pdf" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="review---the-normal-probability-density-function-pdf"><span class="header-section-number">3.2</span> Review - the Normal probability density function (PDF)</h2>
+<p><span class="math display">\[ f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}} \]</span> <br> <br> <br> <br> <br> <br> <br> <br></p>
+</section>
+<section id="a-simple-model" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="a-simple-model"><span class="header-section-number">3.3</span> A simple model</h2>
+<p>The distribution of weights looks quite unimodal and symmetric, so we will model it with a normal distribution with mean 11.8 and standard deviation 3.53 (N( <span class="math inline">\(\mu=\)</span> 11.8, <span class="math inline">\(\sigma=\)</span> 3.53), black line).</p>
+</section>
+<section id="using-the-model-to-make-predictions" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="using-the-model-to-make-predictions"><span class="header-section-number">3.4</span> Using the Model to Make Predictions</h2>
+<p>If you had to predict the weight of one child from this population, what weight would you guess? </p>
+<p>Is it more likely for a child in Dakar to weigh 10kg, or 20kg? How much more likely? <br> <br></p>
+<p>What is the <em>probability</em> of a child in Dakar weighing 11.5 kg? <br> <br></p>
+</section>
+<section id="likelihood-to-the-rescue" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="likelihood-to-the-rescue"><span class="header-section-number">3.5</span> Likelihood to the Rescue!</h2>
+<p>Which is more likely: three children who weigh 11, 8.2, and 13kg, or three who weigh 10, 12.5 and 15 kg?</p>
+<p>How did you:</p>
+<ul>
+<li>Find the likelihood of each observation?</li>
+</ul>
+<p><br> <br></p>
+<ul>
+<li>Combine the likelihoods of a set of three observations?</li>
+</ul>
+<p><br> <br></p>
+<p>What did you have to assume about the set of observations? <br> <br></p>
+</section>
+<section id="how-does-this-relate-to-linear-regression" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="how-does-this-relate-to-linear-regression"><span class="header-section-number">3.6</span> How does this relate to linear regression?</h2>
+<p>What if we think of this situation as a linear regression problem (with no predictors)?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>lm_version <span class="ot">&lt;-</span> <span class="fu">lm</span>(AN3 <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> wt)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_version)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = AN3 ~ 1, data = wt)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9.8964 -2.3964  0.1036  2.4036 18.9036 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 11.79644    0.05435   217.1   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.529 on 4216 degrees of freedom
+  (235 observations deleted due to missingness)</code></pre>
+</div>
+</div>
+<section id="model-equation" class="level3" data-number="3.6.1">
+<h3 data-number="3.6.1" class="anchored" data-anchor-id="model-equation"><span class="header-section-number">3.6.1</span> Model Equation:</h3>
+<p><br> <br> <br> <br></p>
+</section>
+</section>
+<section id="likelihood-of-a-dataset-given-a-model" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="likelihood-of-a-dataset-given-a-model"><span class="header-section-number">3.7</span> Likelihood of a dataset, given a model</h2>
+<p>Finally, now, we can understand what we were computing when we did</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">logLik</span>(lm_version)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'log Lik.' -11301.19 (df=2)</code></pre>
+</div>
+</div>
+<p>For our chosen regression model, we know that the residuals should have a normal distribution with mean 0 and standard deviation <span class="math inline">\(\sigma\)</span> (estimated Residual Standard Error from R <code>summary()</code> output).</p>
+<p>For each data point in the dataset, for a given regression model, we can compute a model prediction.</p>
+<p>We can subtract the prediction from the observed response-variable values to get the residuals.</p>
+<p>We can compute the <strong>likelihood</strong> (<span class="math inline">\(L\)</span>) of this set of residuals by finding the likelihood of each individual residual <span class="math inline">\(e_i\)</span> in a <span class="math inline">\(N(0, \sigma)\)</span> distribution.</p>
+<p>To get the likelihood of the full dataset given the model, we use the fact that the residuals are independent (they better be, because that was one of the conditions of of linear regression model) – we can multiply the likelihoods of all the individual residuals together to get the joint likelihood of the full set.</p>
+<p><em>That</em> is the “likelihood” that is used in the AIC and BIC calculations we considered earlier.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -605,11 +744,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./gams.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span>
+      <a href="./IC-based-selection.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./pdf-pmf.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
