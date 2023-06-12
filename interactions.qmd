@@ -1,45 +1,49 @@
+```{r}
+#| label: setup-interactions
+#| include: false
 
-```{r, setup-interactions, include = FALSE}
-# load packages that are going to be used
-require(tidyverse)   # this loads mosaic, ggformula, etc. too
-require(ggformula)
-require(mosaic)
-require(s245)
-# Some customization.  You can alter or delete as desired (if you know what you are doing).
+library(tidyverse)   
+library(ggformula)
+library(mosaic)
+library(s245)
 
-theme_set(theme_bw(base_size=12))     # change theme for ggplot2/ggformula
+theme_set(theme_bw(base_size=12))     
 
 knitr::opts_chunk$set(
-  echo = TRUE,      # for homework, always show R code (this is the default)
-  tidy = FALSE,     # display code as typed (rather than reformatted)
-  size = "small",   # slightly smaller font for code
+  echo = TRUE,      
+  tidy = FALSE,     
+  size = "small",   
   message = FALSE, warning = FALSE,
-  fig.width = 6.5, fig.height = 2.1, fig.align = 'center') # don't print warnings or messages in compiled document. So you MUST check them in RStudio!
+  fig.width = 6.5, fig.height = 2.1, fig.align = 'center') 
 
-teach_beauty <- read.csv('http://www.stat.columbia.edu/~gelman/arm/examples/beauty/ProfEvaltnsBeautyPublic.csv') %>%
+teach_beauty <- read.csv('http://www.stat.columbia.edu/~gelman/arm/examples/beauty/ProfEvaltnsBeautyPublic.csv') |>
   rename(beauty = btystdave,
-         eval = courseevaluation) %>%
+         eval = courseevaluation) |>
   mutate(race_eth = ifelse(minority == 0, 'White/Caucasian', 'Other'),
          language = ifelse(nonenglish == 1, 'English', 'Other Language'),
          formal = ifelse(formal == 1, 'Formal Dress', 'Informal Dress'),
-         female = ifelse(female == 1, 'female', 'not female')) %>%
+         female = ifelse(female == 1, 'female', 'not female')) |>
   dplyr::select(beauty, eval, race_eth, language, age, students, formal, profnumber, female)
 ```
 
 # Interactions
 
-Two predictors **interact** when you need to know values of *both* in order to make an accurate prediction of the response variable value.
+Two predictors **interact** when you need to know values of *both* in
+order to make an accurate prediction of the response variable value.
 
-Predictors can interact in *any* type of regression model (so this chapter could really be placed almost anywhere).
+Predictors can interact in *any* type of regression model (so this
+chapter could really be placed almost anywhere).
 
 ## Example: Quantitative-Categorical Interaction
 
 ```{r}
-gf_point(eval ~ beauty, color = ~female, shape = ~female, data = teach_beauty) %>%
+gf_point(eval ~ beauty, color = ~female, shape = ~female, data = teach_beauty) |>
   gf_lm()
 ```
 
-`Eval` may go up as `beauty` increases, but the *slope* of the relationship is *different* for females and non-females.  This is an **interaction** between `beauty` and `female`.
+`Eval` may go up as `beauty` increases, but the *slope* of the
+relationship is *different* for females and non-females. This is an
+**interaction** between `beauty` and `female`.
 
 ## Categorical-Categorical Interaction Example
 
@@ -47,15 +51,24 @@ gf_point(eval ~ beauty, color = ~female, shape = ~female, data = teach_beauty) %
 gf_boxplot(eval ~ formal | female, data = teach_beauty)
 ```
 
-Perhaps *Informal Dress* affects `eval` scores, but really only for non-females -- for females, `formal` dress doesn't make a difference either way.
+Perhaps *Informal Dress* affects `eval` scores, but really only for
+non-females -- for females, `formal` dress doesn't make a difference
+either way.
 
-The effect of `formal` dress is *different* depending on the value of `female`. This is an interaction between `formal` and `female`.
+The effect of `formal` dress is *different* depending on the value of
+`female`. This is an interaction between `formal` and `female`.
 
 ## Quant-Quant interactions?
-Yes, these are possible, but very hard to visualize and conceptualize. Basically, it would mean that the slope of the line for one predictor changes gradually as the value of a second variable changes. 
+
+Yes, these are possible, but very hard to visualize and conceptualize.
+Basically, it would mean that the slope of the line for one predictor
+changes gradually as the value of a second variable changes.
 
 ## R code
-If you want to include an interaction term in a model in R, use a `*` rather than a `+` between the predictors that (may) interact. For example, based on our exploration above, we might try:
+
+If you want to include an interaction term in a model in R, use a `*`
+rather than a `+` between the predictors that (may) interact. For
+example, based on our exploration above, we might try:
 
 ```{r}
 beauty_mod <- lm(eval ~ beauty*female +
@@ -65,16 +78,30 @@ beauty_mod <- lm(eval ~ beauty*female +
 summary(beauty_mod)
 ```
 
-Notice the additional indicator variables in the coefficient table/model equation. Now we need to *adjust* the effects of the `beauty` predictor depending on the values of `formal` and `female`, which interact with it.
+Notice the additional indicator variables in the coefficient table/model
+equation. Now we need to *adjust* the effects of the `beauty` predictor
+depending on the values of `formal` and `female`, which interact with
+it.
 
-We can use IC-based model selection to determine whether including these interactions in a model is important or not.
+We can use IC-based model selection to determine whether including these
+interactions in a model is important or not.
 
 ```{r}
-require(MuMIn)
+library(MuMIn)
 dredge(beauty_mod, rank = 'AIC')
 ```
 
-In the case of the particular model we fitted, the "best" model starting from this full model is actually one *without* interactions. If you want to explore the dataset further, you will find that actually a model where `age`, `beauty` AND `female` interact fits much better...
+In the case of the particular model we fitted, the "best" model starting
+from this full model is actually one *without* interactions. If you want
+to explore the dataset further, you will find that actually a model
+where `age`, `beauty` AND `female` interact fits much better...
 
 ## Cautionary note
-If you include an interaction in a regression model, you **must** also include the corresponding "fixed effects" -- this means if you have an indicator variable/slope term for an interaction in your model, you must also have the indicator variables/slopes corresponding to the individual predictors. Our fitting functions (`lm()`, `glm()`, `glmmTMB()`, etc.) are smart enough to ensure this for you. So is `dredge()`. (It would take effort to mess this up in R.) 
+
+If you include an interaction in a regression model, you **must** also
+include the corresponding "fixed effects" -- this means if you have an
+indicator variable/slope term for an interaction in your model, you must
+also have the indicator variables/slopes corresponding to the individual
+predictors. Our fitting functions (`lm()`, `glm()`, `glmmTMB()`, etc.)
+are smart enough to ensure this for you. So is `dredge()`. (It would
+take effort to mess this up in R.)

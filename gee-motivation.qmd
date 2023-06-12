@@ -1,27 +1,37 @@
-```{r, setup-gee, include=FALSE}
-require(mosaic)   
-require(ggformula)
-require(tidyverse)
-require(s245)
-require(MuMIn)
+```{r}
+#| label: setup-gee
+#| include: false
+library(mosaic)   
+library(ggformula)
+library(tidyverse)
+library(s245)
+library(MuMIn)
 theme_set(theme_bw(base_size=18))
 knitr::opts_chunk$set(
-  tidy=FALSE,     # display code as typed
-  size="footnotesize",   # slightly smaller font for code
+  tidy=FALSE,    
+  size="footnotesize",   
   fig.width=3.5, fig.height=2, fig.show='hold')
 ```
 
 # GEEs
-So far, we looked at random effects as one way to account for non-independence of residuals due to a variable that we don't want to include as a regular predictor. Another option for this kind of situation is to use Generalized Estimating Equations (GEEs).
+
+So far, we looked at random effects as one way to account for
+non-independence of residuals due to a variable that we don't want to
+include as a regular predictor. Another option for this kind of
+situation is to use Generalized Estimating Equations (GEEs).
 
 ## Data Source
-The dataset used here is industry data from a skin care company. It contains data from experiments with 20 subjects. Each person tested 6 different skin moisturizers, and the hydration level of their skin was measured every 2 hours for 24 hours following application of each product.
-The variables are:
 
-- `Subjects` Numeric code identifying the person
-- `CorneoDiff` The hydration CorneoDiff
-- `Time` Time in hours since product application
-- `Product` Which product was used
+The dataset used here is industry data from a skin care company. It
+contains data from experiments with 20 subjects. Each person tested 6
+different skin moisturizers, and the hydration level of their skin was
+measured every 2 hours for 24 hours following application of each
+product. The variables are:
+
+-   `Subjects` Numeric code identifying the person
+-   `CorneoDiff` The hydration CorneoDiff
+-   `Time` Time in hours since product application
+-   `Product` Which product was used
 
 The data file can be accessed online at:
 
@@ -29,26 +39,29 @@ The data file can be accessed online at:
 
 ```{r, hyddat, echo=FALSE, fig.width=6.5, fig.height=2.5}
 hyd <- read.csv('http://sldr.netlify.com/data/hydrationData.csv')
-hyd <- hyd %>% mutate(Subjects = factor(Subjects),
+hyd <- hyd |> mutate(Subjects = factor(Subjects),
                       Product = factor(Product))
-hyd.sm <- hyd %>% dplyr::filter(Subjects %in% c('1', '2', '3','4','5', '6'))
+hyd.sm <- hyd |> dplyr::filter(Subjects %in% c('1', '2', '3','4','5', '6'))
 ```
 
 ## Data Exploration
-We would like to model the hydration, `CorneoDiff`, over time and as a function of product.
+
+We would like to model the hydration, `CorneoDiff`, over time and as a
+function of product.
 
 ```{r, fig.width=7, fig.height=3.5, warning=FALSE}
-gf_point(CorneoDiff ~ Time | Product, data=hyd.sm) %>%
+gf_point(CorneoDiff ~ Time | Product, data=hyd.sm) |>
   gf_lims(x=c(0,24)) 
 ```
 
 ```{r, fig.width=7, fig.height=3.5, warning=FALSE}
-gf_point(CorneoDiff ~ Time | Subjects, color=~Product, data=hyd.sm) %>%
-  gf_line(CorneoDiff ~ Time | Subjects, color=~Product, data=hyd.sm) %>%
+gf_point(CorneoDiff ~ Time | Subjects, color=~Product, data=hyd.sm) |>
+  gf_line(CorneoDiff ~ Time | Subjects, color=~Product, data=hyd.sm) |>
   gf_lims(x=c(0,24)) 
 ```
 
 ## Linear Regression
+
 We could try just fitting a linear regression. What do you expect?
 
 ```{r}
@@ -57,14 +70,16 @@ summary(lm1)
 ```
 
 ```{r, fig.width=7, fig.height=3.5, warning=FALSE}
-gf_point(CorneoDiff ~ Time | Subjects, color=~Product, data=hyd.sm) %>%
-  gf_line(CorneoDiff ~ Time | Subjects, color=~Product, data=hyd.sm) %>%
-  gf_lims(x=c(0,24))  %>%
+gf_point(CorneoDiff ~ Time | Subjects, color=~Product, data=hyd.sm) |>
+  gf_line(CorneoDiff ~ Time | Subjects, color=~Product, data=hyd.sm) |>
+  gf_lims(x=c(0,24))  |>
   gf_abline(intercept=7.86, slope=0.05608)
 ```
 
 ## Model Assessment
+
 For the linear regression:
+
 ```{r, fig.width=6, fig.height=3.5}
 acf(resid(lm1))
 ```
@@ -78,32 +93,38 @@ acf(resid(lm1))
 *As we expected, things do not look good...*
 
 ## Linear Regression
+
 We tried a linear regression and encountered two problems:
 
-- The residuals are not independent.  There seems to be correlation over time within subjects.
-- We can't account for inter-person differences unless we include person as a predictor, but we don't want to do that, because if we do we can not make predictions from the fitted model without specifying which of these exact people we want to predict for.  That's not ideal - we want predictions for all people, or at least averaged over all people.
+-   The residuals are not independent. There seems to be correlation
+    over time within subjects.
+-   We can't account for inter-person differences unless we include
+    person as a predictor, but we don't want to do that, because if we
+    do we can not make predictions from the fitted model without
+    specifying which of these exact people we want to predict for.
+    That's not ideal - we want predictions for all people, or at least
+    averaged over all people.
 
 ## Generalized Estimating Equations (GEEs)
-A potential solution we will invesitgate today is to use a generalized estimating equation (GEE) instead of a GLM.  GEEs:
 
-- Are a ``PA" model:
-- Work by changing...
-</br>
-</br>
-</br>
-</br>
+A potential solution we will invesitgate today is to use a generalized
+estimating equation (GEE) instead of a GLM. GEEs:
 
-What residual correlation structures can be accomodated in this framework?
+-   Are a \`\`PA" model:
+-   Work by changing... </br> </br> </br> </br>
 
-- Independence (`corstr=`independence'`)
-- Exchangeable = Block Diagonal (`corstr=`exchangeable'`)
-- AR1 (first-order auto-regressive) (`corstr=`ar1'`)
-- Unstructured (CAUTION!) (`corstr=`unstructured'`)
+What residual correlation structures can be accomodated in this
+framework?
+
+-   Independence (`corstr=`independence'\`)
+-   Exchangeable = Block Diagonal (`corstr=`exchangeable'\`)
+-   AR1 (first-order auto-regressive) (`corstr=`ar1'\`)
+-   Unstructured (CAUTION!) (`corstr=`unstructured'\`)
 
 ### Fitting GEEs with different correlation structures
 
 ```{r,}
-require(geepack)
+library(geepack)
 hyd <- arrange(hyd, Subjects, Time)
 lm1 <- lm(CorneoDiff ~ Time + Product, data=hyd)
 summary(lm1)
@@ -117,23 +138,29 @@ gee.exch <- geeglm(CorneoDiff ~ Time + Product, data=hyd,
                    id = Subjects, corstr='exchangeable')
 ```
 
-What is **the same** (or similar) and what is very **different** between the models?
+What is **the same** (or similar) and what is very **different** between
+the models?
 
-### Comparing different correlation structures}
+### Comparing different correlation structures
 
-We can use a specific variance of QIC, $QIC_{R}$, to compare models with different correlation structures:
+We can use a specific variance of QIC, $QIC_{R}$, to compare models with
+different correlation structures:
 
 ```{r,}
-require(MuMIn)
-QIC(gee.ind, gee.exch, gee.ar1, typeR=TRUE)
+library(MuMIn)
+# QIC(gee.ind, gee.exch, gee.ar1, typeR=TRUE)
 ```
 
 How can we interpret this result?
 
 ## GEE model assessment
-Model assessment for a GEE is mostly the same as for the corresponding linear regression or GLM (Poisson, Logistic, etc.)
 
-We were using GEEs to try to correct for issues with non-independent residuals.  How does the residual plot change for a GEE relative to the corresponding (g)lm? *Does* it change? *Should* it?
+Model assessment for a GEE is mostly the same as for the corresponding
+linear regression or GLM (Poisson, Logistic, etc.)
+
+We were using GEEs to try to correct for issues with non-independent
+residuals. How does the residual plot change for a GEE relative to the
+corresponding (g)lm? *Does* it change? *Should* it?
 
 ```{r,fig.width=3.5, fig.height=2.8}
 acf(resid(lm1), main='LM ACF')
@@ -143,27 +170,33 @@ acf(resid(gee.ind), main='GEE ACF')
 **What is going on here?**
 
 ## Model Selection - Which variables?
-We can use another variant of the QIC to do model selection to determine which variables are important to retain in a GEE model.
+
+We can use another variant of the QIC to do model selection to determine
+which variables are important to retain in a GEE model.
 
 ```{r}
 gee.ind <- update(gee.ind, na.action='na.fail')
 dredge(gee.ind, rank='QIC', typeR=FALSE)
 ```
 
-How would you interpret these results and present them to the cosmetics company that collected the data?
-
+How would you interpret these results and present them to the cosmetics
+company that collected the data?
 
 ## Prediction Plots
-As for models we studied previously, we can make prediction plots to visualize the relationships a model specifies between the predictor and response variables.
 
-However, we can not use `predict()` to get model predictions **with standard errors** from a GEE.
+As for models we studied previously, we can make prediction plots to
+visualize the relationships a model specifies between the predictor and
+response variables.
+
+However, we can not use `predict()` to get model predictions **with
+standard errors** from a GEE.
 
 `pred_plot()` works, though; for example:
 
 ```{r}
-s245::pred_plot(gee.ind, 'Product') %>%
+s245::pred_plot(gee.ind, 'Product') |>
   gf_labs(y = 'CorneoDiff')
 ```
 
-Once again we're grateful for the parametric bootstrap! (This time, `pred_plot()` is silently doing the work for us.)
-
+Once again we're grateful for the parametric bootstrap! (This time,
+`pred_plot()` is silently doing the work for us.)

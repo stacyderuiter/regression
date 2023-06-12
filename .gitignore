@@ -8,6 +8,9 @@
 
 # User-specific files
 .Ruserdata
+.Rhistory
+.RData
+.DS_Store
 
 # Example code in package build process
 *-Ex.R
@@ -54,4 +57,4 @@ _book/
 /.quarto/
 /_site/
 
-/.quarto/
+

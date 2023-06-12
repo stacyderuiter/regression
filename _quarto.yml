@@ -7,8 +7,24 @@ book:
   date: "5/25/2023"
   chapters:
     - index.qmd
-    - intro.qmd
-    - summary.qmd
+    - lm1.qmd
+    - IC-based-selection.qmd
+    - likelihood.qmd
+    - pdf-pmf.qmd
+    - count-data-regression.qmd
+    - model-averaging.qmd
+    - interactions.qmd
+    - binary-regression.qmd
+    - binary-regression2.qmd
+    - collinearity.qmd
+    - zero-inflation.qmd
+    - ncv.qmd
+    - random-effects.qmd
+    - random-effects2.qmd
+    - gee-motivation.qmd
+    - corr-struct.qmd
+    - anova-plus.qmd
+    - gams.qmd
     - references.qmd
 
 bibliography: references.bib

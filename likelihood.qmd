@@ -1,74 +1,85 @@
+```{r}
+#| label: setup
+#| include: false
 
-```{r, include=FALSE}
+library(mosaic)
+library(ggformula)
 library(haven)
-file <- 'C:/Users/Stacy DeRuiter/Dropbox/CalvinTeaching/STAT143/Fall2018/Tests/ch.sav'
+file <- 'https://sldr.netlify.app/data/ch.sav'
 sch <- read_sav(file)
 set.seed(123)
-wt <- sch %>% dplyr::select(AN3) %>%
-  filter(AN3 < 80 | is.na(AN3))
+wt <- sch |> 
+  dplyr::select(AN3) |>
+  dplyr::filter(AN3 < 80 | is.na(AN3))
 ```
 
 # Likelihood
-In the last section, we said that "likelihood" is a measure of goodness-of-fit of a model to a dataset. But what is it *exactly* and just how do we compute it? 
+
+In the last section, we said that "likelihood" is a measure of
+goodness-of-fit of a model to a dataset. But what is it *exactly* and
+just how do we compute it?
 
 ## Data
-Today's dataset was collected in Senegal in 2015-2016 in a survey carried out by UNICEF, of 5440 households in the urban area of Dakar, Senegal. Among these households, information was collected about 4453 children under 5 years old, including their \textbf{weights in kilograms.}
+
+Today's dataset was collected in Senegal in 2015-2016 in a survey
+carried out by UNICEF, of 5440 households in the urban area of Dakar,
+Senegal. Among these households, information was collected about 4453
+children under 5 years old, including their
+\textbf{weights in kilograms.}
 
 ```{r, echo=TRUE, fig.width=6.5, fig.height=2, message=FALSE, warning=FALSE}
-gf_dhistogram(~AN3, data=wt, binwidth=1) %>%
-  gf_labs(x='Weight (kg)', y='Probability\nDensity') %>%
-  gf_fitdistr(dist='dnorm', size=1.3) %>%
+gf_dhistogram(~AN3, data=wt, binwidth=1) |>
+  gf_labs(x='Weight (kg)', y='Probability\nDensity') |>
+  gf_fitdistr(dist='dnorm', size=1.3) |>
   gf_refine(scale_x_continuous(breaks=seq(from=0, to=30, by=2)))
 ```
 
 ## Review - the Normal probability density function (PDF)
+
 $$ f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}} $$
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+<br> <br> <br> <br> <br> <br> <br> <br>
 
 ## A simple model
-The distribution of weights looks quite unimodal and symmetric, so we will model it with a normal distribution with mean `r round(mean(~AN3, data=wt, na.rm=TRUE),2)` and standard deviation `r round(sd(~AN3, data=wt, na.rm=TRUE),2)` (N( $\mu=$ `r round(mean(~AN3, data=wt, na.rm=TRUE),2)`, $\sigma=$ `r round(sd(~AN3, data=wt, na.rm=TRUE),2)`), black line).
+
+The distribution of weights looks quite unimodal and symmetric, so we
+will model it with a normal distribution with mean
+`r round(mean(~AN3, data=wt, na.rm=TRUE),2)` and standard deviation
+`r round(sd(~AN3, data=wt, na.rm=TRUE),2)` (N( $\mu=$
+`r round(mean(~AN3, data=wt, na.rm=TRUE),2)`, $\sigma=$
+`r round(sd(~AN3, data=wt, na.rm=TRUE),2)`), black line).
 
 ## Using the Model to Make Predictions
-If you had to predict the weight of one child from this population, what weight would you guess?
-\vspace{0.05in}
 
-Is it more likely for a child in Dakar to weigh 10kg, or 20kg? How much more likely?
-<br>
-<br>
+If you had to predict the weight of one child from this population, what
+weight would you guess? \vspace{0.05in}
 
-What is the *probability* of a child in Dakar weighing 11.5 kg?
-<br>
+Is it more likely for a child in Dakar to weigh 10kg, or 20kg? How much
+more likely? <br> <br>
+
+What is the *probability* of a child in Dakar weighing 11.5 kg? <br>
 <br>
 
 ## Likelihood to the Rescue!
-Which is more likely: three children who weigh 11, 8.2, and 13kg, or three who weigh 10, 12.5 and 15 kg?
+
+Which is more likely: three children who weigh 11, 8.2, and 13kg, or
+three who weigh 10, 12.5 and 15 kg?
 
 How did you:
 
-- Find the likelihood of each observation?
+-   Find the likelihood of each observation?
 
-<br>
-<br>
+<br> <br>
 
-- Combine the likelihoods of a set of three observations?
+-   Combine the likelihoods of a set of three observations?
 
-<br>
-<br>
+<br> <br>
 
-What did you have to assume about the set of observations?
-<br>
-<br>
+What did you have to assume about the set of observations? <br> <br>
 
 ## How does this relate to linear regression?
 
-What if we think of this situation as a linear regression problem (with no predictors)?
+What if we think of this situation as a linear regression problem (with
+no predictors)?
 
 ```{r}
 lm_version <- lm(AN3 ~ 1, data = wt)
@@ -77,26 +88,35 @@ summary(lm_version)
 
 ### Model Equation:
 
-<br>
-<br>
-<br>
-<br>
+<br> <br> <br> <br>
 
 ## Likelihood of a dataset, given a model
+
 Finally, now, we can understand what we were computing when we did
 
 ```{r}
 logLik(lm_version)
 ```
 
-For our chosen regression model, we know that the residuals should have a normal distribution with mean 0 and standard deviation $\sigma$ (estimated Residual Standard Error from R `summary()` output).
+For our chosen regression model, we know that the residuals should have
+a normal distribution with mean 0 and standard deviation $\sigma$
+(estimated Residual Standard Error from R `summary()` output).
 
-For each data point in the dataset, for a given regression model, we can compute a model prediction.
+For each data point in the dataset, for a given regression model, we can
+compute a model prediction.
 
-We can subtract the prediction from the observed response-variable values to get the residuals.
+We can subtract the prediction from the observed response-variable
+values to get the residuals.
 
-We can compute the **likelihood** ($L$) of this set of residuals by finding the likelihood of each individual residual $e_i$ in a $N(0, \sigma)$ distribution.
+We can compute the **likelihood** ($L$) of this set of residuals by
+finding the likelihood of each individual residual $e_i$ in a
+$N(0, \sigma)$ distribution.
 
-To get the likelihood of the full dataset given the model, we use the fact that the residuals are independent (they better be, because that was one of the conditions of of linear regression model) -- we can multiply the likelihoods of all the individual residuals together to get the joint likelihood of the full set.
+To get the likelihood of the full dataset given the model, we use the
+fact that the residuals are independent (they better be, because that
+was one of the conditions of of linear regression model) -- we can
+multiply the likelihoods of all the individual residuals together to get
+the joint likelihood of the full set.
 
-*That* is the "likelihood" that is used in the AIC and BIC calculations we considered earlier.
+*That* is the "likelihood" that is used in the AIC and BIC calculations
+we considered earlier.

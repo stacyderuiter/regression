@@ -1,26 +1,48 @@
-```{r, setup-mave, include=FALSE}
-require(mosaic)   # Load additional packages here 
-require(ggformula)
-require(s245)
-# Some customization.  You can alter or delete as desired (if you know what you are doing).
-theme_set(theme_bw(base_size=18)) # change default color scheme for lattice
-knitr::opts_chunk$set(
-  tidy=FALSE,     # display code as typed
-  size="small", fig.width=7, fig.height=3, warning= FALSE, message = FALSE)   # slightly smaller font for code
-```
-# Model Averaging
-So far, we have used AIC and/or BIC for model selection, to decide which variables to keep in a "best" model and which to exclude. But we have already seen a number of cases where there is not **one** model that is clearly superior to all the others. In those cases, we have decided on the smallest model (with the fewest predictors), but there are other options when many competing models have similar scores. 
+```{r}
+#| label: setup-model-ave
+#| include: false
 
-One option is *not to choose* -- instead, keep them all, and make predictions via a weighted average of all the models. The models with the best IC scores get more weight. This can be a good option if the main goal is accurate prediction (rather than deciding definitively which predictors are "good" ones and which are not).
+library(mosaic)   
+library(ggformula)
+library(s245)
+
+theme_set(theme_bw(base_size=18)) 
+knitr::opts_chunk$set(
+  tidy=FALSE,    
+  size="small", fig.width=7, fig.height=3, warning= FALSE, message = FALSE)   
+```
+
+# Model Averaging
+
+So far, we have used AIC and/or BIC for model selection, to decide which
+variables to keep in a "best" model and which to exclude. But we have
+already seen a number of cases where there is not **one** model that is
+clearly superior to all the others. In those cases, we have decided on
+the smallest model (with the fewest predictors), but there are other
+options when many competing models have similar scores.
+
+One option is *not to choose* -- instead, keep them all, and make
+predictions via a weighted average of all the models. The models with
+the best IC scores get more weight. This can be a good option if the
+main goal is accurate prediction (rather than deciding definitively
+which predictors are "good" ones and which are not).
 
 How can we do it? Let's explore an example.
 
 ## Data: School Survey on Crime and Safety
-The data for this example are from a survey of U.S. schools, the 2000 School Survey on Crime and Safety.  There is information about the study at
 
- [http://catalog.data.gov/dataset/2000-school-survey-on-crime-and-safety](http://catalog.data.gov/dataset/2000-school-survey-on-crime-and-safety), 
- 
- which says the study "is a cross-sectional survey of the nation's public schools designed to provide estimates of school crime, discipline, disorder, programs and policies. SSOCS is administered to public primary, middle, high, and combined school principals in the spring of even-numbered school years...Public schools were sampled in the spring of 2000 to participate in the study." 
+The data for this example are from a survey of U.S. schools, the 2000
+School Survey on Crime and Safety. There is information about the study
+at
+
+<http://catalog.data.gov/dataset/2000-school-survey-on-crime-and-safety>,
+
+which says the study "is a cross-sectional survey of the nation's public
+schools designed to provide estimates of school crime, discipline,
+disorder, programs and policies. SSOCS is administered to public
+primary, middle, high, and combined school principals in the spring of
+even-numbered school years...Public schools were sampled in the spring
+of 2000 to participate in the study."
 
 The dataset you will use is available online at:
 
@@ -28,29 +50,42 @@ The dataset you will use is available online at:
 
 It contains a number of variables:
 
-- `VisitorCheckIn`: Whether visitors to the school must check in to gain entry to the school.
--	`LockedGates`: Whether there are locked gates at the entry to the school.
--	`MetalDetectors`: Whether there is a metal detector at the entrance to the school.
--	`DrugSniffDog`: Whether a drug-sniffing dog is randomly brought into the school to carry out inspections.
--	`DrugTesting`: Whether any drug testing of students occurs.
--	`UniformsRequired`:Whether students are required to wear uniforms.
--	`DressCode`: Whether a strict dress code is enforced.
--	`Lockers`: Whether students have lockers.
--	`StudentIDBadges`: Whether students are required to wear ID badges.
--	`StaffIDBadges`: Whether teachers and other staff are required to wear ID badges.
--	`SecurityCameras`: Whether there are security cameras on the premises.
--	`OfficialRiotPlan`: Whether the school has a written plan in place for how to deal with a riot or large-scale fight.
--	`ViolenceReductionProgram`: Whether the school has a Violence Reduction Program in place.
--	`Security`: Whether security officers are present on the premises.
--	`TrainingHours`:  Average amount of time (in hours) that teachers and staff have devoted to training related to violence reduction.
--	`AttacksWithoutWeapon`: Number of attacks that have occurred at the school, not involving a weapon.
--	`Thefts`: Number of thefts.
--	`Vandalism`: Number of incidents of vandalism.
--	`ViolentIncidentsTotal`: Number of violent incidents of all types that have occurred at the school.
--	`Enrollment`: Number of students enrolled in the school (categorical)
--	`NEnrollment`: Number of students enrolled in the school (numeric)
--	`SurveyRespondent`: The identity of the person who filled out the survey.
--	`Location`: Whether the location of the school is Urban, Rural, etc.
+-   `VisitorCheckIn`: Whether visitors to the school must check in to
+    gain entry to the school.
+-   `LockedGates`: Whether there are locked gates at the entry to the
+    school.
+-   `MetalDetectors`: Whether there is a metal detector at the entrance
+    to the school.
+-   `DrugSniffDog`: Whether a drug-sniffing dog is randomly brought into
+    the school to carry out inspections.
+-   `DrugTesting`: Whether any drug testing of students occurs.
+-   `UniformsRequired`:Whether students are required to wear uniforms.
+-   `DressCode`: Whether a strict dress code is enforced.
+-   `Lockers`: Whether students have lockers.
+-   `StudentIDBadges`: Whether students are required to wear ID badges.
+-   `StaffIDBadges`: Whether teachers and other staff are required to
+    wear ID badges.
+-   `SecurityCameras`: Whether there are security cameras on the
+    premises.
+-   `OfficialRiotPlan`: Whether the school has a written plan in place
+    for how to deal with a riot or large-scale fight.
+-   `ViolenceReductionProgram`: Whether the school has a Violence
+    Reduction Program in place.
+-   `Security`: Whether security officers are present on the premises.
+-   `TrainingHours`: Average amount of time (in hours) that teachers and
+    staff have devoted to training related to violence reduction.
+-   `AttacksWithoutWeapon`: Number of attacks that have occurred at the
+    school, not involving a weapon.
+-   `Thefts`: Number of thefts.
+-   `Vandalism`: Number of incidents of vandalism.
+-   `ViolentIncidentsTotal`: Number of violent incidents of all types
+    that have occurred at the school.
+-   `Enrollment`: Number of students enrolled in the school
+    (categorical)
+-   `NEnrollment`: Number of students enrolled in the school (numeric)
+-   `SurveyRespondent`: The identity of the person who filled out the
+    survey.
+-   `Location`: Whether the location of the school is Urban, Rural, etc.
 
 ```{r, ssc-data-in}
 ssc <- read.csv('http://sldr.netlify.com/data/sscrime.csv')
@@ -58,40 +93,68 @@ ssc <- read.csv('http://sldr.netlify.com/data/sscrime.csv')
 
 ## Modelling number of violent incidents per school
 
-We will fit a model for the number of violent incidents total as a function of a number of predictors. This is count data and we will fit a negative binomial regression model:
+We will fit a model for the number of violent incidents total as a
+function of a number of predictors. This is count data and we will fit a
+negative binomial regression model:
 
 ```{r }
-require(glmmTMB)
+library(glmmTMB)
 school.nb2 <- glmmTMB(ViolentIncidentsTotal ~ TrainingHours + Location + 
                         SecurityCameras + DressCode + UniformsRequired + 
                         NEnrollment, data=ssc,
-                family=nbinom2(link='log'))
+                family=nbinom2(link='log'),
+                na.action = 'na.fail')
 ```
 
-I will use AIC and the `dredge()` function to compare all possible subsets of my saturated model and figure out which variables should be included in the best model. I chose AIC in this case because it is perhaps more widely used than BIC (that's not a good reason unless you really have no better one, but there you have it) and because with the relatively small sample size here, I don't feel a particular need to use BIC for its larger penalty term.
+I will use AIC and the `dredge()` function to compare all possible
+subsets of my saturated model and figure out which variables should be
+included in the best model. I chose AIC in this case because it is
+perhaps more widely used than BIC (that's not a good reason unless you
+really have no better one, but there you have it) and because with the
+relatively small sample size here, I don't feel a particular need to use
+BIC for its larger penalty term.
 
 ```{r, }
-require(MuMIn)
+library(MuMIn)
 #do "dredge" for model selection
 mod.sel <- dredge(school.nb2, rank='AIC')
 head(mod.sel, 8)
 ```
 
-Because the first 7 or so models all have AIC scores within 3 units of each other, it is hard to choose one best model here. In this situation, one way to choose is to pick the model that includes the smallest number of predictors, and still acheives an AIC that is among the best. Another option would be to use **model averaging**.
+Because the first 7 or so models all have AIC scores within 3 units of
+each other, it is hard to choose one best model here. In this situation,
+one way to choose is to pick the model that includes the smallest number
+of predictors, and still acheives an AIC that is among the best. Another
+option would be to use **model averaging**.
 
 ## Model Averaging
-What if we wanted to use model averaging to find the best model, instead? We might choose this route because there are several models that all have AIC that are close to each other and thus fit the data approximately equally well.  So we might choose to make predictions (and compute coefficients) that are the *average* of all the models (weighted by IC weights).
+
+What if we wanted to use model averaging to find the best model,
+instead? We might choose this route because there are several models
+that all have AIC that are close to each other and thus fit the data
+approximately equally well. So we might choose to make predictions (and
+compute coefficients) that are the *average* of all the models (weighted
+by IC weights).
 
 Notes of caution:
 
-- If the model is not a linear regression (if there is a link function for instance) then it's important to get **predictions** by *averaging the predictions from the different models*, **not** by making predictions using the model-averaged coefficients. The code below is careful to do this.
-- Model averaging is used pretty widely but is also controversial (like most model selection methods, in fact!) For example, see: [https://esajournals.onlinelibrary.wiley.com/doi/full/10.1890/14-1639.1] and [https://drewtyre.rbind.io/post/rebutting_cade/].
+-   If the model is not a linear regression (if there is a link function
+    for instance) then it's important to get **predictions** by
+    *averaging the predictions from the different models*, **not** by
+    making predictions using the model-averaged coefficients. The code
+    below is careful to do this.
+-   Model averaging is used pretty widely but is also controversial
+    (like most model selection methods, in fact!) For example, see:
+    \[https://esajournals.onlinelibrary.wiley.com/doi/full/10.1890/14-1639.1\]
+    and \[https://drewtyre.rbind.io/post/rebutting_cade/\].
 
 To do model averaging, we use package `MuMIn` (function `model.avg`).
 
-
 ### Getting the Averaged Model
-The following code gets the average model. If we did the default (`fit=FALSE`), it would be a bit faster, but we would then not be able to get predictions from the model.
+
+The following code gets the average model. If we did the default
+(`fit=FALSE`), it would be a bit faster, but we would then not be able
+to get predictions from the model.
 
 ```{r, }
 mod.sel2 <- dredge(school.nb2)
@@ -99,7 +162,10 @@ ave.model <- MuMIn::model.avg(mod.sel2, fit=TRUE)
 summary(ave.model)
 ```
 
-**If you are trying to get model-averaged coefficients from the summary output above, be sure to look for the "full average" ones and not the "conditional average" (which only includes models where the predictor was included, i.e., where the coefficient was not 0).**
+**If you are trying to get model-averaged coefficients from the summary
+output above, be sure to look for the "full average" ones and not the
+"conditional average" (which only includes models where the predictor
+was included, i.e., where the coefficient was not 0).**
 
 ### Getting Predictions from the Averaged Model
 
@@ -109,7 +175,11 @@ ma.preds <- predict(ave.model, se.fit=TRUE,
                     backtransform = FALSE)
 ```
 
-The resulting predictions are a list with entries `fit` and `se.fit` just like we are used to. (So you could make predictions with a `newdata` data set and use them for prediction plots, for example. Be careful -- your "new" dataset now has to include values for all candidate predictors in the full model.)
+The resulting predictions are a list with entries `fit` and `se.fit`
+just like we are used to. (So you could make predictions with a
+`newdata` data set and use them for prediction plots, for example. Be
+careful -- your "new" dataset now has to include values for all
+candidate predictors in the full model.)
 
 Comparing with the predictions from our previous "best" model:
 
@@ -118,10 +188,15 @@ best.school.nb2 <- glmmTMB(ViolentIncidentsTotal ~ DressCode + Location,
                            data=ssc,family=nbinom2(link='log'))
 
 
-pred_plot(ave.model, 'DressCode', ylab = 'N. Incidents',
-            data = ssc, color = 'red')
-
-pred_plot(best.school.nb2, 'DressCode', ylab = 'N. Incidents',) 
+# pred_plot(ave.model, 'DressCode', ylab = 'N. Incidents',
+#             data = ssc, color = 'red')
+# 
+# pred_plot(best.school.nb2, 'DressCode', ylab = 'N. Incidents',) 
 ```
 
-So they are pretty comparable, but a little different (the differences may be bigger the more there are different models with similar IC results contributing to the average model -- when one model carries almost all the weight, then the "single best" model and the model-averaging model will give almost the same results). It also makes sense that there will be a bit more uncertainty in the average model.
+So they are pretty comparable, but a little different (the differences
+may be bigger the more there are different models with similar IC
+results contributing to the average model -- when one model carries
+almost all the weight, then the "single best" model and the
+model-averaging model will give almost the same results). It also makes
+sense that there will be a bit more uncertainty in the average model.

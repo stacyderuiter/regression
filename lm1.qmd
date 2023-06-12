@@ -1,17 +1,43 @@
+```{r}
+#| label: load-packages
+#| include: false
+
+library(mosaic)   
+library(tidyverse)
+library(ggformula)
+
+theme_set(theme_bw(base_size=14))
+knitr::opts_chunk$set(
+  tidy=FALSE,     
+  size="small",
+  message = FALSE,
+  warning = FALSE)   
+```
 
 # Linear Regression
-You probably learned something about linear regression in a previous course. Here, we briefly review the main concepts of simple linear regression and quickly expand our tool box to multiple regression (with both quantitative and categorical predictors).
+
+You probably learned something about linear regression in a previous
+course. Here, we briefly review the main concepts of simple linear
+regression and quickly expand our tool box to multiple regression (with
+both quantitative and categorical predictors).
 
 ## Data
-We will consider a small dataset from an article by J.S. Martin and colleagues, titled [*Facial width-to-height ratio is associated with agonistic and affiliative dominance in bonobos (**Pan paniscus**)*](https://royalsocietypublishing.org/doi/suppl/10.1098/rsbl.2019.0232)
+
+We will consider a small dataset from an article by J.S. Martin and
+colleagues, titled [*Facial width-to-height ratio is associated with
+agonistic and affiliative dominance in bonobos (**Pan
+paniscus**)*](https://royalsocietypublishing.org/doi/suppl/10.1098/rsbl.2019.0232)
 
 ```{r data-in, include=FALSE}
 bonobos <- read_csv(file='http://sldr.netlify.com/data/bonobo_faces.csv')
 ```
 
-Notes: variable `fWHR` is the facial width-height ratio and `AssR` is the Assertiveness score of affiliative dominance. `normDS` is another dominance score.
+Notes: variable `fWHR` is the facial width-height ratio and `AssR` is
+the Assertiveness score of affiliative dominance. `normDS` is another
+dominance score.
 
-What figures should we consider, to get a sense of the dataset and think about how we might model `fWHR`?
+What figures should we consider, to get a sense of the dataset and think
+about how we might model `fWHR`?
 
 ```{r view-data, echo=FALSE, fig.width = 3.5, fig.height = 3, fig.show = 'hide'}
 glimpse(bonobos)
@@ -21,64 +47,105 @@ gf_point(fWHR ~ AssR, data=bonobos)
 
 ## Preliminary Considerations
 
-Just as we imagine before we start coding to create graphics, we ought to think before we start fitting models.
+Just as we imagine before we start coding to create graphics, we ought
+to think before we start fitting models.
 
-Traditional ways of interpreting statistical results are premised on the idea that you made a plan, got some data, fitted the model you planned, and want to draw conclusions. 
+Traditional ways of interpreting statistical results are premised on the
+idea that you made a plan, got some data, fitted the model you planned,
+and want to draw conclusions.
 
-If, instead, you got data, scrutinized the data, fitted lots of different models, and now want to report results from the one that fitted best...well, generally things tend to go wrong. This is especially true if you use the data to lead you from a more complex to a simpler model. As Harrell (2015) points out in section 4.3,
+If, instead, you got data, scrutinized the data, fitted lots of
+different models, and now want to report results from the one that
+fitted best...well, generally things tend to go wrong. This is
+especially true if you use the data to lead you from a more complex to a
+simpler model. As Harrell (2015) points out in section 4.3,
 
-- Uncertainty *underestimated* (overconfidence: standard errors and confidence intervals too small; $R^2$ too big)
-- Spurious relationships look important and slope estimates are biased high
-- If testing hypotheses, p-values *too small* 
+-   Uncertainty *underestimated* (overconfidence: standard errors and
+    confidence intervals too small; $R^2$ too big)
+-   Spurious relationships look important and slope estimates are biased
+    high
+-   If testing hypotheses, p-values *too small*
 
-How can we avoid these problems? Some more insight will come when we consider model assessment and selection in future sections. For now, we need to remember:
+How can we avoid these problems? Some more insight will come when we
+consider model assessment and selection in future sections. For now, we
+need to remember:
 
-> Fitting and interpreting **one** well-considered, sensible model is prefereable to trying many things and then trying to choose among them later.
+> Fitting and interpreting **one** well-considered, sensible model is
+> prefereable to trying many things and then trying to choose among them
+> later.
 
 ## Response and Predictors
 
-A regression model is our attempt to quantify how a **response variable** of interest changes when a set of **predictor variables** change.
+A regression model is our attempt to quantify how a **response
+variable** of interest changes when a set of **predictor variables**
+change.
 
-So, to begin, we need to identify our (one) response variable -- the thing we are most interested in measuring or predicting or describing or understanding.
+So, to begin, we need to identify our (one) response variable -- the
+thing we are most interested in measuring or predicting or describing or
+understanding.
 
-Then, we need to identify a set of predictor variables that we expect to be associated with changes in the response. (If we are planning an experiment, they should be variables we can collect data on; if working with data already collected, they must be in or derived from the data available.)
+Then, we need to identify a set of predictor variables that we expect to
+be associated with changes in the response. (If we are planning an
+experiment, they should be variables we can collect data on; if working
+with data already collected, they must be in or derived from the data
+available.)
 
 How do we choose which predictors to include, and how many?
 
-First, rely on experts and previous experience. If you know the context of the problem well, *you* have a good sense of the predictors that will be of interest. If you don't, then you should consult experts (or published work on the topic).
+First, rely on experts and previous experience. If you know the context
+of the problem well, *you* have a good sense of the predictors that will
+be of interest. If you don't, then you should consult experts (or
+published work on the topic).
 
-There are also practical limits on the number of predictors you can reasonably consider, given a dataset.
+There are also practical limits on the number of predictors you can
+reasonably consider, given a dataset.
 
 ### Sample size and predictors
 
-One important consideration, when planning a regression model, is: *How many predictors can I reasonably include?*
+One important consideration, when planning a regression model, is: *How
+many predictors can I reasonably include?*
 
-It depends on the size of the dataset: it takes several observations to get a good estimate of any statistics, so it makes sense that fitting a model with *lots* of predictors will require a bigger dataset. And if you try to fit too many, the chances of *overfitting* increase. *Overfitting* is when you model noise as well as signal, capturing in your model apparent relationships that actually exist only in the current dataset, not in reality. 
+It depends on the size of the dataset: it takes several observations to
+get a good estimate of any statistics, so it makes sense that fitting a
+model with *lots* of predictors will require a bigger dataset. And if
+you try to fit too many, the chances of *overfitting* increase.
+*Overfitting* is when you model noise as well as signal, capturing in
+your model apparent relationships that actually exist only in the
+current dataset, not in reality.
 
-For linear regression, Harrell (2015, Chapter 4.6) offers a rule of thumb: the number of parameters being estimated, $p$, should be less than $\frac{n}{10}$ or $\frac{n}{20}$. To give just one standard rule of thumb, we should aim for $p < \frac{n}{15}$. $n$ is the sample size (number of rows in the dataset).
+For linear regression, Harrell (2015, Chapter 4.6) offers a rule of
+thumb: the number of parameters being estimated, $p$, should be less
+than $\frac{n}{10}$ or $\frac{n}{20}$. To give just one standard rule of
+thumb, we should aim for $p < \frac{n}{15}$. $n$ is the sample size
+(number of rows in the dataset).
 
 ## Simple linear regression, Residuals & Least squares
-First, let's review and consider a simple (one-predictor) linear regression model. Fit the model 
+
+First, let's review and consider a simple (one-predictor) linear
+regression model. Fit the model
 
 ```{r, lm-fit, fig.width=6.5, fig.height=4, echo=TRUE}
 slr <- lm(fWHR ~ AssR, data=bonobos)
 ```
 
 Extract the slope and intercept values:
+
 ```{r, lm-coef, fig.width=6.5, fig.height=4, echo=TRUE}
 coef(slr)
 ```
 
 Add the regression line to the plot:
+
 ```{r, lm-scatter-with-line, fig.width=6.5, fig.height=4, echo=TRUE}
-gf_point(fWHR ~ AssR, data=bonobos) %>% 
+gf_point(fWHR ~ AssR, data=bonobos) |> 
   gf_lm()
 summary(slr)
 ```
 
 ### Using `lm()` to fit a linear regression in R
 
-We use function `lm()` with a formula of the form `y ~ x` (and an input `data = _____`).
+We use function `lm()` with a formula of the form `y ~ x` (and an input
+`data = _____`).
 
 To view the result, we ask for a `summary()`.
 
@@ -87,9 +154,11 @@ slr <- lm(fWHR ~ AssR, data = bonobos)
 summary(slr)
 ```
 
-From this traditional on-screen output, we can fetch the information and estimates we need.
+From this traditional on-screen output, we can fetch the information and
+estimates we need.
 
-We can also "clean up" the output into a data table using `broom::tidy()`:
+We can also "clean up" the output into a data table using
+`broom::tidy()`:
 
 ```{r}
 broom::tidy(slr)
@@ -97,47 +166,68 @@ broom::tidy(slr)
 
 ### Equation of the fitted regression line
 
-In the process above, we chose a *response* variable $y$, a *predictor* $x$, and estimated the slope and intercept of the line $\beta_0$ and $\beta_1$.
+In the process above, we chose a *response* variable $y$, a *predictor*
+$x$, and estimated the slope and intercept of the line $\beta_0$ and
+$\beta_1$.
 
 $$ y = \beta_0 + \beta_1 x$$
 
-But the data don't lie perfectly on the line, and we have too include that in our model, too. There is some error $\epsilon$ in our model for the data, so we should keep track of it.
+But the data don't lie perfectly on the line, and we have too include
+that in our model, too. There is some error $\epsilon$ in our model for
+the data, so we should keep track of it.
 
 $$ y = \beta_0 + \beta_1 x + \epsilon$$
 
-But $\epsilon$ is not *one number* to be estimated -- the amount of error is different for every data point! How can we express this mathematically?
+But $\epsilon$ is not *one number* to be estimated -- the amount of
+error is different for every data point! How can we express this
+mathematically?
 
 ### Regression residuals = "errors"
 
-First, we need a way to measure how far the model line is from the data, for every observation in the dataset. The *residual* for the *i*th observation is the observed response variable value from the data ($y_i$) minus the *predicted response value* on the regression line ($\hat{y}_i$). This will be the response variable value for the point on the line whose predictor ($x$ value is the same as for the observed data point).  These "residuals" are shown in red on the figure. (The numeric value of each residual is the length of its red line segment.)
+First, we need a way to measure how far the model line is from the data,
+for every observation in the dataset. The *residual* for the *i*th
+observation is the observed response variable value from the data
+($y_i$) minus the *predicted response value* on the regression line
+($\hat{y}_i$). This will be the response variable value for the point on
+the line whose predictor ($x$ value is the same as for the observed data
+point). These "residuals" are shown in red on the figure. (The numeric
+value of each residual is the length of its red line segment.)
 
 ```{r, echo = FALSE, fig.width = 7, fig.height = 3}
-bonobos <- bonobos %>%
+bonobos <- bonobos |>
   mutate(sr = resid(slr),
          sp = predict(slr))
-gf_point(fWHR ~ AssR, data=bonobos) %>% 
-  gf_lm(color = 'black', size = 2) %>%
+gf_point(fWHR ~ AssR, data=bonobos) |> 
+  gf_lm(color = 'black', size = 2) |>
   gf_segment(fWHR + sp ~ AssR + AssR, color = 'brown2', size = 0.6)
 ```
 
-How can we summarize this information?  Let's look at the distribution of the residuals:
+How can we summarize this information? Let's look at the distribution of
+the residuals:
 
 ```{r}
 gf_histogram(~resid(slr), bins = 15)
 ```
 
-Hmmm...looks pretty unimodal, and symmetric (except for a bit of right skew).  It almost has that familiar bell shape...like a Normal distribution. This is a hint.
+Hmmm...looks pretty unimodal, and symmetric (except for a bit of right
+skew). It almost has that familiar bell shape...like a Normal
+distribution. This is a hint.
 
-In linear regression, we model residuals with a normal distribution, with mean zero (the line should go through the "middle" of the points, and averaging over them all, our residual should be 0).
+In linear regression, we model residuals with a normal distribution,
+with mean zero (the line should go through the "middle" of the points,
+and averaging over them all, our residual should be 0).
 
-The standard deviation of the residuals depends on how far away the points are, on average, from the line.  This value, the residual standard deviation $\sigma$, must be estimated in each case.  
+The standard deviation of the residuals depends on how far away the
+points are, on average, from the line. This value, the residual standard
+deviation $\sigma$, must be estimated in each case.
 
-R `lm()` summary output calls it "residual standard error" and lists it near the bottom of the summary. (This is a somewhat inaccurate name but we're stuck with it.)
+R `lm()` summary output calls it "residual standard error" and lists it
+near the bottom of the summary. (This is a somewhat inaccurate name but
+we're stuck with it.)
 
 So now we can give a *complete* model equation. In general,
 
-$$ y = \beta_0 + \beta_1 x + \epsilon,$$
-where 
+$$ y = \beta_0 + \beta_1 x + \epsilon,$$ where
 
 $$ \epsilon \sim N(0, \sigma)$$
 
@@ -145,9 +235,11 @@ Or, in our specific case with the Bonobos,
 
 $$ y = 1.31 + 0.029 x + \epsilon, \text{ where } \epsilon \sim N(0, 0.169)$$
 
-
 ## Multiple regression
-Rarely does our response variable **really** depend on only one predictor. Can we expand our formulation to include more predictors? In R, it's super easy:
+
+Rarely does our response variable **really** depend on only one
+predictor. Can we expand our formulation to include more predictors? In
+R, it's super easy:
 
 ```{r, mult-reg, fig.show='hold'}
 mlr <- lm(fWHR ~ AssR + weight, data=bonobos)
@@ -158,7 +250,7 @@ coef(mlr)
 my_points <- c(8,25,41,65)
 bonobos$three <- 'no'
 bonobos$three[my_points] <- 'yes'
-bonobos <- bonobos %>%
+bonobos <- bonobos |>
   mutate(pt_size = ifelse(three == 'yes', 1.1, 1))
 gf_point(fWHR ~ AssR, data=bonobos, shape = ~three,
          size = ~pt_size,
@@ -170,48 +262,63 @@ gf_point(fWHR ~ weight, data=bonobos, shape = ~three,
 
 ### Choosing predictors
 
-Notice that in this chapter, we are building up from a simpler model to a more complex one with more predictors. This is to reveal to you the mathematical machinery that lets us specify and fit the more complex models.
+Notice that in this chapter, we are building up from a simpler model to
+a more complex one with more predictors. This is to reveal to you the
+mathematical machinery that lets us specify and fit the more complex
+models.
 
-**But this is ** *not* **how to build a model in practice**.  Recall, we agreed to think carefully and choose a reasonable set of predictors to use at the outset, doing as much of the work as possible before even looking at the dataset. Our $p < \frac{n}{15}$ rule gives a rough limit to the maximum number of parameters we can estimate. If we do otherwise, we have to be cautious and know all our conclusions are on much shakier ground.
+**But this is** *not* **how to build a model in practice**. Recall, we
+agreed to think carefully and choose a reasonable set of predictors to
+use at the outset, doing as much of the work as possible before even
+looking at the dataset. Our $p < \frac{n}{15}$ rule gives a rough limit
+to the maximum number of parameters we can estimate. If we do otherwise,
+we have to be cautious and know all our conclusions are on much shakier
+ground.
 
 ### Estimation
 
-But...how did R come up with those estimates of the slope and intercept (and residual standard deviation) parameters? 
+But...how did R come up with those estimates of the slope and intercept
+(and residual standard deviation) parameters?
 
 In the simple linear regression case, it's easy to visualize:
 
 ```{r, echo = FALSE, fig.width = 7, fig.height = 3}
-bonobos <- bonobos %>%
+bonobos <- bonobos |>
   mutate(sr = resid(slr),
          sp = predict(slr))
-gf_point(fWHR ~ AssR, data=bonobos) %>% 
-  gf_lm(color = 'black', size = 2) %>%
+gf_point(fWHR ~ AssR, data=bonobos) |> 
+  gf_lm(color = 'black', size = 2) |>
   gf_segment(fWHR + sp ~ AssR + AssR, color = 'brown2', size = 0.6)
 ```
 
-The *best* line is the one that makes the residuals the smallest (by going right through the middle of the points). OK, let's be careful: some residuals are positive and some are negative, and we want the line that minimizes their magnitude. The traditional approach is to choose the slope that minimizes the sum of the squared residuals, 
+The *best* line is the one that makes the residuals the smallest (by
+going right through the middle of the points). OK, let's be careful:
+some residuals are positive and some are negative, and we want the line
+that minimizes their magnitude. The traditional approach is to choose
+the slope that minimizes the sum of the squared residuals,
 
 $$ SSE = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2$$
 
-How does this work when we have *multiple* predictors?  It's harder to draw, but just as easy to compute $\hat{y}$ and thus the observed residuals $e_i$.
-
+How does this work when we have *multiple* predictors? It's harder to
+draw, but just as easy to compute $\hat{y}$ and thus the observed
+residuals $e_i$.
 
 ### Computing Predictions
-Use the regression equation to compute **predicted values** for the three data points below:
+
+Use the regression equation to compute **predicted values** for the
+three data points below:
 
 ```{r, three-points, echo=FALSE}
 bonobo3 <- bonobos[my_points,c('fWHR', 'AssR', 'weight')]
 bonobo3
 ```
 
-<br>
-<br>
-<br>
-<br>
+<br> <br> <br> <br>
 
 ## Predictors with two categories
+
 ```{r, echo=FALSE, fig.width=6.5, fig.height=1.5}
-gf_boxplot(fWHR ~ Sex, data = bonobos) %>%
+gf_boxplot(fWHR ~ Sex, data = bonobos) |>
   gf_refine(coord_flip())
 ```
 
@@ -222,11 +329,7 @@ coef(mlr2)
 
 How does the model incorporate this covariate mathematically?
 
-<br>
-<br>
-<br>
-<br>
-
+<br> <br> <br> <br>
 
 ### Predictors with more categories
 
@@ -238,26 +341,20 @@ coef(mlr3)
 
 How does the model incorporate **this** covariate mathematically?
 
-<br>
-<br>
-<br>
+<br> <br> <br>
 
 ## Returning to the R Model Summary
-There are several bits of information you should be able to extract from the `summary()` output R produces on a fitted linear regression model:
 
-- $\beta$s, Coefficient Estimates
-- $\sigma$, labeled "residual standard error" 
-<br>
-<br>
-<br>
-<br>
+There are several bits of information you should be able to extract from
+the `summary()` output R produces on a fitted linear regression model:
 
-- $R^2$ (adjusted)
+-   $\beta$s, Coefficient Estimates
 
-<br>
-<br>
-<br>
-<br>
+-   $\sigma$, labeled "residual standard error" <br> <br> <br> <br>
+
+-   $R^2$ (adjusted)
+
+<br> <br> <br> <br>
 
 ```{r}
 mlr3 <- lm(fWHR ~ AssR + weight + Sex + Group, data = bonobos)
@@ -267,63 +364,83 @@ summary(mlr3)
 ## Predictions from the model
 
 ### By Hand
+
 The equation for the fitted model above is:
 
 $$ y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_3I_{Male} + \beta_4I_{Frankfurt} + \beta_5I_{Planckendael} + \beta_6I_{Twycross} + \beta_7I_{Wilhelma} + \beta_7I_{Wuppertal} + \epsilon$$
 
 where
 
-- $y =$
-- $\beta_0=$
+-   $y =$
+-   $\beta_0=$
 
-<br>
-<br>
-<br>
-<br>
+<br> <br> <br> <br>
 
-- $x_1=$
-- $x_2=$
-- $\beta_1, \beta_2, \beta_3 ...$ are:
-- $I_{Male} =$
-- $I_{Frankfurt} =$
-- $I_{Planckendael} =$ \hspace{3in}, etc.
-- $\epsilon=$
+-   $x_1=$
+-   $x_2=$
+-   $\beta_1, \beta_2, \beta_3 ...$ are:
+-   $I_{Male} =$
+-   $I_{Frankfurt} =$
+-   $I_{Planckendael} =$ \hspace{3in}, etc.
+-   $\epsilon=$
 
-#### Comprehension check: 
-What is the expected fWHR (according to this model) for a 30 kg female bonobo at the Wilhelma zoo?
+#### Comprehension check:
 
-<br>
-<br>
-<br>
-<br>
+What is the expected fWHR (according to this model) for a 30 kg female
+bonobo at the Wilhelma zoo?
+
+<br> <br> <br> <br>
 
 ### Prediction Plots in R
-We can ask R to compute predictions for **all** the data points in the real dataset.
+
+We can ask R to compute predictions for **all** the data points in the
+real dataset.
 
 ```{r, echo=TRUE, error = TRUE}
-bonobos <- bonobos %>% 
+bonobos <- bonobos |> 
   mutate(preds = predict(mlr3))
 ```
 
-Wait, what? This error is because the `lm()` function removes rows containing missing values from the dataset, so it computes only 68 residuals (for the complete cases in the data). This doesn't match the 117 rows in the original data. We can solve the problem by omitting rows with missing values first. To be safe, we first select only the variables we need, so we don't omit rows based on missing values in unused variables.
+Wait, what? This error is because the `lm()` function removes rows
+containing missing values from the dataset, so it computes only 68
+residuals (for the complete cases in the data). This doesn't match the
+117 rows in the original data. We can solve the problem by omitting rows
+with missing values first. To be safe, we first select only the
+variables we need, so we don't omit rows based on missing values in
+unused variables.
 
 ```{r}
-b2 <- bonobos %>%
-  dplyr::select(fWHR, weight, AssR, Sex, Group) %>%
-  na.omit() %>%
+b2 <- bonobos |>
+  dplyr::select(fWHR, weight, AssR, Sex, Group) |>
+  na.omit() |>
   mutate(preds = predict(mlr3))
 ```
 
 *We have a full set of predictions!*
 
-But if we plot these predictions on a scatter plot of `fWHR` as a function of `AssR`, we *do not* get a straight line, because the predictions are also impacted by varying values of `weight`, `Sex`, and `Group`:
+But if we plot these predictions on a scatter plot of `fWHR` as a
+function of `AssR`, we *do not* get a straight line, because the
+predictions are also impacted by varying values of `weight`, `Sex`, and
+`Group`:
 
 ```{r, fig.width=6, fig.height=2.5}
-gf_point(fWHR ~ AssR, data = b2) %>%
+gf_point(fWHR ~ AssR, data = b2) |>
   gf_line(preds ~ AssR, data=b2)
 ```
 
-*But...we would really like a straight line that helps us visualize the meaning of the $\beta$ (slope coefficient) for `AssR`.* We can make predictions for a **hypothetical** dataset, in which `AssR` varies over a reasonable range, but the other predictors stay constant. This lets us see how `AssR` (and only `AssR`) affects the response, without contributions from other predictors. In choosing the values to include in hypothetical dataset, we often choose to hold variables constant at their most common or median values, but not blindly: also, avoid impossible or implausible variable combinations (for example, specifying that a person lives in the state of Michigan but the city of Chicago, or that they are a 5-year-old person with 4 children). *In this case, to match the figures in the published paper, we are also going to vary the `Sex` - but generally you'd only allow one predictor to vary.*
+*But...we would really like a straight line that helps us visualize the
+meaning of the* $\beta$ (slope coefficient) for `AssR`. We can make
+predictions for a **hypothetical** dataset, in which `AssR` varies over
+a reasonable range, but the other predictors stay constant. This lets us
+see how `AssR` (and only `AssR`) affects the response, without
+contributions from other predictors. In choosing the values to include
+in hypothetical dataset, we often choose to hold variables constant at
+their most common or median values, but not blindly: also, avoid
+impossible or implausible variable combinations (for example, specifying
+that a person lives in the state of Michigan but the city of Chicago, or
+that they are a 5-year-old person with 4 children). *In this case, to
+match the figures in the published paper, we are also going to vary the
+`Sex` - but generally you'd only allow one predictor to vary.*
 
 ```{r, echo=TRUE, fig.width=6, fig.height=2}
 fake_data <- expand.grid(AssR = seq(from=1.8, to=5.7, by=0.05),
@@ -331,69 +448,75 @@ fake_data <- expand.grid(AssR = seq(from=1.8, to=5.7, by=0.05),
                          Sex = c('Female', 'Male'),
                          Group = 'Wuppertal')
 
-fake_data <- fake_data %>% 
+fake_data <- fake_data |> 
   mutate(preds = predict(mlr3, newdata = fake_data))
-gf_line(preds ~ AssR, color = ~Sex, data=fake_data) %>% gf_labs(y='Predicted\nfWHR')
+gf_line(preds ~ AssR, color = ~Sex, data=fake_data) |> gf_labs(y='Predicted\nfWHR')
 ```
 
 #### Comprehension checks:
 
-- Should we overlay prediction-plot line(s) on the data scatter plot?
-- How do you think the plot would look if we changed the constant predictor values?
-- What is missing from this picture?
+-   Should we overlay prediction-plot line(s) on the data scatter plot?
+-   How do you think the plot would look if we changed the constant
+    predictor values?
+-   What is missing from this picture?
 
 #### Shortcut
 
 ```{r, fig.width=6.5, fig.height = 2.5}
-require(s245)
+library(s245)
 pred_plot(mlr3, 'AssR')
 ```
 
-
 ## Why are we doing this again?
+
 Why make prediction plots?
 
 ## Shortcut Method - With Uncertainty
-We saw before that `pred_plot()` makes it very easy for us to generate prediction plots showing what a (multiple regression) model says about the relationship between the response and *one* of the predictors:
+
+We saw before that `pred_plot()` makes it very easy for us to generate
+prediction plots showing what a (multiple regression) model says about
+the relationship between the response and *one* of the predictors:
 
 ```{r, fig.width=6.5, fig.height = 1.75, message = FALSE}
-require(s245)
-pred_plot(mlr3, 'AssR') %>%
+library(s245)
+pred_plot(mlr3, 'AssR') |>
   gf_labs(y = 'Predicted fWHR')
 ```
 
-*Note the custom axis label - otherwise you get a long, unwieldy default "Predictions from fitted model"*
+*Note the custom axis label - otherwise you get a long, unwieldy default
+"Predictions from fitted model"*
 
 ```{r, fig.width=6.5, fig.height = 1.75, message = FALSE}
-require(s245)
-pred_plot(mlr3, 'Group') %>%
+library(s245)
+pred_plot(mlr3, 'Group') |>
   gf_labs(y = 'Predicted fWHR')
 ```
 
 They look nice! But they should raise two questions:
 
-- Uncertainty:
+-   Uncertainty:
 
-- Fixed values:
-
+-   Fixed values:
 
 ```{r}
-get_fixed(bonobos)  %>% 
+get_fixed(bonobos)  |> 
   pander::pander()
 ```
 
 ### Anatomy of a Confidence Interval
 
 ```{r, fig.width=3, fig.height = 1.5}
-pred_plot(mlr3, 'Sex') %>%
+pred_plot(mlr3, 'Sex') |>
   gf_labs(y = 'Predicted fWHR')
 ```
-
 
 ## DIY Method
 
 ### Creating a hypothetical dataset
-We would like to create a hypothetical dataset where one predictor variable varies, and all the rest stay fixed. Let's choose `AssR`. We use `expand.grid()`:
+
+We would like to create a hypothetical dataset where one predictor
+variable varies, and all the rest stay fixed. Let's choose `AssR`. We
+use `expand.grid()`:
 
 ```{r}
 fake_data <- expand.grid(AssR = seq(from=1.8, to=5.7, by=0.05),
@@ -403,52 +526,56 @@ fake_data <- expand.grid(AssR = seq(from=1.8, to=5.7, by=0.05),
 glimpse(fake_data)
 ```
 
-
 Now, make predictions for our fake data.
 
 ```{r}
 preds <- predict(mlr3, newdata = fake_data, se.fit = TRUE)
-fake_data <- fake_data %>%
+fake_data <- fake_data |>
   mutate(fitted = preds$fit,
          se.fit = preds$se.fit)
 glimpse(fake_data)
 ```
 
-How do we go from *standard errors* to *confidence intervals*?  We can either do this before plotting, or while plotting. To do it before and add the results to the hypothetical dataset:
+How do we go from *standard errors* to *confidence intervals*? We can
+either do this before plotting, or while plotting. To do it before and
+add the results to the hypothetical dataset:
 
 ```{r}
-fake_data <- fake_data %>%
+fake_data <- fake_data |>
   mutate(CI_lower = fitted - 1.96*se.fit,
          CI_upper = fitted + 1.96*se.fit)
 glimpse(fake_data)
 ```
 
 ### Making the plot
+
 Now, we just need to plot!
 
 ```{r, echo=TRUE, fig.width=6, fig.height=1.5}
-gf_line(fitted ~ AssR, data=fake_data) %>% 
-  gf_labs(y='Predicted\nfWHR') %>%
+gf_line(fitted ~ AssR, data=fake_data) |> 
+  gf_labs(y='Predicted\nfWHR') |>
   gf_ribbon(CI_lower + CI_upper ~ AssR, data = fake_data)
 ```
 
-If we wanted to figure out the CI bounds *while* plotting, we could calculate them on the fly like this:
+If we wanted to figure out the CI bounds *while* plotting, we could
+calculate them on the fly like this:
 
 ```{r, echo=TRUE, fig.width=6, fig.height=1.5, fig.show = 'hide'}
-gf_line(fitted ~ AssR, data=fake_data) %>% 
-  gf_labs(y='Predicted\nfWHR') %>%
+gf_line(fitted ~ AssR, data=fake_data) |> 
+  gf_labs(y='Predicted\nfWHR') |>
   gf_ribbon((fitted - 1.96*se.fit ) + (fitted + 1.96*se.fit) ~ AssR,
             data = fake_data)
 ```
+
 (which will look just the same).
 
 ### Categorical predictors
+
 What will be different if the predictor of interest is *categorical*?
 
-- hypothetical data:
+-   hypothetical data:
 
-- plot:
-
+-   plot:
 
 ```{r, fig.width = 3.5, fig.height = 1.75}
 fake_sex_data <- expand.grid(AssR = 4.51,
@@ -456,11 +583,11 @@ fake_sex_data <- expand.grid(AssR = 4.51,
                          Sex = c('Male', 'Female'),
                          Group = 'Twycross')
 preds <- predict(mlr3, newdata = fake_sex_data, se.fit = TRUE)
-fake_sex_data <- fake_sex_data %>%
+fake_sex_data <- fake_sex_data |>
   mutate(fitted = preds$fit,
          se.fit = preds$se.fit)
-gf_point(fitted ~ Sex, data=fake_sex_data) %>% 
-  gf_labs(y='Predicted fWHR') %>%
+gf_point(fitted ~ Sex, data=fake_sex_data) |> 
+  gf_labs(y='Predicted fWHR') |>
   gf_errorbar((fitted - 1.96*se.fit ) + (fitted + 1.96*se.fit) ~ Sex, 
             data = fake_sex_data)
 ```

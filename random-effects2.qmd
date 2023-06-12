@@ -1,18 +1,24 @@
-
-```{r setup-tmb-re, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache=TRUE, fig.width = 3, 
+```{r}
+#| label: setup-tmb-re
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, fig.width = 3, 
                       message = FALSE, fig.height =1.5)
 pdf.options(useDingbats = TRUE)
-require(mosaic)
-require(ggformula)
-require(lme4)
+library(mosaic)
+library(ggformula)
+library(lme4)
 theme_set(theme_bw(base_size=12))
 ```
 
 ## Random effects with glmmTMB and standardized residuals
-In the previous chapter we considered fitting mixed-effects models with `lme4`. What about fitting the same models with package `glmmTMB`? And how can we assess expectations about residual variance for models like these?
+
+In the previous chapter we considered fitting mixed-effects models with
+`lme4`. What about fitting the same models with package `glmmTMB`? And
+how can we assess expectations about residual variance for models like
+these?
 
 ## Model for whale dive duration
+
 We start with our previous model for whale dive duration.
 
 ```{r, include = FALSE}
@@ -28,45 +34,67 @@ rem5 <- lmer(DurAvg ~ DepthAvg + TransClass + SonarA + SonarB +
 ```
 
 ## glmmTMB
-We fitted these models using `lmer()` and `glmer()` from package `lme4`, which is probably the most commonly used R package to fit these models.  But we've also used `glmmTMB` in this course, and *it* can also fit random effects models. The syntax to add random effects to a `glmmTMB()` model is *exactly the same* as for the `lme4` functions.
+
+We fitted these models using `lmer()` and `glmer()` from package `lme4`,
+which is probably the most commonly used R package to fit these models.
+But we've also used `glmmTMB` in this course, and *it* can also fit
+random effects models. The syntax to add random effects to a `glmmTMB()`
+model is *exactly the same* as for the `lme4` functions.
 
 One difference is that for `glmmTMB()` **REML = FALSE is the default**.
 
 `glmmTMB` may be faster in some cases.
 
 ```{r}
-require(glmmTMB)
+library(glmmTMB)
 rem6 <- glmmTMB(DurAvg ~ DepthAvg + TransClass + SonarA + SonarB +
                (1|TagID/TagDayPeriod), data=d,
              na.action='na.fail', REML=FALSE)
 ```
 
-If you view the summaries, you will see that `rem5` and `rem6` are basically identical (in terms of model coefficients and variance estimates).
+If you view the summaries, you will see that `rem5` and `rem6` are
+basically identical (in terms of model coefficients and variance
+estimates).
 
 ## Model assessment with scaled residuals
-For models where Pearson residuals are not helpful/can not be computed, one option is **scaled residuals** via simulation.
 
-- Simulate many replicates from the fitted model corresponding to each data observation
-- Examine the distribution of the simulated data, and use it to scale the observed value to get a "scaled residual" such that a residual of 0 means that *all simulated values are larger than the observed value*, and a *residual of 0.5 means half of the simulated values are larger than the observed value*, and a *residual of 1 means that the observed value is larger than all the simulated values.*
+For models where Pearson residuals are not helpful/can not be computed,
+one option is **scaled residuals** via simulation.
 
-**These scaled residuals should be uniformly distributed between 0 and 1, if the model is correct.**
+-   Simulate many replicates from the fitted model corresponding to each
+    data observation
+-   Examine the distribution of the simulated data, and use it to scale
+    the observed value to get a "scaled residual" such that a residual
+    of 0 means that *all simulated values are larger than the observed
+    value*, and a *residual of 0.5 means half of the simulated values
+    are larger than the observed value*, and a *residual of 1 means that
+    the observed value is larger than all the simulated values.*
 
-There is a much more detailed explanation in the [DHARMa package documentation](https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html#calculating-scaled-residuals) online.
+**These scaled residuals should be uniformly distributed between 0 and
+1, if the model is correct.**
 
-Example: computing scaled residuals, creating 1000 simulated datasets (don't lower it much below this to get good estimates). Note: use R chunk setting "message = FALSE" to print messages during simulation to your screen, rather than your knitted file.
+There is a much more detailed explanation in the [DHARMa package
+documentation](https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html#calculating-scaled-residuals)
+online.
+
+Example: computing scaled residuals, creating 1000 simulated datasets
+(don't lower it much below this to get good estimates). Note: use R
+chunk setting "message = FALSE" to print messages during simulation to
+your screen, rather than your knitted file.
 
 ```{r}
-require(DHARMa)
+library(DHARMa)
 sims <- simulateResiduals(fittedModel = rem5, n = 1000)
-d <- d %>%
+d <- d |>
   mutate(scaled_resids = sims$scaledResiduals,
          fitted = fitted(rem5))
 ```
 
 If our model is perfectly correct, we would expect:
 
-- Histogram of scaled residuals looks uniform between 0 and 1
-- Plot of scaled residual vs. fitted, or vs. any predictor, look uniform (evenly spread, no trends, constant in variance).
+-   Histogram of scaled residuals looks uniform between 0 and 1
+-   Plot of scaled residual vs. fitted, or vs. any predictor, look
+    uniform (evenly spread, no trends, constant in variance).
 
 ```{r, fig.show = 'hold'}
 gf_histogram(~scaled_resids, data =d)
@@ -77,7 +105,7 @@ gf_point(scaled_resids ~ fitted, data = d, alpha = 0.5)
 
 ```{r}
 sims2 <- simulateResiduals(fittedModel = rem6, n = 1000)
-d <- d %>%
+d <- d |>
   mutate(scaled_resids_TMB = sims2$scaledResiduals,
          fitted_TMB = fitted(rem6))
 ```
@@ -87,5 +115,7 @@ gf_point(scaled_resids_TMB ~ fitted_TMB, data = d, alpha = 0.5)
 ```
 
 ### You now have the power!
-You may use these scaled residuals for any of the models considered so far this semester. It is basically an alternative method of scaling residuals so that we know "how they should look" in residual plots.
 
+You may use these scaled residuals for any of the models considered so
+far this semester. It is basically an alternative method of scaling
+residuals so that we know "how they should look" in residual plots.
