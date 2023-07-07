@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GLMs and Friends - 9&nbsp; Binary regression: Data with more than one trial per row</title>
+<title>GLMs and Friends - 10&nbsp; Binary regression: Data with more than one trial per row</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -111,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./binary-regression2.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./binary-regression2.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -170,104 +170,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./lm-assess.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Diagnostics and Assessment</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./IC-based-selection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./likelihood.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pdf-pmf.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./count-data-regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./model-averaging.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./interactions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./binary-regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./binary-regression2.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./collinearity.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./zero-inflation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ncv.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./random-effects.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./random-effects2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gee-motivation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./corr-struct.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./anova-plus.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gams.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -286,12 +292,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data"><span class="header-section-number">9.1</span> Data</a></li>
-  <li><a href="#checking-the-data-setup" id="toc-checking-the-data-setup" class="nav-link" data-scroll-target="#checking-the-data-setup"><span class="header-section-number">9.2</span> Checking the data setup</a></li>
-  <li><a href="#fitting-a-saturated-model" id="toc-fitting-a-saturated-model" class="nav-link" data-scroll-target="#fitting-a-saturated-model"><span class="header-section-number">9.3</span> Fitting a saturated model</a></li>
-  <li><a href="#checking-linearity" id="toc-checking-linearity" class="nav-link" data-scroll-target="#checking-linearity"><span class="header-section-number">9.4</span> Checking linearity</a></li>
-  <li><a href="#model-assessment" id="toc-model-assessment" class="nav-link" data-scroll-target="#model-assessment"><span class="header-section-number">9.5</span> Model Assessment</a></li>
-  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">9.6</span> Model Selection</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data"><span class="header-section-number">10.1</span> Data</a></li>
+  <li><a href="#checking-the-data-setup" id="toc-checking-the-data-setup" class="nav-link" data-scroll-target="#checking-the-data-setup"><span class="header-section-number">10.2</span> Checking the data setup</a></li>
+  <li><a href="#fitting-a-saturated-model" id="toc-fitting-a-saturated-model" class="nav-link" data-scroll-target="#fitting-a-saturated-model"><span class="header-section-number">10.3</span> Fitting a saturated model</a></li>
+  <li><a href="#checking-linearity" id="toc-checking-linearity" class="nav-link" data-scroll-target="#checking-linearity"><span class="header-section-number">10.4</span> Checking linearity</a></li>
+  <li><a href="#model-assessment" id="toc-model-assessment" class="nav-link" data-scroll-target="#model-assessment"><span class="header-section-number">10.5</span> Model Assessment</a></li>
+  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">10.6</span> Model Selection</a></li>
   </ul>
 </nav>
     </div>
@@ -300,7 +306,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></h1>
+<h1 class="title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></h1>
 </div>
 
 
@@ -318,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>So far, the dataset we used for binary regression had one “trial” per row: there was a categorical variable in the dataset with two categories, “success” and “failure” (for the frogs: Abnormal and Normal). We wanted to estimate the probability of “success” as a function of several predictors.</p>
 <p>If there are multiple trials that all have the same predictor-variable values, we can group them together into one row of data, and just record the number of “trials” and the number of “successes”. (From this, we can also get the number of “failures” = “trials” - “successes”, if needed.) If we have a dataset that is stored in this format, we can still use <code>glm()</code> to fit a binary regression model. The R code to fit the model changes just a bit, and we are able to do better model assessment a bit more easily.</p>
 <p>An example follows.</p>
-<section id="data" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="data"><span class="header-section-number">9.1</span> Data</h2>
+<section id="data" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="data"><span class="header-section-number">10.1</span> Data</h2>
 <p>The dataset used here is a reality-based simulated EIA dataset on duck sightings before and after windfarm installation (<code>impact</code>). Hourly, observers did up to 200 scans of the study area, and for each scan recorded whether duck(s) were seen (a success) or not (a failure).</p>
 <p>The data file can be accessed online at:\ </p>
 <div class="cell">
@@ -331,8 +337,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="checking-the-data-setup" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="checking-the-data-setup"><span class="header-section-number">9.2</span> Checking the data setup</h2>
+<section id="checking-the-data-setup" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="checking-the-data-setup"><span class="header-section-number">10.2</span> Checking the data setup</h2>
 <p>We would like to model the proportion scans with ducks sighted as a function of a set of covariates. Each row of our dataset gives us the number of successes in some number of trials (and also gives the corresponding values of the covariates for ALL those trials). We can also use this kind of summary data with a logistic regression; we will just need to add a column for the number of failures:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> pd <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">failures =</span> trials<span class="sc">-</span>successes)</span>
@@ -340,8 +346,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>pd<span class="sc">$</span>failures <span class="ot">=</span> pd<span class="sc">$</span>trials <span class="sc">-</span> pd<span class="sc">$</span>successes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="fitting-a-saturated-model" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="fitting-a-saturated-model"><span class="header-section-number">9.3</span> Fitting a saturated model</h2>
+<section id="fitting-a-saturated-model" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="fitting-a-saturated-model"><span class="header-section-number">10.3</span> Fitting a saturated model</h2>
 <p>Let’s try fitting a model for proportion sightings as a function of day, month, and impact.</p>
 <p>We need a response “variable” that is really 2 variables bound together: a column with the “successes” and a column with the “failures”. These don’t have to be literally called successes and failures – you can use whatever variable names you like – but the first one of the two should be successes (the thing you want to compute the proportion for) and the second failures.</p>
 <div class="cell">
@@ -412,8 +418,8 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
 </section>
-<section id="checking-linearity" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="checking-linearity"><span class="header-section-number">9.4</span> Checking linearity</h2>
+<section id="checking-linearity" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="checking-linearity"><span class="header-section-number">10.4</span> Checking linearity</h2>
 <p>What should be linear here? Well, <code>logit(p)</code> (where <code>p</code> is the probability of success, for a given set of predictor-variable values) should be a linear function of the predictors. <em>We can actually check this graphically now that we have multiple trials per row of data!</em> (But remember that the effects of other, unplotted predictors may also be influencing the plot that you see…)</p>
 <p>Here, we need to decide: Do we see a linear pattern (or no pattern)? For the month and day data here, we might also consider whetehr it would make more sense to fit either of them as a categorical covariate rather than numeric.</p>
 <div class="cell">
@@ -429,8 +435,8 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
 </section>
-<section id="model-assessment" class="level2" data-number="9.5">
-<h2 data-number="9.5" class="anchored" data-anchor-id="model-assessment"><span class="header-section-number">9.5</span> Model Assessment</h2>
+<section id="model-assessment" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="model-assessment"><span class="header-section-number">10.5</span> Model Assessment</h2>
 <p>With data set up as proportions (many trials with the number of successes and failures in each row, rather than one row per trial), model assessment plots are a bit more useful. Specifically, we can check the Pearson residuals vs.&nbsp;fitted plot for constant variance as a function of fitted value, to confirm that the mean-variance relationship matches what we expect.</p>
 <p>Since the Pearson residuals are already adjusted for the expected variance, we should see approximately constant spread, with values ranging from about -2 to 2 (and not more than a few larger than <span class="math inline">\(\pm\)</span> 3).</p>
 <div class="cell">
@@ -444,8 +450,8 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
 </section>
-<section id="model-selection" class="level2" data-number="9.6">
-<h2 data-number="9.6" class="anchored" data-anchor-id="model-selection"><span class="header-section-number">9.6</span> Model Selection</h2>
+<section id="model-selection" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="model-selection"><span class="header-section-number">10.6</span> Model Selection</h2>
 <p>We can do model selection as usual. Here, it looks like the best model is the saturated (full) model.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
@@ -910,12 +916,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./binary-regression.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binary Regression</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary Regression</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./collinearity.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

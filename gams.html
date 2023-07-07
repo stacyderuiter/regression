@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GLMs and Friends - 18&nbsp; GAMs: Generalized Additive Models</title>
+<title>GLMs and Friends - 19&nbsp; GAMs: Generalized Additive Models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -109,7 +109,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gams.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gams.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -168,104 +168,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./lm-assess.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Diagnostics and Assessment</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./IC-based-selection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./likelihood.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pdf-pmf.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./count-data-regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./model-averaging.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./interactions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./binary-regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./binary-regression2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./collinearity.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./zero-inflation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ncv.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./random-effects.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./random-effects2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gee-motivation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./corr-struct.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./anova-plus.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gams.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -284,25 +290,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#non-linear-non-monotonic-relationships" id="toc-non-linear-non-monotonic-relationships" class="nav-link active" data-scroll-target="#non-linear-non-monotonic-relationships"><span class="header-section-number">18.1</span> Non-linear, non-monotonic relationships</a></li>
-  <li><a href="#smooth-terms" id="toc-smooth-terms" class="nav-link" data-scroll-target="#smooth-terms"><span class="header-section-number">18.2</span> Smooth terms</a>
+  <li><a href="#non-linear-non-monotonic-relationships" id="toc-non-linear-non-monotonic-relationships" class="nav-link active" data-scroll-target="#non-linear-non-monotonic-relationships"><span class="header-section-number">19.1</span> Non-linear, non-monotonic relationships</a></li>
+  <li><a href="#smooth-terms" id="toc-smooth-terms" class="nav-link" data-scroll-target="#smooth-terms"><span class="header-section-number">19.2</span> Smooth terms</a>
   <ul class="collapse">
-  <li><a href="#basis-functions" id="toc-basis-functions" class="nav-link" data-scroll-target="#basis-functions"><span class="header-section-number">18.2.1</span> Basis functions</a></li>
+  <li><a href="#basis-functions" id="toc-basis-functions" class="nav-link" data-scroll-target="#basis-functions"><span class="header-section-number">19.2.1</span> Basis functions</a></li>
   </ul></li>
-  <li><a href="#fitting-gams" id="toc-fitting-gams" class="nav-link" data-scroll-target="#fitting-gams"><span class="header-section-number">18.3</span> Fitting GAMs</a>
+  <li><a href="#fitting-gams" id="toc-fitting-gams" class="nav-link" data-scroll-target="#fitting-gams"><span class="header-section-number">19.3</span> Fitting GAMs</a>
   <ul class="collapse">
-  <li><a href="#choosing-model-formulation" id="toc-choosing-model-formulation" class="nav-link" data-scroll-target="#choosing-model-formulation"><span class="header-section-number">18.3.1</span> Choosing model formulation</a></li>
-  <li><a href="#model-formula" id="toc-model-formula" class="nav-link" data-scroll-target="#model-formula"><span class="header-section-number">18.3.2</span> Model formula</a></li>
+  <li><a href="#choosing-model-formulation" id="toc-choosing-model-formulation" class="nav-link" data-scroll-target="#choosing-model-formulation"><span class="header-section-number">19.3.1</span> Choosing model formulation</a></li>
+  <li><a href="#model-formula" id="toc-model-formula" class="nav-link" data-scroll-target="#model-formula"><span class="header-section-number">19.3.2</span> Model formula</a></li>
   </ul></li>
-  <li><a href="#model-assessment" id="toc-model-assessment" class="nav-link" data-scroll-target="#model-assessment"><span class="header-section-number">18.4</span> Model Assessment</a>
+  <li><a href="#model-assessment" id="toc-model-assessment" class="nav-link" data-scroll-target="#model-assessment"><span class="header-section-number">19.4</span> Model Assessment</a>
   <ul class="collapse">
-  <li><a href="#concurvity" id="toc-concurvity" class="nav-link" data-scroll-target="#concurvity"><span class="header-section-number">18.4.1</span> Concurvity</a></li>
+  <li><a href="#concurvity" id="toc-concurvity" class="nav-link" data-scroll-target="#concurvity"><span class="header-section-number">19.4.1</span> Concurvity</a></li>
   </ul></li>
-  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">18.5</span> Model Selection</a>
+  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">19.5</span> Model Selection</a>
   <ul class="collapse">
-  <li><a href="#shrinkage-and-penalties" id="toc-shrinkage-and-penalties" class="nav-link" data-scroll-target="#shrinkage-and-penalties"><span class="header-section-number">18.5.1</span> Shrinkage and Penalties</a></li>
-  <li><a href="#p-value-selection" id="toc-p-value-selection" class="nav-link" data-scroll-target="#p-value-selection"><span class="header-section-number">18.5.2</span> P-value selection</a></li>
-  <li><a href="#information-criteria" id="toc-information-criteria" class="nav-link" data-scroll-target="#information-criteria"><span class="header-section-number">18.5.3</span> Information criteria</a></li>
+  <li><a href="#shrinkage-and-penalties" id="toc-shrinkage-and-penalties" class="nav-link" data-scroll-target="#shrinkage-and-penalties"><span class="header-section-number">19.5.1</span> Shrinkage and Penalties</a></li>
+  <li><a href="#p-value-selection" id="toc-p-value-selection" class="nav-link" data-scroll-target="#p-value-selection"><span class="header-section-number">19.5.2</span> P-value selection</a></li>
+  <li><a href="#information-criteria" id="toc-information-criteria" class="nav-link" data-scroll-target="#information-criteria"><span class="header-section-number">19.5.3</span> Information criteria</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -312,7 +318,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></h1>
+<h1 class="title"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></h1>
 </div>
 
 
@@ -340,8 +346,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Nonlinear, but <strong>monotonic</strong></li>
 </ul></li>
 </ul>
-<section id="non-linear-non-monotonic-relationships" class="level2" data-number="18.1">
-<h2 data-number="18.1" class="anchored" data-anchor-id="non-linear-non-monotonic-relationships"><span class="header-section-number">18.1</span> Non-linear, non-monotonic relationships</h2>
+<section id="non-linear-non-monotonic-relationships" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="non-linear-non-monotonic-relationships"><span class="header-section-number">19.1</span> Non-linear, non-monotonic relationships</h2>
 <p>It’s not true that all interesting predictor-response relationships are linear or monotonic. One example is in some data on bat migration: how does the probability of bats leaving on their migratory journey depend on air humidity?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>bats <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'https://ndownloader.figshare.com/files/9348010'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -376,11 +382,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="smooth-terms" class="level2" data-number="18.2">
-<h2 data-number="18.2" class="anchored" data-anchor-id="smooth-terms"><span class="header-section-number">18.2</span> Smooth terms</h2>
+<section id="smooth-terms" class="level2" data-number="19.2">
+<h2 data-number="19.2" class="anchored" data-anchor-id="smooth-terms"><span class="header-section-number">19.2</span> Smooth terms</h2>
 <p>We can fit a model where the relationship between the response and the predictor is a ``smooth” – no linearity or monotonicity requirement.</p>
-<section id="basis-functions" class="level3" data-number="18.2.1">
-<h3 data-number="18.2.1" class="anchored" data-anchor-id="basis-functions"><span class="header-section-number">18.2.1</span> Basis functions</h3>
+<section id="basis-functions" class="level3" data-number="19.2.1">
+<h3 data-number="19.2.1" class="anchored" data-anchor-id="basis-functions"><span class="header-section-number">19.2.1</span> Basis functions</h3>
 <ul>
 <li>A smooth term is constructed as the sum of several parts, or <em>basis functions</em>. Each of these functions has a relatively simple shape, but scaled and added together, they can produce nearly any ``wiggly” shape.</li>
 <li>Increasing the dimension of the basis (more functions added together) can allow more wiggliness.</li>
@@ -389,19 +395,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We will fit smooth models to data using the function <code>gam()</code> from the package <code>mgcv</code>. It includes many options for basis functions (types of smooths) - see <code>?mgcv::gam</code> or [https://rsconnect.calvin.edu:3939/content/28/] for details.</p>
 </section>
 </section>
-<section id="fitting-gams" class="level2" data-number="18.3">
-<h2 data-number="18.3" class="anchored" data-anchor-id="fitting-gams"><span class="header-section-number">18.3</span> Fitting GAMs</h2>
+<section id="fitting-gams" class="level2" data-number="19.3">
+<h2 data-number="19.3" class="anchored" data-anchor-id="fitting-gams"><span class="header-section-number">19.3</span> Fitting GAMs</h2>
 <p>An excellent resource: <a href="https://converged.yt/mgcv-workshop/" class="uri">https://converged.yt/mgcv-workshop/</a>.</p>
-<section id="choosing-model-formulation" class="level3" data-number="18.3.1">
-<h3 data-number="18.3.1" class="anchored" data-anchor-id="choosing-model-formulation"><span class="header-section-number">18.3.1</span> Choosing model formulation</h3>
+<section id="choosing-model-formulation" class="level3" data-number="19.3.1">
+<h3 data-number="19.3.1" class="anchored" data-anchor-id="choosing-model-formulation"><span class="header-section-number">19.3.1</span> Choosing model formulation</h3>
 <p>Which terms should be modelled as smooth terms? Explore the data!</p>
 <ul>
 <li>Pros:</li>
 <li>Cons:</li>
 </ul>
 </section>
-<section id="model-formula" class="level3" data-number="18.3.2">
-<h3 data-number="18.3.2" class="anchored" data-anchor-id="model-formula"><span class="header-section-number">18.3.2</span> Model formula</h3>
+<section id="model-formula" class="level3" data-number="19.3.2">
+<h3 data-number="19.3.2" class="anchored" data-anchor-id="model-formula"><span class="header-section-number">19.3.2</span> Model formula</h3>
 <p>Let’s fit a simple GAM for the ozone data as a function of radiation, temperature and wind. Note the <code>s()</code> function for specifying a smooth, which takes as input:</p>
 <ul>
 <li>a variable name (or more than one, for advanced users)</li>
@@ -455,8 +461,8 @@ R-sq.(adj) =  0.697   Deviance explained =   71%
 </div>
 </section>
 </section>
-<section id="model-assessment" class="level2" data-number="18.4">
-<h2 data-number="18.4" class="anchored" data-anchor-id="model-assessment"><span class="header-section-number">18.4</span> Model Assessment</h2>
+<section id="model-assessment" class="level2" data-number="19.4">
+<h2 data-number="19.4" class="anchored" data-anchor-id="model-assessment"><span class="header-section-number">19.4</span> Model Assessment</h2>
 <p>In addition to what you already know (…which all still holds, except linearity expectation!) <code>mgcv</code> has some nice model checking functions built in.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">2</span>))</span>
@@ -473,10 +479,10 @@ Model rank =  14 / 14
 Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
-                          k'  edf k-index p-value   
-s(Day)                  5.00 3.64    0.86    0.01 **
-s(Wind_speed)           4.00 1.18    1.14    0.97   
-s(Temperature_Sandburg) 4.00 3.28    1.10    0.91   
+                          k'  edf k-index p-value  
+s(Day)                  5.00 3.64    0.86    0.02 *
+s(Wind_speed)           4.00 1.18    1.14    0.95  
+s(Temperature_Sandburg) 4.00 3.28    1.10    0.93  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -484,8 +490,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p><img src="gams_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="528"></p>
 </div>
 </div>
-<section id="concurvity" class="level3" data-number="18.4.1">
-<h3 data-number="18.4.1" class="anchored" data-anchor-id="concurvity"><span class="header-section-number">18.4.1</span> Concurvity</h3>
+<section id="concurvity" class="level3" data-number="19.4.1">
+<h3 data-number="19.4.1" class="anchored" data-anchor-id="concurvity"><span class="header-section-number">19.4.1</span> Concurvity</h3>
 <p>Like collinearity and multicollinearity, but for smooths…values of 0 indicate no problem, and 1 a huge problem (total lack of identifiability – same information in multiple predictors).</p>
 <p>Overall, does the model have problems with concurvity?</p>
 <div class="cell">
@@ -540,22 +546,22 @@ s(Temperature_Sandburg)            1.000000e+00</code></pre>
 </div>
 </section>
 </section>
-<section id="model-selection" class="level2" data-number="18.5">
-<h2 data-number="18.5" class="anchored" data-anchor-id="model-selection"><span class="header-section-number">18.5</span> Model Selection</h2>
-<section id="shrinkage-and-penalties" class="level3" data-number="18.5.1">
-<h3 data-number="18.5.1" class="anchored" data-anchor-id="shrinkage-and-penalties"><span class="header-section-number">18.5.1</span> Shrinkage and Penalties</h3>
+<section id="model-selection" class="level2" data-number="19.5">
+<h2 data-number="19.5" class="anchored" data-anchor-id="model-selection"><span class="header-section-number">19.5</span> Model Selection</h2>
+<section id="shrinkage-and-penalties" class="level3" data-number="19.5.1">
+<h3 data-number="19.5.1" class="anchored" data-anchor-id="shrinkage-and-penalties"><span class="header-section-number">19.5.1</span> Shrinkage and Penalties</h3>
 <p>With GAMs, in a sense, some model selection is (or can be) done during model fitting - what smooth is best? Or is the relationship a line? A flat line? Using <em>shrinkage</em> basis or including <code>select=TRUE</code> allows for this.</p>
 </section>
-<section id="p-value-selection" class="level3" data-number="18.5.2">
-<h3 data-number="18.5.2" class="anchored" data-anchor-id="p-value-selection"><span class="header-section-number">18.5.2</span> P-value selection</h3>
+<section id="p-value-selection" class="level3" data-number="19.5.2">
+<h3 data-number="19.5.2" class="anchored" data-anchor-id="p-value-selection"><span class="header-section-number">19.5.2</span> P-value selection</h3>
 <p>Cautions: <strong>p-values are approximate!</strong> Successfulness of the procedure best when fitting method is: ML (1st choice), REML (2nd choice).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(oz.gam)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Interpretation as usual. Note that <code>anova()</code> (not <code>Anova()</code>) works here - especially for GAMs, it does <em>not</em> do sequential tests; and <code>Anova()</code> doesn’t handle GAMs.</p>
 </section>
-<section id="information-criteria" class="level3" data-number="18.5.3">
-<h3 data-number="18.5.3" class="anchored" data-anchor-id="information-criteria"><span class="header-section-number">18.5.3</span> Information criteria</h3>
+<section id="information-criteria" class="level3" data-number="19.5.3">
+<h3 data-number="19.5.3" class="anchored" data-anchor-id="information-criteria"><span class="header-section-number">19.5.3</span> Information criteria</h3>
 <ul>
 <li>Conditional/Approximate - bias</li>
 <li>Fitting method:
@@ -940,7 +946,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./anova-plus.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

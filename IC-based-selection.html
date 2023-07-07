@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GLMs and Friends - 2&nbsp; Model Selection Using Information Criteria</title>
+<title>GLMs and Friends - 3&nbsp; Model Selection Using Information Criteria</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./likelihood.html" rel="next">
-<link href="./lm1.html" rel="prev">
+<link href="./lm-assess.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -111,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./IC-based-selection.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./IC-based-selection.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -170,104 +170,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./lm-assess.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Diagnostics and Assessment</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./IC-based-selection.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./likelihood.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pdf-pmf.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./count-data-regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./model-averaging.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./interactions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./binary-regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./binary-regression2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./collinearity.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./zero-inflation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ncv.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./random-effects.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./random-effects2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gee-motivation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./corr-struct.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./anova-plus.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gams.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -286,13 +292,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#data-and-model" id="toc-data-and-model" class="nav-link active" data-scroll-target="#data-and-model"><span class="header-section-number">2.1</span> Data and Model</a></li>
-  <li><a href="#calculations" id="toc-calculations" class="nav-link" data-scroll-target="#calculations"><span class="header-section-number">2.2</span> Calculations</a></li>
-  <li><a href="#decisions-with-ics" id="toc-decisions-with-ics" class="nav-link" data-scroll-target="#decisions-with-ics"><span class="header-section-number">2.3</span> Decisions with ICs</a></li>
-  <li><a href="#all-possible-subsets-selection" id="toc-all-possible-subsets-selection" class="nav-link" data-scroll-target="#all-possible-subsets-selection"><span class="header-section-number">2.4</span> All-possible-subsets Selection</a></li>
-  <li><a href="#which-ic-should-i-use" id="toc-which-ic-should-i-use" class="nav-link" data-scroll-target="#which-ic-should-i-use"><span class="header-section-number">2.5</span> Which IC should I use?</a></li>
-  <li><a href="#quantities-derived-from-aic" id="toc-quantities-derived-from-aic" class="nav-link" data-scroll-target="#quantities-derived-from-aic"><span class="header-section-number">2.6</span> Quantities derived from AIC</a></li>
-  <li><a href="#important-caution" id="toc-important-caution" class="nav-link" data-scroll-target="#important-caution"><span class="header-section-number">2.7</span> Important Caution</a></li>
+  <li><a href="#data-and-model" id="toc-data-and-model" class="nav-link active" data-scroll-target="#data-and-model"><span class="header-section-number">3.1</span> Data and Model</a></li>
+  <li><a href="#calculations" id="toc-calculations" class="nav-link" data-scroll-target="#calculations"><span class="header-section-number">3.2</span> Calculations</a></li>
+  <li><a href="#decisions-with-ics" id="toc-decisions-with-ics" class="nav-link" data-scroll-target="#decisions-with-ics"><span class="header-section-number">3.3</span> Decisions with ICs</a></li>
+  <li><a href="#all-possible-subsets-selection" id="toc-all-possible-subsets-selection" class="nav-link" data-scroll-target="#all-possible-subsets-selection"><span class="header-section-number">3.4</span> All-possible-subsets Selection</a></li>
+  <li><a href="#which-ic-should-i-use" id="toc-which-ic-should-i-use" class="nav-link" data-scroll-target="#which-ic-should-i-use"><span class="header-section-number">3.5</span> Which IC should I use?</a></li>
+  <li><a href="#quantities-derived-from-aic" id="toc-quantities-derived-from-aic" class="nav-link" data-scroll-target="#quantities-derived-from-aic"><span class="header-section-number">3.6</span> Quantities derived from AIC</a></li>
+  <li><a href="#important-caution" id="toc-important-caution" class="nav-link" data-scroll-target="#important-caution"><span class="header-section-number">3.7</span> Important Caution</a></li>
   </ul>
 </nav>
     </div>
@@ -301,7 +307,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></h1>
 </div>
 
 
@@ -318,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>So far, we have learned to fit models with multiple predictors, both quantitative and categorical, and to assess whether required conditions are met for linear regression to be an appropriate model for a dataset.</p>
 <p>One missing piece is: If I have an appropriate model with a set of multiple predictors, how can I choose which predictors are worth retaining in a “best” model for the data (and which ones have no relationship, or a weak relationship, with the response, so should be discarded)?</p>
-<section id="data-and-model" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="data-and-model"><span class="header-section-number">2.1</span> Data and Model</h2>
+<section id="data-and-model" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="data-and-model"><span class="header-section-number">3.1</span> Data and Model</h2>
 <p>Today we will recreate part of the analysis from <a href="https://doi.org/10.1111/1365-2664.12798"><em>Vertebrate community composition and diversity declines along a defaunation gradient radiating from rural villages in Gabon</em></a>, by Sally Koerner and colleagues. They investigated the relationship between rural villages, hunting, and wildlife in Gabon. They asked how monkey abundance depends on distance from villages, village size, and vegetation characteristics. They shared their data at <a href="https://datadryad.org/stash/dataset/doi:10.5061/dryad.vs97g">Dryad.org</a> and we can read it in and fit a regression model like this:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>defaun <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'http://sldr.netlify.com/data/koerner_gabon_defaunation.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -366,8 +372,8 @@ F-statistic: 1.551 on 10 and 13 DF,  p-value: 0.2262</code></pre>
 </div>
 </div>
 </section>
-<section id="calculations" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="calculations"><span class="header-section-number">2.2</span> Calculations</h2>
+<section id="calculations" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="calculations"><span class="header-section-number">3.2</span> Calculations</h2>
 <ul>
 <li><p>Information criteria allow us to <strong>balance the conflicting goals</strong> of having a model that <em>fits the data as well as possible</em> (which pushes us toward models with more predictors) and <em>parsimony</em> (choosing the simplest model, with the fewest predictors, that works for the data and research question). The basic idea is that we <strong>minimize</strong> the quantity <span class="math inline">\(-(2LogLikelihood - penalty) = -2LogLikelihood + penalty\)</span></p></li>
 <li><p>AIC is computed according to <span class="math inline">\(-2LogLikelihood +2k\)</span>, where <span class="math inline">\(k\)</span> is the number of coefficients being estimated (don’t forget <span class="math inline">\(\sigma\)</span>!) <strong>Smaller AIC is better.</strong></p></li>
@@ -375,8 +381,8 @@ F-statistic: 1.551 on 10 and 13 DF,  p-value: 0.2262</code></pre>
 <li><p>Verify that the BIC for this model is 139.65.</p></li>
 </ul>
 </section>
-<section id="decisions-with-ics" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="decisions-with-ics"><span class="header-section-number">2.3</span> Decisions with ICs</h2>
+<section id="decisions-with-ics" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="decisions-with-ics"><span class="header-section-number">3.3</span> Decisions with ICs</h2>
 <p>The following rules of thumb (<strong>not</strong> laws, just common rules of thumb) may help you make decisions with ICs:</p>
 <ul>
 <li>A model with lower IC <em>by at least 3 units</em> is notably better.</li>
@@ -384,8 +390,8 @@ F-statistic: 1.551 on 10 and 13 DF,  p-value: 0.2262</code></pre>
 <li>In some cases, if the research question is to measure the influence of some particular predictor on the response, but <em>the IC does not strongly support including that predictor</em> in the best model (IC difference less than 3), you might want to keep it in anyway and then discuss the situation honestly, for example, “AIC does not provide strong support for including predictor x in the best model, but the model including predictor x indicates that as x increases the response decreases slightly. More research would be needed…”</li>
 </ul>
 </section>
-<section id="all-possible-subsets-selection" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="all-possible-subsets-selection"><span class="header-section-number">2.4</span> All-possible-subsets Selection</h2>
+<section id="all-possible-subsets-selection" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="all-possible-subsets-selection"><span class="header-section-number">3.4</span> All-possible-subsets Selection</h2>
 <p>The model we just fitted is our <em>full model</em>, with all predictors of potential interest included. How can we use information criteria to choose the best model from possible models with subsets of the predictors?</p>
 <p>We can use the <code>dredge()</code> function from the <code>MuMIn</code> package to get and display ICs for all these models.</p>
 <p>Before using dredge, we need to make sure our dataset has no missing values, and also set the “na.action” input for our model (can be done in call to <code>lm(..., na.action = 'na.fail')</code> also).</p>
@@ -640,19 +646,19 @@ F-statistic: 1.551 on 10 and 13 DF,  p-value: 0.2262</code></pre>
 <li>What is the best model according to BIC, for this dataset?</li>
 </ul>
 </section>
-<section id="which-ic-should-i-use" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="which-ic-should-i-use"><span class="header-section-number">2.5</span> Which IC should I use?</h2>
+<section id="which-ic-should-i-use" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="which-ic-should-i-use"><span class="header-section-number">3.5</span> Which IC should I use?</h2>
 <p>AIC and BIC may give different best models, especially if the dataset is large. You may want to just choose one to use <em>a priori</em> (before making calculations). You might prefer BIC if you want to err on the “conservative” side, as it is more likely to select a “smaller” model with fewer predictors. This is because of its larger penalty.</p>
 </section>
-<section id="quantities-derived-from-aic" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="quantities-derived-from-aic"><span class="header-section-number">2.6</span> Quantities derived from AIC</h2>
+<section id="quantities-derived-from-aic" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="quantities-derived-from-aic"><span class="header-section-number">3.6</span> Quantities derived from AIC</h2>
 <ul>
 <li><span class="math inline">\(\Delta AIC\)</span> is the AIC for a given model, minus the AIC of the best one in the dataset. (Same for <span class="math inline">\(\Delta BIC\)</span>)</li>
 <li><em>Akaike weights</em> are values (ranging from 0-1) that measure the weight of evidence suggesting that a model is the best one (given that there is one best one in the set)</li>
 </ul>
 </section>
-<section id="important-caution" class="level2" data-number="2.7">
-<h2 data-number="2.7" class="anchored" data-anchor-id="important-caution"><span class="header-section-number">2.7</span> Important Caution</h2>
+<section id="important-caution" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="important-caution"><span class="header-section-number">3.7</span> Important Caution</h2>
 <p><strong>Very important</strong>: IC can <strong>ONLY</strong> be compared for models with the same response variable, and the exact same rows of data.</p>
 
 
@@ -1009,13 +1015,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./lm1.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Linear Regression</span></span>
+      <a href="./lm-assess.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Diagnostics and Assessment</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./likelihood.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Likelihood</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GLMs and Friends - 7&nbsp; Model Averaging</title>
+<title>GLMs and Friends - 2&nbsp; Model Diagnostics and Assessment</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./interactions.html" rel="next">
-<link href="./count-data-regression.html" rel="prev">
+<link href="./IC-based-selection.html" rel="next">
+<link href="./lm1.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -97,6 +97,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -109,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./model-averaging.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Averaging</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./lm-assess.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Diagnostics and Assessment</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -168,7 +170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lm-assess.html" class="sidebar-item-text sidebar-link">
+  <a href="./lm-assess.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Diagnostics and Assessment</span></span></a>
   </div>
 </li>
@@ -198,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./model-averaging.html" class="sidebar-item-text sidebar-link active">
+  <a href="./model-averaging.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
   </div>
 </li>
@@ -290,12 +292,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#data-school-survey-on-crime-and-safety" id="toc-data-school-survey-on-crime-and-safety" class="nav-link active" data-scroll-target="#data-school-survey-on-crime-and-safety"><span class="header-section-number">7.1</span> Data: School Survey on Crime and Safety</a></li>
-  <li><a href="#modelling-number-of-violent-incidents-per-school" id="toc-modelling-number-of-violent-incidents-per-school" class="nav-link" data-scroll-target="#modelling-number-of-violent-incidents-per-school"><span class="header-section-number">7.2</span> Modelling number of violent incidents per school</a></li>
-  <li><a href="#model-averaging" id="toc-model-averaging" class="nav-link" data-scroll-target="#model-averaging"><span class="header-section-number">7.3</span> Model Averaging</a>
+  <li><a href="#r-squared" id="toc-r-squared" class="nav-link active" data-scroll-target="#r-squared"><span class="header-section-number">3</span> R-squared</a>
   <ul class="collapse">
-  <li><a href="#getting-the-averaged-model" id="toc-getting-the-averaged-model" class="nav-link" data-scroll-target="#getting-the-averaged-model"><span class="header-section-number">7.3.1</span> Getting the Averaged Model</a></li>
-  <li><a href="#getting-predictions-from-the-averaged-model" id="toc-getting-predictions-from-the-averaged-model" class="nav-link" data-scroll-target="#getting-predictions-from-the-averaged-model"><span class="header-section-number">7.3.2</span> Getting Predictions from the Averaged Model</a></li>
+  <li><a href="#simple-measure-of-goodness-of-fit" id="toc-simple-measure-of-goodness-of-fit" class="nav-link" data-scroll-target="#simple-measure-of-goodness-of-fit"><span class="header-section-number">3.1</span> Simple measure of goodness-of-fit</a></li>
+  </ul></li>
+  <li><a href="#r-squared-1" id="toc-r-squared-1" class="nav-link" data-scroll-target="#r-squared-1"><span class="header-section-number">4</span> R-squared</a>
+  <ul class="collapse">
+  <li><a href="#simple-measure-of-goodness-of-fit-1" id="toc-simple-measure-of-goodness-of-fit-1" class="nav-link" data-scroll-target="#simple-measure-of-goodness-of-fit-1"><span class="header-section-number">4.1</span> Simple measure of goodness-of-fit</a></li>
+  </ul></li>
+  <li><a href="#r2-ranges-0---1" id="toc-r2-ranges-0---1" class="nav-link" data-scroll-target="#r2-ranges-0---1"><span class="header-section-number">5</span> <span class="math inline">\(R^2\)</span> ranges 0 - 1</a>
+  <ul class="collapse">
+  <li><a href="#no-trend-1-perfect-line" id="toc-no-trend-1-perfect-line" class="nav-link" data-scroll-target="#no-trend-1-perfect-line"><span class="header-section-number">5.1</span> 0: no trend; 1: perfect line</a></li>
+  </ul></li>
+  <li><a href="#regression-conditions" id="toc-regression-conditions" class="nav-link" data-scroll-target="#regression-conditions"><span class="header-section-number">6</span> Regression Conditions</a></li>
+  <li><a href="#lack-of-nonlinearity-in-predictorresponse-relationship" id="toc-lack-of-nonlinearity-in-predictorresponse-relationship" class="nav-link" data-scroll-target="#lack-of-nonlinearity-in-predictorresponse-relationship"><span class="header-section-number">7</span> <strong>L</strong>ack of nonlinearity in predictor/response relationship</a></li>
+  <li><a href="#independence-of-residuals" id="toc-independence-of-residuals" class="nav-link" data-scroll-target="#independence-of-residuals"><span class="header-section-number">8</span> <strong>I</strong>ndependence of residuals</a></li>
+  <li><a href="#normality-of-residuals" id="toc-normality-of-residuals" class="nav-link" data-scroll-target="#normality-of-residuals"><span class="header-section-number">9</span> <strong>N</strong>ormality of residuals</a></li>
+  <li><a href="#error-variance-is-constant-in-other-words-residuals-have-constant-variance.-also-known-as-homoscedasticity." id="toc-error-variance-is-constant-in-other-words-residuals-have-constant-variance.-also-known-as-homoscedasticity." class="nav-link" data-scroll-target="#error-variance-is-constant-in-other-words-residuals-have-constant-variance.-also-known-as-homoscedasticity."><span class="header-section-number">10</span> <strong>E</strong>rror variance is constant (in other words: residuals have <em>constant variance</em>). Also known as <em>homoscedasticity</em>.</a></li>
+  <li><a href="#our-model" id="toc-our-model" class="nav-link" data-scroll-target="#our-model"><span class="header-section-number">11</span> Our Model</a></li>
+  <li><a href="#residuals-normal-histogram" id="toc-residuals-normal-histogram" class="nav-link" data-scroll-target="#residuals-normal-histogram"><span class="header-section-number">12</span> Residuals Normal: Histogram</a>
+  <ul class="collapse">
+  <li><a href="#be-quite-generous" id="toc-be-quite-generous" class="nav-link" data-scroll-target="#be-quite-generous"><span class="header-section-number">12.1</span> (Be quite generous)</a></li>
+  </ul></li>
+  <li><a href="#resid.-normality-q-q-plot" id="toc-resid.-normality-q-q-plot" class="nav-link" data-scroll-target="#resid.-normality-q-q-plot"><span class="header-section-number">13</span> Resid. Normality: Q-Q plot</a>
+  <ul class="collapse">
+  <li><a href="#be-quite-generous-1" id="toc-be-quite-generous-1" class="nav-link" data-scroll-target="#be-quite-generous-1"><span class="header-section-number">13.1</span> (Be quite generous)</a></li>
+  </ul></li>
+  <li><a href="#normality-of-residuals-q-q-plot-wci" id="toc-normality-of-residuals-q-q-plot-wci" class="nav-link" data-scroll-target="#normality-of-residuals-q-q-plot-wci"><span class="header-section-number">14</span> Normality of Residuals: Q-Q plot w/CI</a>
+  <ul class="collapse">
+  <li><a href="#does-data-go-far-outside-the-ci-expected-range" id="toc-does-data-go-far-outside-the-ci-expected-range" class="nav-link" data-scroll-target="#does-data-go-far-outside-the-ci-expected-range"><span class="header-section-number">14.1</span> (Does data go far outside the CI (expected range)?)</a></li>
+  </ul></li>
+  <li><a href="#non-normal-residuals" id="toc-non-normal-residuals" class="nav-link" data-scroll-target="#non-normal-residuals"><span class="header-section-number">15</span> Non-normal residuals?</a></li>
+  <li><a href="#non-normal-residuals-1" id="toc-non-normal-residuals-1" class="nav-link" data-scroll-target="#non-normal-residuals-1"><span class="header-section-number">16</span> Non-normal residuals?</a></li>
+  <li><a href="#lack-of-non-linearity" id="toc-lack-of-non-linearity" class="nav-link" data-scroll-target="#lack-of-non-linearity"><span class="header-section-number">17</span> Lack of Non-Linearity</a>
+  <ul class="collapse">
+  <li><a href="#data-plot-no-trend-ok.-linear-trend-ok" id="toc-data-plot-no-trend-ok.-linear-trend-ok" class="nav-link" data-scroll-target="#data-plot-no-trend-ok.-linear-trend-ok"><span class="header-section-number">17.1</span> DATA PLOT: No trend, OK. Linear trend, OK</a></li>
+  </ul></li>
+  <li><a href="#lack-of-non-linearity-1" id="toc-lack-of-non-linearity-1" class="nav-link" data-scroll-target="#lack-of-non-linearity-1"><span class="header-section-number">18</span> Lack of Non-Linearity</a>
+  <ul class="collapse">
+  <li><a href="#residuals-vs.-fitted-ok-if-no-trends" id="toc-residuals-vs.-fitted-ok-if-no-trends" class="nav-link" data-scroll-target="#residuals-vs.-fitted-ok-if-no-trends"><span class="header-section-number">18.1</span> <strong>RESIDUALS vs.&nbsp;FITTED</strong>: OK if <strong>No</strong> trends</a></li>
+  </ul></li>
+  <li><a href="#constant-residual-variance" id="toc-constant-residual-variance" class="nav-link" data-scroll-target="#constant-residual-variance"><span class="header-section-number">19</span> Constant Residual Variance</a>
+  <ul class="collapse">
+  <li><a href="#point-cloud-should-fit-well-in-a-rectangle-not-trumpet" id="toc-point-cloud-should-fit-well-in-a-rectangle-not-trumpet" class="nav-link" data-scroll-target="#point-cloud-should-fit-well-in-a-rectangle-not-trumpet"><span class="header-section-number">19.1</span> Point cloud should fit well in a rectangle (not trumpet)</a></li>
+  <li><a href="#true-for-resid-vs.-predicted-and-resid-vs.-any-predictor" id="toc-true-for-resid-vs.-predicted-and-resid-vs.-any-predictor" class="nav-link" data-scroll-target="#true-for-resid-vs.-predicted-and-resid-vs.-any-predictor"><span class="header-section-number">19.2</span> True for resid vs.&nbsp;predicted <em>and</em> resid vs.&nbsp;any predictor</a></li>
+  </ul></li>
+  <li><a href="#non-linearity" id="toc-non-linearity" class="nav-link" data-scroll-target="#non-linearity"><span class="header-section-number">20</span> Non-linearity?</a></li>
+  <li><a href="#non-constant-variance" id="toc-non-constant-variance" class="nav-link" data-scroll-target="#non-constant-variance"><span class="header-section-number">21</span> Non-constant variance?</a></li>
+  <li><a href="#independence-of-residuals-1" id="toc-independence-of-residuals-1" class="nav-link" data-scroll-target="#independence-of-residuals-1"><span class="header-section-number">22</span> Independence of Residuals</a>
+  <ul class="collapse">
+  <li><a href="#ponder-sort-order-then-acf-plot" id="toc-ponder-sort-order-then-acf-plot" class="nav-link" data-scroll-target="#ponder-sort-order-then-acf-plot"><span class="header-section-number">22.1</span> Ponder sort order; then ACF plot</a></li>
+  </ul></li>
+  <li><a href="#residual-independence" id="toc-residual-independence" class="nav-link" data-scroll-target="#residual-independence"><span class="header-section-number">23</span> Residual independence?</a></li>
+  <li><a href="#any-line-violation---danger" id="toc-any-line-violation---danger" class="nav-link" data-scroll-target="#any-line-violation---danger"><span class="header-section-number">24</span> <em>Any</em> LINE Violation -&gt; Danger!</a>
+  <ul class="collapse">
+  <li><a href="#conclusions-can-not-be-trusted" id="toc-conclusions-can-not-be-trusted" class="nav-link" data-scroll-target="#conclusions-can-not-be-trusted"><span class="header-section-number">24.1</span> Conclusions can not be trusted</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -305,7 +356,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Averaging</span></h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Diagnostics and Assessment</span></h1>
 </div>
 
 
@@ -320,262 +371,214 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>So far, we have used AIC and/or BIC for model selection, to decide which variables to keep in a “best” model and which to exclude. But we have already seen a number of cases where there is not <strong>one</strong> model that is clearly superior to all the others. In those cases, we have decided on the smallest model (with the fewest predictors), but there are other options when many competing models have similar scores.</p>
-<p>One option is <em>not to choose</em> – instead, keep them all, and make predictions via a weighted average of all the models. The models with the best IC scores get more weight. This can be a good option if the main goal is accurate prediction (rather than deciding definitively which predictors are “good” ones and which are not).</p>
-<p>How can we do it? Let’s explore an example.</p>
-<section id="data-school-survey-on-crime-and-safety" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="data-school-survey-on-crime-and-safety"><span class="header-section-number">7.1</span> Data: School Survey on Crime and Safety</h2>
-<p>The data for this example are from a survey of U.S. schools, the 2000 School Survey on Crime and Safety. There is information about the study at</p>
-<p><a href="http://catalog.data.gov/dataset/2000-school-survey-on-crime-and-safety" class="uri">http://catalog.data.gov/dataset/2000-school-survey-on-crime-and-safety</a>,</p>
-<p>which says the study “is a cross-sectional survey of the nation’s public schools designed to provide estimates of school crime, discipline, disorder, programs and policies. SSOCS is administered to public primary, middle, high, and combined school principals in the spring of even-numbered school years…Public schools were sampled in the spring of 2000 to participate in the study.”</p>
-<p>The dataset you will use is available online at:</p>
-<p><a href="http://sldr.netlfiy.com/data/sscrime.csv">http://sldr.netlify.com/data/sscrime.csv</a></p>
-<p>It contains a number of variables:</p>
 <ul>
-<li><code>VisitorCheckIn</code>: Whether visitors to the school must check in to gain entry to the school.</li>
-<li><code>LockedGates</code>: Whether there are locked gates at the entry to the school.</li>
-<li><code>MetalDetectors</code>: Whether there is a metal detector at the entrance to the school.</li>
-<li><code>DrugSniffDog</code>: Whether a drug-sniffing dog is randomly brought into the school to carry out inspections.</li>
-<li><code>DrugTesting</code>: Whether any drug testing of students occurs.</li>
-<li><code>UniformsRequired</code>:Whether students are required to wear uniforms.</li>
-<li><code>DressCode</code>: Whether a strict dress code is enforced.</li>
-<li><code>Lockers</code>: Whether students have lockers.</li>
-<li><code>StudentIDBadges</code>: Whether students are required to wear ID badges.</li>
-<li><code>StaffIDBadges</code>: Whether teachers and other staff are required to wear ID badges.</li>
-<li><code>SecurityCameras</code>: Whether there are security cameras on the premises.</li>
-<li><code>OfficialRiotPlan</code>: Whether the school has a written plan in place for how to deal with a riot or large-scale fight.</li>
-<li><code>ViolenceReductionProgram</code>: Whether the school has a Violence Reduction Program in place.</li>
-<li><code>Security</code>: Whether security officers are present on the premises.</li>
-<li><code>TrainingHours</code>: Average amount of time (in hours) that teachers and staff have devoted to training related to violence reduction.</li>
-<li><code>AttacksWithoutWeapon</code>: Number of attacks that have occurred at the school, not involving a weapon.</li>
-<li><code>Thefts</code>: Number of thefts.</li>
-<li><code>Vandalism</code>: Number of incidents of vandalism.</li>
-<li><code>ViolentIncidentsTotal</code>: Number of violent incidents of all types that have occurred at the school.</li>
-<li><code>Enrollment</code>: Number of students enrolled in the school (categorical)</li>
-<li><code>NEnrollment</code>: Number of students enrolled in the school (numeric)</li>
-<li><code>SurveyRespondent</code>: The identity of the person who filled out the survey.</li>
-<li><code>Location</code>: Whether the location of the school is Urban, Rural, etc.</li>
+<li>Does the model fit data well?</li>
+<li><em>Should</em> we have fit a line – Is model appropriate for data?</li>
+<li>Are predictors <em>really</em> associated with response?</li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ssc <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'http://sldr.netlify.com/data/sscrime.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>These questions are absolutely crucial to consider, <strong>before</strong> we dive into model interpretation and drawing conclusions.</p>
+<p>If the model we’ve chosen to fit to our data is not appropriate for it, it’s not just an inconvenience or something to keep in mind. By fitting a multiple regression model, we’re assuming that our dataset meets a number of conditions that make the model and data a good match. If the conditions are not met, any conclusions drawn from the model really can be truly misleading.</p>
+<p><strong>A model whose conditions aren’t met is not to be trusted!</strong></p>
+<p>So before proceeding to interpretation of model output, we need to learn to do some basic checks – often called “Model Assessment” – to verify that necessary conditions are met.</p>
+<p>Along the way, we will also learn a few common metrics used to measure how well a model “fits” data – that is, how close is the match between what the model says and what the data indicate?</p>
+<section id="r-squared" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> R-squared</h1>
+<section id="simple-measure-of-goodness-of-fit" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="simple-measure-of-goodness-of-fit"><span class="header-section-number">3.1</span> Simple measure of goodness-of-fit</h2>
+<p><span class="math display">\[R^2 = 1 - \frac{RSS}{TSS} = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2} {\sum_{i=1}^{n} (y_i - \bar{y})^2}\]</span></p>
+</section>
+</section>
+<section id="r-squared-1" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> R-squared</h1>
+<section id="simple-measure-of-goodness-of-fit-1" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="simple-measure-of-goodness-of-fit-1"><span class="header-section-number">4.1</span> Simple measure of goodness-of-fit</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lm-assess_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
 </div>
 </section>
-<section id="modelling-number-of-violent-incidents-per-school" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="modelling-number-of-violent-incidents-per-school"><span class="header-section-number">7.2</span> Modelling number of violent incidents per school</h2>
-<p>We will fit a model for the number of violent incidents total as a function of a number of predictors. This is count data and we will fit a negative binomial regression model:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>school.nb2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(ViolentIncidentsTotal <span class="sc">~</span> TrainingHours <span class="sc">+</span> Location <span class="sc">+</span> </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                        SecurityCameras <span class="sc">+</span> DressCode <span class="sc">+</span> UniformsRequired <span class="sc">+</span> </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                        NEnrollment, <span class="at">data=</span>ssc,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">family=</span><span class="fu">nbinom2</span>(<span class="at">link=</span><span class="st">'log'</span>),</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action =</span> <span class="st">'na.fail'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>I will use AIC and the <code>dredge()</code> function to compare all possible subsets of my saturated model and figure out which variables should be included in the best model. I chose AIC in this case because it is perhaps more widely used than BIC (that’s not a good reason unless you really have no better one, but there you have it) and because with the relatively small sample size here, I don’t feel a particular need to use BIC for its larger penalty term.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#do "dredge" for model selection</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>mod.sel <span class="ot">&lt;-</span> <span class="fu">dredge</span>(school.nb2, <span class="at">rank=</span><span class="st">'AIC'</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mod.sel, <span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Global model call: glmmTMB(formula = ViolentIncidentsTotal ~ TrainingHours + Location + 
-    SecurityCameras + DressCode + UniformsRequired + NEnrollment, 
-    data = ssc, family = nbinom2(link = "log"), na.action = "na.fail", 
-    ziformula = ~0, dispformula = ~1)
----
-Model selection table 
-   cnd((Int)) dsp((Int)) cnd(DrC) cnd(Lct)  cnd(NEn) cnd(ScC)  cnd(TrH)
-4       3.610          +        +        +                             
-36      3.585          +        +        +                             
-12      3.635          +        +        +                  +          
-8       3.570          +        +        + 2.537e-05                   
-20      3.608          +        +        +                    0.0008916
-44      3.610          +        +        +                  +          
-40      3.529          +        +        + 3.410e-05                   
-16      3.588          +        +        + 3.140e-05        +          
-   cnd(UnR) df    logLik    AIC delta weight
-4            6 -1745.380 3502.8  0.00  0.287
-36        +  7 -1745.017 3504.0  1.27  0.152
-12           7 -1745.103 3504.2  1.45  0.139
-8            7 -1745.280 3504.6  1.80  0.117
-20           7 -1745.380 3504.8  2.00  0.106
-44        +  8 -1744.734 3505.5  2.71  0.074
-40        +  8 -1744.840 3505.7  2.92  0.067
-16           8 -1744.953 3505.9  3.15  0.060
-Models ranked by AIC(x) </code></pre>
-</div>
-</div>
-<p>Because the first 7 or so models all have AIC scores within 3 units of each other, it is hard to choose one best model here. In this situation, one way to choose is to pick the model that includes the smallest number of predictors, and still acheives an AIC that is among the best. Another option would be to use <strong>model averaging</strong>.</p>
 </section>
-<section id="model-averaging" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="model-averaging"><span class="header-section-number">7.3</span> Model Averaging</h2>
-<p>What if we wanted to use model averaging to find the best model, instead? We might choose this route because there are several models that all have AIC that are close to each other and thus fit the data approximately equally well. So we might choose to make predictions (and compute coefficients) that are the <em>average</em> of all the models (weighted by IC weights).</p>
-<p>Notes of caution:</p>
+<section id="r2-ranges-0---1" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> <span class="math inline">\(R^2\)</span> ranges 0 - 1</h1>
+<section id="no-trend-1-perfect-line" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="no-trend-1-perfect-line"><span class="header-section-number">5.1</span> 0: no trend; 1: perfect line</h2>
+</section>
+</section>
+<section id="regression-conditions" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Regression Conditions</h1>
+</section>
+<section id="lack-of-nonlinearity-in-predictorresponse-relationship" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> <strong>L</strong>ack of nonlinearity in predictor/response relationship</h1>
+</section>
+<section id="independence-of-residuals" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> <strong>I</strong>ndependence of residuals</h1>
+</section>
+<section id="normality-of-residuals" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> <strong>N</strong>ormality of residuals</h1>
+</section>
+<section id="error-variance-is-constant-in-other-words-residuals-have-constant-variance.-also-known-as-homoscedasticity." class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> <strong>E</strong>rror variance is constant (in other words: residuals have <em>constant variance</em>). Also known as <em>homoscedasticity</em>.</h1>
+</section>
+<section id="our-model" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Our Model</h1>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(response <span class="sc">~</span> pred1 <span class="sc">+</span> pred2, <span class="at">data =</span> my_data)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>my_data <span class="ot">&lt;-</span> my_data <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">preds =</span> <span class="fu">predict</span>(mod),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">resids =</span> <span class="fu">resid</span>(mod))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="residuals-normal-histogram" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Residuals Normal: Histogram</h1>
+<section id="be-quite-generous" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="be-quite-generous"><span class="header-section-number">12.1</span> (Be quite generous)</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>(<span class="sc">~</span>resids, <span class="at">data =</span> my_data, <span class="at">bins =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lm-assess_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="resid.-normality-q-q-plot" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Resid. Normality: Q-Q plot</h1>
+<section id="be-quite-generous-1" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="be-quite-generous-1"><span class="header-section-number">13.1</span> (Be quite generous)</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_qq</span>(<span class="sc">~</span>resids, <span class="at">data =</span> my_data) <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_qqline</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lm-assess_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="normality-of-residuals-q-q-plot-wci" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> Normality of Residuals: Q-Q plot w/CI</h1>
+<section id="does-data-go-far-outside-the-ci-expected-range" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="does-data-go-far-outside-the-ci-expected-range"><span class="header-section-number">14.1</span> (Does data go far outside the CI (expected range)?)</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">qqp</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lm-assess_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="non-normal-residuals" class="level1" data-number="15">
+<h1 data-number="15"><span class="header-section-number">15</span> Non-normal residuals?</h1>
+<p><em>image to be added</em></p>
+</section>
+<section id="non-normal-residuals-1" class="level1" data-number="16">
+<h1 data-number="16"><span class="header-section-number">16</span> Non-normal residuals?</h1>
+<p><em>image to be added</em></p>
+</section>
+<section id="lack-of-non-linearity" class="level1" data-number="17">
+<h1 data-number="17"><span class="header-section-number">17</span> Lack of Non-Linearity</h1>
+<section id="data-plot-no-trend-ok.-linear-trend-ok" class="level2" data-number="17.1">
+<h2 data-number="17.1" class="anchored" data-anchor-id="data-plot-no-trend-ok.-linear-trend-ok"><span class="header-section-number">17.1</span> DATA PLOT: No trend, OK. Linear trend, OK</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(response <span class="sc">~</span> predictor, <span class="at">data =</span> my_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lm-assess_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="lack-of-non-linearity-1" class="level1" data-number="18">
+<h1 data-number="18"><span class="header-section-number">18</span> Lack of Non-Linearity</h1>
+<section id="residuals-vs.-fitted-ok-if-no-trends" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="residuals-vs.-fitted-ok-if-no-trends"><span class="header-section-number">18.1</span> <strong>RESIDUALS vs.&nbsp;FITTED</strong>: OK if <strong>No</strong> trends</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(resids <span class="sc">~</span> preds, <span class="at">data =</span> my_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lm-assess_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="constant-residual-variance" class="level1" data-number="19">
+<h1 data-number="19"><span class="header-section-number">19</span> Constant Residual Variance</h1>
+<section id="point-cloud-should-fit-well-in-a-rectangle-not-trumpet" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="point-cloud-should-fit-well-in-a-rectangle-not-trumpet"><span class="header-section-number">19.1</span> Point cloud should fit well in a rectangle (not trumpet)</h2>
+</section>
+<section id="true-for-resid-vs.-predicted-and-resid-vs.-any-predictor" class="level2" data-number="19.2">
+<h2 data-number="19.2" class="anchored" data-anchor-id="true-for-resid-vs.-predicted-and-resid-vs.-any-predictor"><span class="header-section-number">19.2</span> True for resid vs.&nbsp;predicted <em>and</em> resid vs.&nbsp;any predictor</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lm-assess_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="non-linearity" class="level1" data-number="20">
+<h1 data-number="20"><span class="header-section-number">20</span> Non-linearity?</h1>
+<p><em>image to be added</em></p>
+</section>
+<section id="non-constant-variance" class="level1" data-number="21">
+<h1 data-number="21"><span class="header-section-number">21</span> Non-constant variance?</h1>
+<p><em>image to be added</em></p>
+</section>
+<section id="independence-of-residuals-1" class="level1" data-number="22">
+<h1 data-number="22"><span class="header-section-number">22</span> Independence of Residuals</h1>
+<section id="ponder-sort-order-then-acf-plot" class="level2" data-number="22.1">
+<h2 data-number="22.1" class="anchored" data-anchor-id="ponder-sort-order-then-acf-plot"><span class="header-section-number">22.1</span> Ponder sort order; then ACF plot</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>s245<span class="sc">::</span><span class="fu">gf_acf</span>(<span class="sc">~</span>mod) <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lm-assess_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="residual-independence" class="level1" data-number="23">
+<h1 data-number="23"><span class="header-section-number">23</span> Residual independence?</h1>
+<p><em>image to be added</em></p>
+</section>
+<section id="any-line-violation---danger" class="level1" data-number="24">
+<h1 data-number="24"><span class="header-section-number">24</span> <em>Any</em> LINE Violation -&gt; Danger!</h1>
+<section id="conclusions-can-not-be-trusted" class="level2" data-number="24.1">
+<h2 data-number="24.1" class="anchored" data-anchor-id="conclusions-can-not-be-trusted"><span class="header-section-number">24.1</span> Conclusions can not be trusted</h2>
 <ul>
-<li>If the model is not a linear regression (if there is a link function for instance) then it’s important to get <strong>predictions</strong> by <em>averaging the predictions from the different models</em>, <strong>not</strong> by making predictions using the model-averaged coefficients. The code below is careful to do this.</li>
-<li>Model averaging is used pretty widely but is also controversial (like most model selection methods, in fact!) For example, see: [https://esajournals.onlinelibrary.wiley.com/doi/full/10.1890/14-1639.1] and [https://drewtyre.rbind.io/post/rebutting_cade/].</li>
+<li>slope estimates <strong>incorrect</strong></li>
+<li>CIs and p-values <strong>too small</strong></li>
+<li>poor prediction accuracy</li>
 </ul>
-<p>To do model averaging, we use package <code>MuMIn</code> (function <code>model.avg</code>).</p>
-<section id="getting-the-averaged-model" class="level3" data-number="7.3.1">
-<h3 data-number="7.3.1" class="anchored" data-anchor-id="getting-the-averaged-model"><span class="header-section-number">7.3.1</span> Getting the Averaged Model</h3>
-<p>The following code gets the average model. If we did the default (<code>fit=FALSE</code>), it would be a bit faster, but we would then not be able to get predictions from the model.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mod.sel2 <span class="ot">&lt;-</span> <span class="fu">dredge</span>(school.nb2)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ave.model <span class="ot">&lt;-</span> MuMIn<span class="sc">::</span><span class="fu">model.avg</span>(mod.sel2, <span class="at">fit=</span><span class="cn">TRUE</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ave.model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-model.avg(object = get.models(object = mod.sel2, subset = NA))
-
-Component model call: 
-glmmTMB(formula = ViolentIncidentsTotal ~ &lt;64 unique rhs&gt;, data = ssc, 
-     family = nbinom2(link = "log"), ziformula = ~0, dispformula = ~1, 
-     na.action = na.fail)
-
-Component models: 
-       df   logLik    AICc delta weight
-12      6 -1745.38 3502.98  0.00   0.24
-126     7 -1745.02 3504.33  1.35   0.12
-124     7 -1745.10 3504.51  1.52   0.11
-123     7 -1745.28 3504.86  1.88   0.09
-125     7 -1745.38 3505.06  2.08   0.08
-1246    8 -1744.73 3505.86  2.87   0.06
-1236    8 -1744.84 3506.07  3.08   0.05
-1234    8 -1744.95 3506.29  3.31   0.05
-1256    8 -1745.02 3506.42  3.44   0.04
-1245    8 -1745.10 3506.59  3.60   0.04
-1235    8 -1745.28 3506.95  3.96   0.03
-12346   9 -1744.49 3507.46  4.48   0.03
-12456   9 -1744.73 3507.95  4.96   0.02
-12356   9 -1744.84 3508.17  5.18   0.02
-12345   9 -1744.95 3508.38  5.40   0.02
-123456 10 -1744.48 3509.56  6.58   0.01
-2       5 -1753.09 3516.33 13.35   0.00
-26      6 -1752.29 3516.80 13.82   0.00
-24      6 -1752.60 3517.42 14.44   0.00
-246     7 -1751.79 3517.87 14.89   0.00
-25      6 -1753.09 3518.40 15.41   0.00
-23      6 -1753.09 3518.40 15.41   0.00
-236     7 -1752.26 3518.82 15.84   0.00
-256     7 -1752.29 3518.87 15.89   0.00
-234     7 -1752.59 3519.48 16.49   0.00
-245     7 -1752.59 3519.49 16.50   0.00
-2346    8 -1751.72 3519.82 16.83   0.00
-2456    8 -1751.78 3519.96 16.97   0.00
-235     7 -1753.09 3520.47 17.49   0.00
-2356    8 -1752.26 3520.90 17.92   0.00
-2345    8 -1752.59 3521.56 18.57   0.00
-23456   9 -1751.71 3521.91 18.92   0.00
-136     5 -1756.63 3523.42 20.43   0.00
-1346    6 -1756.08 3524.39 21.41   0.00
-13      4 -1758.25 3524.60 21.62   0.00
-16      4 -1758.59 3525.28 22.29   0.00
-1356    6 -1756.61 3525.44 22.45   0.00
-134     5 -1757.74 3525.65 22.66   0.00
-1       3 -1759.81 3525.68 22.69   0.00
-13456   7 -1756.08 3526.46 23.48   0.00
-135     5 -1758.21 3526.59 23.60   0.00
-146     5 -1758.30 3526.76 23.78   0.00
-14      4 -1759.53 3527.16 24.17   0.00
-156     5 -1758.54 3527.24 24.26   0.00
-15      4 -1759.75 3527.61 24.62   0.00
-1345    6 -1757.73 3527.69 24.71   0.00
-1456    6 -1758.28 3528.79 25.80   0.00
-145     5 -1759.50 3529.15 26.17   0.00
-36      4 -1765.82 3539.76 36.77   0.00
-346     5 -1764.96 3540.08 37.10   0.00
-6       3 -1767.12 3540.31 37.33   0.00
-46      4 -1766.54 3541.19 38.20   0.00
-356     5 -1765.77 3541.70 38.71   0.00
-3456    6 -1764.95 3542.12 39.14   0.00
-56      4 -1767.04 3542.18 39.20   0.00
-(Null)  2 -1769.34 3542.72 39.74   0.00
-3       3 -1768.50 3543.05 40.07   0.00
-456     5 -1766.50 3543.17 40.18   0.00
-34      4 -1767.71 3543.52 40.54   0.00
-4       3 -1768.77 3543.61 40.63   0.00
-5       3 -1769.24 3544.54 41.55   0.00
-35      4 -1768.41 3544.93 41.95   0.00
-345     5 -1767.68 3545.51 42.53   0.00
-45      4 -1768.72 3545.54 42.55   0.00
-
-Term codes: 
-       cond(DressCode)         cond(Location)      cond(NEnrollment) 
-                     1                      2                      3 
- cond(SecurityCameras)    cond(TrainingHours) cond(UniformsRequired) 
-                     4                      5                      6 
-
-Model-averaged coefficients:  
-(full average) 
-                             Estimate Std. Error Adjusted SE z value Pr(&gt;|z|)
-cond((Int))                 3.596e+00  1.316e-01   1.320e-01  27.252  &lt; 2e-16
-cond(DressCodeyes)          3.765e-01  9.608e-02   9.639e-02   3.906 9.39e-05
-cond(LocationRural)        -5.597e-01  1.328e-01   1.332e-01   4.201 2.65e-05
-cond(LocationTown)         -5.874e-01  1.543e-01   1.548e-01   3.795 0.000148
-cond(LocationUrban Fringe) -1.024e-01  1.179e-01   1.183e-01   0.866 0.386523
-cond(UniformsRequiredyes)   5.685e-02  1.373e-01   1.376e-01   0.413 0.679432
-cond(SecurityCamerasyes)   -2.384e-02  6.451e-02   6.466e-02   0.369 0.712383
-cond(NEnrollment)           8.826e-06  2.812e-05   2.818e-05   0.313 0.754163
-cond(TrainingHours)        -2.156e-04  2.509e-02   2.517e-02   0.009 0.993166
-                              
-cond((Int))                ***
-cond(DressCodeyes)         ***
-cond(LocationRural)        ***
-cond(LocationTown)         ***
-cond(LocationUrban Fringe)    
-cond(UniformsRequiredyes)     
-cond(SecurityCamerasyes)      
-cond(NEnrollment)             
-cond(TrainingHours)           
- 
-(conditional average) 
-                             Estimate Std. Error Adjusted SE z value Pr(&gt;|z|)
-cond((Int))                 3.596e+00  1.316e-01   1.320e-01  27.252  &lt; 2e-16
-cond(DressCodeyes)          3.771e-01  9.499e-02   9.530e-02   3.956 7.61e-05
-cond(LocationRural)        -5.598e-01  1.328e-01   1.332e-01   4.203 2.63e-05
-cond(LocationTown)         -5.874e-01  1.542e-01   1.547e-01   3.796 0.000147
-cond(LocationUrban Fringe) -1.024e-01  1.179e-01   1.183e-01   0.866 0.386505
-cond(UniformsRequiredyes)   1.661e-01  1.921e-01   1.927e-01   0.862 0.388948
-cond(SecurityCamerasyes)   -7.409e-02  9.597e-02   9.628e-02   0.770 0.441588
-cond(NEnrollment)           3.049e-05  4.550e-05   4.565e-05   0.668 0.504120
-cond(TrainingHours)        -8.265e-04  4.912e-02   4.928e-02   0.017 0.986617
-                              
-cond((Int))                ***
-cond(DressCodeyes)         ***
-cond(LocationRural)        ***
-cond(LocationTown)         ***
-cond(LocationUrban Fringe)    
-cond(UniformsRequiredyes)     
-cond(SecurityCamerasyes)      
-cond(NEnrollment)             
-cond(TrainingHours)           
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-</div>
-</div>
-<p><strong>If you are trying to get model-averaged coefficients from the summary output above, be sure to look for the “full average” ones and not the “conditional average” (which only includes models where the predictor was included, i.e., where the coefficient was not 0).</strong></p>
-</section>
-<section id="getting-predictions-from-the-averaged-model" class="level3" data-number="7.3.2">
-<h3 data-number="7.3.2" class="anchored" data-anchor-id="getting-predictions-from-the-averaged-model"><span class="header-section-number">7.3.2</span> Getting Predictions from the Averaged Model</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ma.preds <span class="ot">&lt;-</span> <span class="fu">predict</span>(ave.model, <span class="at">se.fit=</span><span class="cn">TRUE</span>,</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">type =</span> <span class="st">'response'</span>, </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">backtransform =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The resulting predictions are a list with entries <code>fit</code> and <code>se.fit</code> just like we are used to. (So you could make predictions with a <code>newdata</code> data set and use them for prediction plots, for example. Be careful – your “new” dataset now has to include values for all candidate predictors in the full model.)</p>
-<p>Comparing with the predictions from our previous “best” model:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>best.school.nb2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(ViolentIncidentsTotal <span class="sc">~</span> DressCode <span class="sc">+</span> Location,</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">data=</span>ssc,<span class="at">family=</span><span class="fu">nbinom2</span>(<span class="at">link=</span><span class="st">'log'</span>))</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># pred_plot(ave.model, 'DressCode', ylab = 'N. Incidents',</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#             data = ssc, color = 'red')</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># pred_plot(best.school.nb2, 'DressCode', ylab = 'N. Incidents',) </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>So they are pretty comparable, but a little different (the differences may be bigger the more there are different models with similar IC results contributing to the average model – when one model carries almost all the weight, then the “single best” model and the model-averaging model will give almost the same results). It also makes sense that there will be a bit more uncertainty in the average model.</p>
 
 
 </section>
@@ -932,13 +935,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./count-data-regression.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span>
+      <a href="./lm1.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Linear Regression</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./interactions.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interactions</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./IC-based-selection.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

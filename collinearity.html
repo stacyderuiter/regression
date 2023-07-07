@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GLMs and Friends - 10&nbsp; Collinearity and Multicollinearity</title>
+<title>GLMs and Friends - 11&nbsp; Collinearity and Multicollinearity</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -111,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./collinearity.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./collinearity.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -170,104 +170,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./lm-assess.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Diagnostics and Assessment</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./IC-based-selection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./likelihood.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pdf-pmf.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./count-data-regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./model-averaging.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./interactions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./binary-regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./binary-regression2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./collinearity.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./zero-inflation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ncv.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./random-effects.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./random-effects2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gee-motivation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./corr-struct.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./anova-plus.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gams.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -286,19 +292,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#graphical-checks" id="toc-graphical-checks" class="nav-link active" data-scroll-target="#graphical-checks"><span class="header-section-number">10.1</span> Graphical Checks</a>
+  <li><a href="#graphical-checks" id="toc-graphical-checks" class="nav-link active" data-scroll-target="#graphical-checks"><span class="header-section-number">11.1</span> Graphical Checks</a>
   <ul class="collapse">
-  <li><a href="#preferred-option-correlation-scatter-plot" id="toc-preferred-option-correlation-scatter-plot" class="nav-link" data-scroll-target="#preferred-option-correlation-scatter-plot"><span class="header-section-number">10.1.1</span> Preferred option: Correlation Scatter Plot</a></li>
-  <li><a href="#another-option-heat-map-of-correlation-coefficients" id="toc-another-option-heat-map-of-correlation-coefficients" class="nav-link" data-scroll-target="#another-option-heat-map-of-correlation-coefficients"><span class="header-section-number">10.1.2</span> Another option: Heat map of correlation coefficients</a></li>
-  <li><a href="#how-to-use-this-information" id="toc-how-to-use-this-information" class="nav-link" data-scroll-target="#how-to-use-this-information"><span class="header-section-number">10.1.3</span> How to use this information</a></li>
+  <li><a href="#preferred-option-correlation-scatter-plot" id="toc-preferred-option-correlation-scatter-plot" class="nav-link" data-scroll-target="#preferred-option-correlation-scatter-plot"><span class="header-section-number">11.1.1</span> Preferred option: Correlation Scatter Plot</a></li>
+  <li><a href="#another-option-heat-map-of-correlation-coefficients" id="toc-another-option-heat-map-of-correlation-coefficients" class="nav-link" data-scroll-target="#another-option-heat-map-of-correlation-coefficients"><span class="header-section-number">11.1.2</span> Another option: Heat map of correlation coefficients</a></li>
+  <li><a href="#how-to-use-this-information" id="toc-how-to-use-this-information" class="nav-link" data-scroll-target="#how-to-use-this-information"><span class="header-section-number">11.1.3</span> How to use this information</a></li>
   </ul></li>
-  <li><a href="#variance-inflation-factors" id="toc-variance-inflation-factors" class="nav-link" data-scroll-target="#variance-inflation-factors"><span class="header-section-number">10.2</span> Variance Inflation Factors</a>
+  <li><a href="#variance-inflation-factors" id="toc-variance-inflation-factors" class="nav-link" data-scroll-target="#variance-inflation-factors"><span class="header-section-number">11.2</span> Variance Inflation Factors</a>
   <ul class="collapse">
-  <li><a href="#quantitative-predictors-vifs" id="toc-quantitative-predictors-vifs" class="nav-link" data-scroll-target="#quantitative-predictors-vifs"><span class="header-section-number">10.2.1</span> Quantitative predictors (VIFs)</a></li>
-  <li><a href="#some-categorical-predictors-gvifs" id="toc-some-categorical-predictors-gvifs" class="nav-link" data-scroll-target="#some-categorical-predictors-gvifs"><span class="header-section-number">10.2.2</span> (Some) Categorical Predictors (GVIFs)</a></li>
-  <li><a href="#rules-of-thumb" id="toc-rules-of-thumb" class="nav-link" data-scroll-target="#rules-of-thumb"><span class="header-section-number">10.2.3</span> Rules of Thumb</a></li>
+  <li><a href="#quantitative-predictors-vifs" id="toc-quantitative-predictors-vifs" class="nav-link" data-scroll-target="#quantitative-predictors-vifs"><span class="header-section-number">11.2.1</span> Quantitative predictors (VIFs)</a></li>
+  <li><a href="#some-categorical-predictors-gvifs" id="toc-some-categorical-predictors-gvifs" class="nav-link" data-scroll-target="#some-categorical-predictors-gvifs"><span class="header-section-number">11.2.2</span> (Some) Categorical Predictors (GVIFs)</a></li>
+  <li><a href="#rules-of-thumb" id="toc-rules-of-thumb" class="nav-link" data-scroll-target="#rules-of-thumb"><span class="header-section-number">11.2.3</span> Rules of Thumb</a></li>
   </ul></li>
-  <li><a href="#was-it-worth-it" id="toc-was-it-worth-it" class="nav-link" data-scroll-target="#was-it-worth-it"><span class="header-section-number">10.3</span> Was it worth it?</a></li>
+  <li><a href="#was-it-worth-it" id="toc-was-it-worth-it" class="nav-link" data-scroll-target="#was-it-worth-it"><span class="header-section-number">11.3</span> Was it worth it?</a></li>
   </ul>
 </nav>
     </div>
@@ -307,7 +313,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></h1>
+<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></h1>
 </div>
 
 
@@ -324,8 +330,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>Problematic collinearity and multicollinearity happen when two (collinearity) or more than two (multicollinearity) predictor variables are <em>highly</em> correlated with each other.</p>
 <p>This can result in variance inflation: our uncertainty estimates (standard errors of coefficients, and confidence intervals on predictions) get bigger. Basically, if several predictors bear a lot of the same information, it can be hard for the model-fitting process to “allocate” the relationship between that predictor information and the response variable - it is “not sure” which predictor has which effect.</p>
-<section id="graphical-checks" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="graphical-checks"><span class="header-section-number">10.1</span> Graphical Checks</h2>
+<section id="graphical-checks" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="graphical-checks"><span class="header-section-number">11.1</span> Graphical Checks</h2>
 <p>There are two functions in the package <code>GGally</code> that we can use to visualize the level of correlation between predictor variables.</p>
 <p>As a simple example, let’s consider a small dataset on blood pressure and other variables for 20 adults with high blood pressure. It contains variables:</p>
 <ul>
@@ -343,8 +349,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">header=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Imagine we want to predict BP as a function of the other variables in the dataset. How can we use a plot to check whether any of the predictors at (too) correlated with each other?</p>
-<section id="preferred-option-correlation-scatter-plot" class="level3" data-number="10.1.1">
-<h3 data-number="10.1.1" class="anchored" data-anchor-id="preferred-option-correlation-scatter-plot"><span class="header-section-number">10.1.1</span> Preferred option: Correlation Scatter Plot</h3>
+<section id="preferred-option-correlation-scatter-plot" class="level3" data-number="11.1.1">
+<h3 data-number="11.1.1" class="anchored" data-anchor-id="preferred-option-correlation-scatter-plot"><span class="header-section-number">11.1.1</span> Preferred option: Correlation Scatter Plot</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>bp2 <span class="ot">&lt;-</span> bp <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(Age, Weight, BSA, Dur, Pulse, Stress)</span>
@@ -354,8 +360,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="another-option-heat-map-of-correlation-coefficients" class="level3" data-number="10.1.2">
-<h3 data-number="10.1.2" class="anchored" data-anchor-id="another-option-heat-map-of-correlation-coefficients"><span class="header-section-number">10.1.2</span> Another option: Heat map of correlation coefficients</h3>
+<section id="another-option-heat-map-of-correlation-coefficients" class="level3" data-number="11.1.2">
+<h3 data-number="11.1.2" class="anchored" data-anchor-id="another-option-heat-map-of-correlation-coefficients"><span class="header-section-number">11.1.2</span> Another option: Heat map of correlation coefficients</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># label=TRUE input adds numeric corr coef labels</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorr</span>(bp2, <span class="at">label=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -364,15 +370,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="how-to-use-this-information" class="level3" data-number="10.1.3">
-<h3 data-number="10.1.3" class="anchored" data-anchor-id="how-to-use-this-information"><span class="header-section-number">10.1.3</span> How to use this information</h3>
+<section id="how-to-use-this-information" class="level3" data-number="11.1.3">
+<h3 data-number="11.1.3" class="anchored" data-anchor-id="how-to-use-this-information"><span class="header-section-number">11.1.3</span> How to use this information</h3>
 <p>But how do we know how much correlation is <em>too much</em>? Some people suggest excluding predictors from a model if their pairwise correlation is above about 0.8, but that is a very arbitrary rule; sometime model estimate works just fine in the face of that much correlation. In other cases correlation of each pair of variables is low, but there is multicollinearity (a group of variables that predicts one other variable very well). Having a look at the data is always useful, but what else can we do to decide which predictors to include or exclude?</p>
 <p>So, one solution is to decide if there is “too much” collinearity or multicollinearity, and if there <em>is</em> “too much” for a given predictor, remove that one from the model.</p>
 <p><em>There are also other options - model fitting techinques that get around the problem in other ways. (Key words in this arena are things like “lasso” and “neural net regression”). We will likely not have time to consider these in our class.</em></p>
 </section>
 </section>
-<section id="variance-inflation-factors" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="variance-inflation-factors"><span class="header-section-number">10.2</span> Variance Inflation Factors</h2>
+<section id="variance-inflation-factors" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="variance-inflation-factors"><span class="header-section-number">11.2</span> Variance Inflation Factors</h2>
 <p>A more precise way to check for collinearity <em>and</em> multicollinearity is to use VIFs. To get them, we will use the function <code>vif()</code> from package <code>car</code> (Companion to Applied Regression).</p>
 <p>But…what are the actually measuring?</p>
 <p><span class="math display">\[VIF = \frac{1}{1 - R^2_i}\]</span></p>
@@ -380,8 +386,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><span class="math display">\[R^2_i\]</span> is the <span class="math inline">\(R^2\)</span> value for a regression model with the <span class="math inline">\(i\)</span>th predictor as the <em>response</em> variable, and all the <em>other</em> predictors as a predictor. So <span class="math inline">\(R^2_i\)</span> measures how well values of <em>predictor</em> <span class="math inline">\(i\)</span> can be estimated based on the <em>other</em> predictors. High <span class="math inline">\(R^2_i\)</span> indicates a predictor that is redundant, providing the same information as other predictors.</p>
 <p>Since <span class="math inline">\(R^2_i\)</span> is in the <em>denominator</em> of the <span class="math inline">\(VIF\)</span> expression, <strong>larger</strong> VIFs indicate <strong>more</strong> problematic correlations between predictors.</p>
 <p><em>Note: an alternate interpretation of VIFs is that they measure the factor by which variance of model coefficient estimates is “inflated” due to collinearity between predictors. Big is still bad, because big VIF means inflated (high) uncertainty.</em></p>
-<section id="quantitative-predictors-vifs" class="level3" data-number="10.2.1">
-<h3 data-number="10.2.1" class="anchored" data-anchor-id="quantitative-predictors-vifs"><span class="header-section-number">10.2.1</span> Quantitative predictors (VIFs)</h3>
+<section id="quantitative-predictors-vifs" class="level3" data-number="11.2.1">
+<h3 data-number="11.2.1" class="anchored" data-anchor-id="quantitative-predictors-vifs"><span class="header-section-number">11.2.1</span> Quantitative predictors (VIFs)</h3>
 <p>For our blood pressure example:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
@@ -399,12 +405,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="some-categorical-predictors-gvifs" class="level3" data-number="10.2.2">
-<h3 data-number="10.2.2" class="anchored" data-anchor-id="some-categorical-predictors-gvifs"><span class="header-section-number">10.2.2</span> (Some) Categorical Predictors (GVIFs)</h3>
+<section id="some-categorical-predictors-gvifs" class="level3" data-number="11.2.2">
+<h3 data-number="11.2.2" class="anchored" data-anchor-id="some-categorical-predictors-gvifs"><span class="header-section-number">11.2.2</span> (Some) Categorical Predictors (GVIFs)</h3>
 <p>What if some predictors are categorical? In this case, <code>vif()</code> will report generalized VIFs (GVIFs) and scaled GVIFs (<span class="math inline">\(GVIF^{\frac{1}{2DF}}\)</span>).</p>
 </section>
-<section id="rules-of-thumb" class="level3" data-number="10.2.3">
-<h3 data-number="10.2.3" class="anchored" data-anchor-id="rules-of-thumb"><span class="header-section-number">10.2.3</span> Rules of Thumb</h3>
+<section id="rules-of-thumb" class="level3" data-number="11.2.3">
+<h3 data-number="11.2.3" class="anchored" data-anchor-id="rules-of-thumb"><span class="header-section-number">11.2.3</span> Rules of Thumb</h3>
 <p>If a VIF (or squared scaled GVIF) is 1, that means there is no added uncertainty in model estimates because of collinearity. If VIF (or squared scaled GVIF) is greater than 4, then there’s a problem and you should probably try to fix it; if VIF (or squared scaled GVIF) is more than 10, then something <em>definitely</em> must be done to correct the problem.</p>
 <p><em>As suggested above…To use these rules of thumb with scaled GVIFs (</em><span class="math inline">\(GVIF^{\frac{1}{2DF}}\)</span>), <strong>square</strong> the scaled GVIF value before applying the rule.</p>
 <p>Let’s look at an example from the built-in R dataset Duncan, which has data from 1950 on characteristics of different professions (type ?Duncan in R if you want more info on the data).</p>
@@ -442,8 +448,8 @@ type      5.098592  2        1.502666</code></pre>
 </div>
 </section>
 </section>
-<section id="was-it-worth-it" class="level2" data-number="10.3">
-<h2 data-number="10.3" class="anchored" data-anchor-id="was-it-worth-it"><span class="header-section-number">10.3</span> Was it worth it?</h2>
+<section id="was-it-worth-it" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="was-it-worth-it"><span class="header-section-number">11.3</span> Was it worth it?</h2>
 <p>(How would we have done at sorting this out using graphical methods only? Check by creating a pairwise scatterplot using the Duncan data on your own.)</p>
 
 
@@ -801,12 +807,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./binary-regression2.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./zero-inflation.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

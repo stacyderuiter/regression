@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GLMs and Friends - 8&nbsp; Binary Regression</title>
+<title>GLMs and Friends - 9&nbsp; Binary Regression</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -111,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./binary-regression.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binary Regression</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./binary-regression.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary Regression</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -170,104 +170,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./lm-assess.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Diagnostics and Assessment</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./IC-based-selection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Model Selection Using Information Criteria</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./likelihood.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Likelihood</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pdf-pmf.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">PDFs and PMFs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./count-data-regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression for Count Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./model-averaging.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Averaging</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./interactions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./binary-regression.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./binary-regression2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./collinearity.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Collinearity and Multicollinearity</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./zero-inflation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Zero-Inflation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ncv.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Non-constant variance (and other unresolved problems)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./random-effects.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random Effects</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./random-effects2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Random effects with glmmTMB and standardized residuals</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gee-motivation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">GEEs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./corr-struct.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Correlation Structures</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./anova-plus.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Other Model Selection Approaches</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gams.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">GAMs: Generalized Additive Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -286,16 +292,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#data-source" id="toc-data-source" class="nav-link active" data-scroll-target="#data-source"><span class="header-section-number">8.1</span> Data Source</a></li>
-  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression"><span class="header-section-number">8.2</span> Logistic Regression</a></li>
-  <li><a href="#checking-the-data-setup" id="toc-checking-the-data-setup" class="nav-link" data-scroll-target="#checking-the-data-setup"><span class="header-section-number">8.3</span> Checking the data setup</a></li>
-  <li><a href="#fitting-a-saturated-model" id="toc-fitting-a-saturated-model" class="nav-link" data-scroll-target="#fitting-a-saturated-model"><span class="header-section-number">8.4</span> Fitting a saturated model</a></li>
-  <li><a href="#link-functions" id="toc-link-functions" class="nav-link" data-scroll-target="#link-functions"><span class="header-section-number">8.5</span> Link Functions</a></li>
-  <li><a href="#conditions" id="toc-conditions" class="nav-link" data-scroll-target="#conditions"><span class="header-section-number">8.6</span> Conditions</a></li>
-  <li><a href="#model-assessment-plots" id="toc-model-assessment-plots" class="nav-link" data-scroll-target="#model-assessment-plots"><span class="header-section-number">8.7</span> Model Assessment Plots</a></li>
-  <li><a href="#odds-ratios" id="toc-odds-ratios" class="nav-link" data-scroll-target="#odds-ratios"><span class="header-section-number">8.8</span> Odds Ratios</a></li>
-  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">8.9</span> Model Selection</a></li>
-  <li><a href="#prediction-plots" id="toc-prediction-plots" class="nav-link" data-scroll-target="#prediction-plots"><span class="header-section-number">8.10</span> Prediction Plots</a></li>
+  <li><a href="#data-source" id="toc-data-source" class="nav-link active" data-scroll-target="#data-source"><span class="header-section-number">9.1</span> Data Source</a></li>
+  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression"><span class="header-section-number">9.2</span> Logistic Regression</a></li>
+  <li><a href="#checking-the-data-setup" id="toc-checking-the-data-setup" class="nav-link" data-scroll-target="#checking-the-data-setup"><span class="header-section-number">9.3</span> Checking the data setup</a></li>
+  <li><a href="#fitting-a-saturated-model" id="toc-fitting-a-saturated-model" class="nav-link" data-scroll-target="#fitting-a-saturated-model"><span class="header-section-number">9.4</span> Fitting a saturated model</a></li>
+  <li><a href="#link-functions" id="toc-link-functions" class="nav-link" data-scroll-target="#link-functions"><span class="header-section-number">9.5</span> Link Functions</a></li>
+  <li><a href="#conditions" id="toc-conditions" class="nav-link" data-scroll-target="#conditions"><span class="header-section-number">9.6</span> Conditions</a></li>
+  <li><a href="#model-assessment-plots" id="toc-model-assessment-plots" class="nav-link" data-scroll-target="#model-assessment-plots"><span class="header-section-number">9.7</span> Model Assessment Plots</a></li>
+  <li><a href="#odds-ratios" id="toc-odds-ratios" class="nav-link" data-scroll-target="#odds-ratios"><span class="header-section-number">9.8</span> Odds Ratios</a></li>
+  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">9.9</span> Model Selection</a></li>
+  <li><a href="#prediction-plots" id="toc-prediction-plots" class="nav-link" data-scroll-target="#prediction-plots"><span class="header-section-number">9.10</span> Prediction Plots</a></li>
   </ul>
 </nav>
     </div>
@@ -304,7 +310,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Binary Regression</span></h1>
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary Regression</span></h1>
 </div>
 
 
@@ -320,8 +326,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <p>Our next goal: establish a framework for doing regression modelling when the response variable is a categorical one, with two categories.</p>
-<section id="data-source" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="data-source"><span class="header-section-number">8.1</span> Data Source</h2>
+<section id="data-source" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="data-source"><span class="header-section-number">9.1</span> Data Source</h2>
 <p>The dataset used here is on Alaskan wood frogs, detailing some physical characteristics, habitat characteristics, and the number of developmental and other abnormalities found in the frogs. It was originally obtained from:[http://datadryad.org/resource/doi:10.5061/dryad.sq72d].</p>
 <p>The data file can be accessed online at: [http://sldr.netlify.com/data/FrogAbnormalities.csv]</p>
 <div class="cell">
@@ -337,8 +343,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="logistic-regression" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="logistic-regression"><span class="header-section-number">8.2</span> Logistic Regression</h2>
+<section id="logistic-regression" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="logistic-regression"><span class="header-section-number">9.2</span> Logistic Regression</h2>
 <p>Recall, for linear regression we fitted a model for continuous (numeric) response variable <span class="math inline">\(y\)</span> according to:</p>
 <p><span class="math display">\[y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + ...\beta_k x_k + \epsilon \]</span></p>
 <p>where <span class="math inline">\(x\)</span>s are the <span class="math inline">\(k\)</span> predictor variables, <span class="math inline">\(\beta\)</span>s are the parameters to be estimated by the model, and <span class="math inline">\(\epsilon \sim N(0,\sigma)\)</span> are the model residuals.</p>
@@ -349,8 +355,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><span class="math display">\[ logit(p_i) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + ...\beta_k x_k + \epsilon_{link}\]</span></p>
 <p>where the <code>logit</code> function is <span class="math inline">\(logit(x) = log(\frac{x}{1-x})\)</span>. This function maps probabilities to positive and negative real numbers, effectively “spreading them out” from the range 0-1 to the full range of real numbers. How does this equation relate back to our desired response variable? Well, <span class="math inline">\(i\)</span>th observation of the response variable is assumed to follow a binomial distribution with probability <span class="math inline">\(p_i\)</span> (<span class="math inline">\(y_i \sim Binom(n_i, p_i)\)</span>). (<span class="math inline">\(n_i\)</span> depends on the setup of the data – often n=1 for each row of the dataset, as here where each row is one frog. We can think of each frog as one binomial trial, with success/failure meaning abnormality/normality of the frog.)</p>
 </section>
-<section id="checking-the-data-setup" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="checking-the-data-setup"><span class="header-section-number">8.3</span> Checking the data setup</h2>
+<section id="checking-the-data-setup" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="checking-the-data-setup"><span class="header-section-number">9.3</span> Checking the data setup</h2>
 <p>We would like to model the proportion frogs with abnormalities as a function of a set of covariates. The variable <code>Abnormal</code> has values “Yes” and “No”. In R, if we use this (factor) variable as our response, how will R determine which level (value of the variable) is a “success”?</p>
 <p>R uses the FIRST variable value as “failure” and the second as “success” – this makes sense if you imagine coding 0 for failure and 1 for success (and then sorting in numeric/alphabetical order). If you have a categorical variable with informative values, you will need to make sure that the “base” (first) level is the one you want to equate with “failure”.</p>
 <div class="cell">
@@ -370,8 +376,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="fitting-a-saturated-model" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="fitting-a-saturated-model"><span class="header-section-number">8.4</span> Fitting a saturated model</h2>
+<section id="fitting-a-saturated-model" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="fitting-a-saturated-model"><span class="header-section-number">9.4</span> Fitting a saturated model</h2>
 <p>Let’s try fitting a model for Abnormalities as a function of Stage, Year, RoadType, and RoadDistance. Why do you think these variables and not others were chosen?</p>
 <p>Perhaps it makes sense that type and distance to road are proxies for urbanization, and frogs may do better in more pristine habitats. It also seems likely that there would be differences over time. There may also be differences by Stage, if frogs with severe abnormalities have trouble even surviving to the later/older stages.</p>
 <div class="cell">
@@ -415,8 +421,8 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
 </section>
-<section id="link-functions" class="level2" data-number="8.5">
-<h2 data-number="8.5" class="anchored" data-anchor-id="link-functions"><span class="header-section-number">8.5</span> Link Functions</h2>
+<section id="link-functions" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="link-functions"><span class="header-section-number">9.5</span> Link Functions</h2>
 <p>Here, we have used the logit link function, which is the most common. However, there are other functions that translate proportions to real numbers, and are sometimes used in regression for binary data. Two common options are:</p>
 <ul>
 <li>Probit regression: link=‘probit’</li>
@@ -430,8 +436,8 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 <p>Note: figure is from [http://data.princeton.edu/wws509/notes].</p>
 </section>
-<section id="conditions" class="level2" data-number="8.6">
-<h2 data-number="8.6" class="anchored" data-anchor-id="conditions"><span class="header-section-number">8.6</span> Conditions</h2>
+<section id="conditions" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="conditions"><span class="header-section-number">9.6</span> Conditions</h2>
 <p>Under what conditions is a logistic regression model appropriate?</p>
 <ul>
 <li>Response variable is logical – you can characterize it as the outcome of a binomial trial (or a set of independent binomial trials). Some response variables can be expressed as proportions, but can <em>not</em> be well modelled with binomial regression. For example, you might take one-minute recordings in the woods and measure the proportion of each minute during which bird song was audible. The data will look like proportions, but you can’t think of them as binomial trials and should not model them with binomial regression (what is a “trial” here, and what is a “success”? Make sure you can answer those questions before using binomial regression.)</li>
@@ -441,8 +447,8 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <li>NO distributional assumptions about residuals.</li>
 </ul>
 </section>
-<section id="model-assessment-plots" class="level2" data-number="8.7">
-<h2 data-number="8.7" class="anchored" data-anchor-id="model-assessment-plots"><span class="header-section-number">8.7</span> Model Assessment Plots</h2>
+<section id="model-assessment-plots" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="model-assessment-plots"><span class="header-section-number">9.7</span> Model Assessment Plots</h2>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="binary-regression_files/figure-html/frog-assess1-1.png" class="img-fluid" width="336"></p>
@@ -480,8 +486,8 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <p>The two “lines” in the residuals vs fitted plots correspond with the two possible values of the response variable in the data.</p>
 <p>And remember - there is not a strict distributional assumption about the residuals (in other words, they don’t have to follow, say, a normal distribution), so we don’t really have to make a histogram of them. The one here is shown just to help you remember that you don’t <em>have</em> to check it, and if you do, it will look “strange” (bimodal like this) yet it is nothing to worry about.</p>
 </section>
-<section id="odds-ratios" class="level2" data-number="8.8">
-<h2 data-number="8.8" class="anchored" data-anchor-id="odds-ratios"><span class="header-section-number">8.8</span> Odds Ratios</h2>
+<section id="odds-ratios" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="odds-ratios"><span class="header-section-number">9.8</span> Odds Ratios</h2>
 <p>The <strong>odds</strong> (or <em>odds ratio</em>) is <span class="math inline">\(\frac{p}{1-p}\)</span> – the ratio of success to failure. So if P(success) = 0.75, then the odds will be <span class="math inline">\(\frac{0.75}{0.25}\)</span> = 3 or “three to one” – you will usually succeed three times for every failure.</p>
 <p>Remember, the logit function was <span class="math inline">\(logit(x) = log(\frac{p}{1-p})\)</span>? In other words, the logit is the log of the odds ratio. This means that the coefficients of a binary regression model with logit link function have special interpretations in terms of odds ratios.</p>
 <p>Let’s consider a simplified version of our model (just to make it easier to write out the model equation):</p>
@@ -504,8 +510,8 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <p><span class="math display">\[ \frac{p}{1-p} = e^{-1.46 - 0.51} = e^{-1.46}e^{-0.51}\]</span></p>
 <p>And <span class="math inline">\(e^{-1.46}\)</span> is the odds for Stage 42…aha! So, <span class="math inline">\(e^{-0.51} = 0.60\)</span> is the <em>multiplier</em> on the odds ratio to go from stage 42 to 46. And in general, <span class="math inline">\(e^{\beta}\)</span> is the multiplier on the odds ratio for a one-unit change in the predictor variable for which <span class="math inline">\(\beta\)</span> is the model coefficient.</p>
 </section>
-<section id="model-selection" class="level2" data-number="8.9">
-<h2 data-number="8.9" class="anchored" data-anchor-id="model-selection"><span class="header-section-number">8.9</span> Model Selection</h2>
+<section id="model-selection" class="level2" data-number="9.9">
+<h2 data-number="9.9" class="anchored" data-anchor-id="model-selection"><span class="header-section-number">9.9</span> Model Selection</h2>
 <p>As usual:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
@@ -542,8 +548,8 @@ factor(Year)2011 factor(Year)2012     RoadDistance    RoadTypePaved
 </div>
 </div>
 </section>
-<section id="prediction-plots" class="level2" data-number="8.10">
-<h2 data-number="8.10" class="anchored" data-anchor-id="prediction-plots"><span class="header-section-number">8.10</span> Prediction Plots</h2>
+<section id="prediction-plots" class="level2" data-number="9.10">
+<h2 data-number="9.10" class="anchored" data-anchor-id="prediction-plots"><span class="header-section-number">9.10</span> Prediction Plots</h2>
 <p>Shown here are example prediction plots for Stage and RoadDistance. First, check out a summary table for the variables in the model to help determine fixed values.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>frogs<span class="sc">$</span>Year <span class="ot">&lt;-</span> <span class="fu">factor</span>(frogs<span class="sc">$</span>Year)</span>
@@ -942,12 +948,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./interactions.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interactions</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interactions</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./binary-regression2.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Binary regression: Data with more than one trial per row</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
