@@ -1,0 +1,196 @@
+```{r}
+#| label: load-packages
+#| include: false
+
+library(mosaic)   
+library(tidyverse)
+library(ggformula)
+
+theme_set(theme_bw(base_size=14))
+
+options(htmltools.dir.version = FALSE)
+
+knitr::opts_chunk$set(echo = TRUE, 
+                      fig.width = 7, 
+                      fig.height = 3,
+                      tidy = FALSE,
+                      fig.align = 'center', 
+                      message = FALSE, 
+                      warning = FALSE,
+                      error = TRUE,
+                      out.width = '60%', 
+                      dpi = 300)
+theme_set(theme_minimal(base_size = 22))
+
+set.seed(4)
+my_data <- data_frame(predictor = rnorm(15, mean = 5, sd = 2),
+                      pred1 = predictor,
+                      pred2 = gl(2, 8, length = 15, labels = c("A", "B")),
+                 response = 1.3 - 0.7* predictor + rnorm(15, 0, 2))
+```
+
+# Model Diagnostics and Assessment
+
+- Does the model fit data well?
+- *Should* we have fit a line -- Is model appropriate for data?
+- Are predictors *really* associated with response?
+
+These questions are absolutely crucial to consider, **before** we dive into model interpretation and drawing conclusions. 
+
+If the model we've chosen to fit to our data is not appropriate for it, it's not just an inconvenience or something to keep in mind. By fitting a multiple regression model, we're assuming that our dataset meets a number of conditions that make the model and data a good match. If the conditions are not met, any conclusions drawn from the model really can be truly misleading. 
+
+**A model whose conditions aren't met is not to be trusted!**
+
+So before proceeding to interpretation of model output, we need to learn to do some basic checks -- often called "Model Assessment" -- to verify that necessary conditions are met.
+
+Along the way, we will also learn a few common metrics used to measure how well a model "fits" data -- that is, how close is the match between what the model says and what the data indicate?
+
+# R-squared
+## Simple measure of goodness-of-fit
+
+$$R^2 = 1 - \frac{RSS}{TSS} = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2} {\sum_{i=1}^{n} (y_i - \bar{y})^2}$$
+
+
+# R-squared
+## Simple measure of goodness-of-fit
+
+```{r, echo = FALSE, message = FALSE, out.width = '90%'}
+gf_point(response ~ predictor, data = my_data, size = 4, color = 'grey64') |>
+  gf_lm(size = 2, color = 'black') |>
+  gf_hline(yintercept = mean(~response, data = my_data), color = 'darkred', size = 2) |>
+  gf_text((mean(~response, data = my_data) + 0.75) ~ 7.8,
+          color = 'darkred', size = 7,
+          label = 'mean response') |>
+  gf_text(0.5 ~ 7.8,
+          color = 'grey64', size = 7,
+          label = 'data') |>
+  gf_text(-4.2 ~ 7.8,
+          color = 'black', size = 7,
+          label = 'least-squares line')
+```
+
+
+
+# $R^2$ ranges 0 - 1
+## 0: no trend; 1: perfect line
+
+
+
+
+# Regression Conditions
+
+# **L**ack of nonlinearity in predictor/response relationship
+
+# **I**ndependence of residuals
+
+# **N**ormality of residuals
+
+# **E**rror variance is constant (in other words: residuals have *constant variance*). Also known as *homoscedasticity*.
+
+
+
+# Our Model
+
+```{r, echo = TRUE}
+mod <- lm(response ~ pred1 + pred2, data = my_data)
+
+my_data <- my_data |>
+  mutate(preds = predict(mod),
+         resids = resid(mod))
+```
+
+
+
+# Residuals Normal: Histogram
+## (Be quite generous)
+
+```{r}
+gf_histogram(~resids, data = my_data, bins = 5)
+```
+
+
+# Resid. Normality: Q-Q plot
+## (Be quite generous)
+
+```{r}
+gf_qq(~resids, data = my_data) |>
+  gf_qqline()
+```
+
+
+# Normality of Residuals: Q-Q plot w/CI
+## (Does data go far outside the CI (expected range)?)
+
+```{r, results = 'hide'}
+car::qqp(mod)
+```
+
+
+
+# Non-normal residuals?
+
+*image to be added*
+
+
+# Non-normal residuals?
+
+*image to be added*
+
+
+
+# Lack of Non-Linearity
+## DATA PLOT: No trend, OK. Linear trend, OK
+
+```{r}
+gf_point(response ~ predictor, data = my_data)
+```
+
+
+# Lack of Non-Linearity
+## **RESIDUALS vs. FITTED**: OK if **No** trends
+
+```{r}
+gf_point(resids ~ preds, data = my_data)
+```
+
+
+# Constant Residual Variance
+## Point cloud should fit well in a rectangle (not trumpet)
+## True for resid vs. predicted *and* resid vs. any predictor
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+gf_point(resids ~ preds, data = my_data, title = 'OK', size = 4) |>
+  gf_hline(yintercept = 3, color = 'darkred', linetype = 'dashed', size = 3) |>
+  gf_hline(yintercept = -3.5, color = 'darkred', linetype = 'dashed', size = 3) |>
+  gf_hline(yintercept = 0, color = 'black', linetype = 'dashed', size = 2)
+```
+
+
+# Non-linearity?
+
+*image to be added*
+
+
+# Non-constant variance?
+
+*image to be added*
+
+# Independence of Residuals
+## Ponder sort order; then ACF plot
+
+```{r}
+s245::gf_acf(~mod) |>
+  gf_lims(y = c(-1,1))
+```
+
+
+# Residual independence?
+
+*image to be added*
+
+# *Any* LINE Violation -> Danger!
+## Conclusions can not be trusted
+
+- slope estimates **incorrect**
+- CIs and p-values **too small**
+- poor prediction accuracy

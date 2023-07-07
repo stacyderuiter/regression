@@ -8,6 +8,7 @@ book:
   chapters:
     - index.qmd
     - lm1.qmd
+    - lm-assess.qmd
     - IC-based-selection.qmd
     - likelihood.qmd
     - pdf-pmf.qmd
